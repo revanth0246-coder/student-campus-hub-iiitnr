@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 140" width="100%" height="100%">
+  <defs>
+    <linearGradient id="cultGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4a044e"/>
+      <stop offset="40%" stop-color="#831843"/>
+      <stop offset="100%" stop-color="#be185d"/>
+    </linearGradient>
+    <linearGradient id="goldText" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="50%" stop-color="#fde047"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="240" height="140" rx="10" fill="url(#cultGrad)"/>
+
+  <!-- Confetti / Festive particles -->
+  <circle cx="25" cy="30" r="3" fill="#facc15" opacity="0.8"/>
+  <circle cx="45" cy="50" r="2.5" fill="#38bdf8" opacity="0.8"/>
+  <circle cx="215" cy="35" r="3" fill="#4ade80" opacity="0.8"/>
+  <circle cx="195" cy="60" r="2" fill="#f43f5e" opacity="0.8"/>
+  <rect x="70" y="25" width="4" height="7" fill="#fb923c" transform="rotate(25, 70, 25)" opacity="0.7"/>
+  <rect x="170" y="30" width="5" height="8" fill="#e879f9" transform="rotate(-35, 170, 30)" opacity="0.7"/>
+  <rect x="30" y="85" width="6" height="5" fill="#fef08a" transform="rotate(45, 30, 85)" opacity="0.7"/>
+  <rect x="210" y="90" width="5" height="7" fill="#38bdf8" transform="rotate(-15, 210, 90)" opacity="0.7"/>
+
+  <!-- Theatre Comedy / Tragedy Masks / Music symbols -->
+  <g transform="translate(100, 16)">
+    <!-- Mask 1 (Happy) -->
+    <path d="M 0 10 Q 0 0 16 0 Q 32 0 32 10 Q 32 26 16 28 Q 0 26 0 10 Z" fill="#fdf4ff" stroke="#c084fc" stroke-width="1.5"/>
+    <!-- Eyes -->
+    <ellipse cx="10" cy="9" rx="2.5" ry="3" fill="#701a75"/>
+    <ellipse cx="22" cy="9" rx="2.5" ry="3" fill="#701a75"/>
+    <!-- Smile -->
+    <path d="M 9 17 Q 16 24 23 17" fill="none" stroke="#701a75" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Musical notes -->
+    <path d="M 38 12 L 44 8 L 44 20" stroke="#fef08a" stroke-width="1.5" fill="none"/>
+    <circle cx="42" cy="20" r="3" fill="#fef08a"/>
+    <path d="M -8 16 L -2 12 L -2 24" stroke="#fef08a" stroke-width="1.5" fill="none"/>
+    <circle cx="-4" cy="24" r="3" fill="#fef08a"/>
+  </g>
+
+  <!-- Title -->
+  <text x="120" y="88" font-family="'Inter', system-ui, sans-serif" font-size="18" font-weight="900" letter-spacing="2.5" text-anchor="middle" fill="url(#goldText)">
+    CULTURAL FEST
+  </text>
+  <text x="120" y="108" font-family="'Inter', system-ui, sans-serif" font-size="9" font-weight="600" letter-spacing="2" text-anchor="middle" fill="#fbcfe8">
+    MUSIC • DANCE • DRAMA
+  </text>
+</svg>

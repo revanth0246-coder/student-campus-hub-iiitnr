@@ -1,0 +1,220 @@
+/* Student Campus Hub - Custom UI Styles */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --bg-sidebar: #0f172a;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  letter-spacing: -0.011em;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.4);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(107, 114, 128, 0.6);
+}
+
+/* Sidebar Active Items */
+.nav-item {
+  color: #94a3b8;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-item:hover {
+  color: #ffffff;
+  background-color: rgba(30, 41, 59, 0.7);
+}
+
+.nav-item.active {
+  background-color: #2563eb;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+
+.nav-item.active i {
+  color: #ffffff;
+}
+
+/* Card hover animation */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.08);
+}
+
+/* Timetable Slot Card Styling */
+.tt-slot {
+  min-height: 64px;
+  border-radius: 0.75rem;
+  padding: 0.625rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.tt-slot:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+}
+
+/* Timetable Slot Color Presets matching uploaded IIIT-NR timetable */
+.slot-a {
+  background-color: #ef4444;
+  border: 1px solid #dc2626;
+  color: #ffffff;
+  font-weight: 700;
+}
+.dark .slot-a {
+  background-color: #dc2626;
+  border-color: #ef4444;
+  color: #ffffff;
+}
+
+.slot-b {
+  background-color: #8b5cf6;
+  border: 1px solid #7c3aed;
+  color: #ffffff;
+  font-weight: 700;
+}
+.dark .slot-b {
+  background-color: #7c3aed;
+  border-color: #a78bfa;
+  color: #ffffff;
+}
+
+.slot-c {
+  background-color: #22c55e;
+  border: 1px solid #16a34a;
+  color: #ffffff;
+  font-weight: 700;
+}
+.dark .slot-c {
+  background-color: #16a34a;
+  border-color: #4ade80;
+  color: #ffffff;
+}
+
+.slot-f {
+  background-color: #64748b;
+  border: 1px solid #475569;
+  color: #ffffff;
+  font-weight: 700;
+}
+.dark .slot-f {
+  background-color: #475569;
+  border-color: #94a3b8;
+  color: #ffffff;
+}
+
+.slot-g {
+  background-color: #2563eb;
+  border: 1px solid #1d4ed8;
+  color: #ffffff;
+  font-weight: 700;
+}
+.dark .slot-g {
+  background-color: #1d4ed8;
+  border-color: #60a5fa;
+  color: #ffffff;
+}
+
+.slot-m {
+  background-color: #dbeafe;
+  border: 1px solid #93c5fd;
+  color: #1e3a8a;
+  font-weight: 700;
+}
+.dark .slot-m {
+  background-color: rgba(30, 58, 138, 0.4);
+  border-color: rgba(96, 165, 250, 0.5);
+  color: #bfdbfe;
+}
+
+.slot-n {
+  background-color: #bbf7d0;
+  border: 1px solid #86efac;
+  color: #14532d;
+  font-weight: 700;
+}
+.dark .slot-n {
+  background-color: rgba(20, 83, 45, 0.35);
+  border-color: rgba(74, 222, 128, 0.5);
+  color: #bbf7d0;
+}
+
+.slot-music,
+.slot-ilc,
+.slot-yoga {
+  background-color: #c084a4;
+  border: 1px solid #a86c8d;
+  color: #ffffff;
+  font-weight: 700;
+}
+.dark .slot-music,
+.dark .slot-ilc,
+.dark .slot-yoga {
+  background-color: #9d5d81;
+  border-color: #c084a4;
+  color: #ffffff;
+}
+
+.slot-lunch {
+  background-color: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #e11d48;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+.dark .slot-lunch {
+  background-color: rgba(159, 18, 57, 0.2);
+  border-color: rgba(244, 63, 94, 0.3);
+  color: #fda4af;
+}
+
+.slot-free {
+  background-color: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  color: #94a3b8;
+}
+.dark .slot-free {
+  background-color: rgba(30, 41, 59, 0.2);
+  border-color: rgba(71, 85, 105, 0.4);
+  color: #64748b;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-view:not(.hidden) {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Mobile drawer overlay */
+#sidebar-backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}

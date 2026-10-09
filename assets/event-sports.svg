@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 140" width="100%" height="100%">
+  <defs>
+    <linearGradient id="sportsBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="40%" stop-color="#bbf7d0"/>
+      <stop offset="100%" stop-color="#86efac"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="240" height="140" rx="10" fill="url(#sportsBg)"/>
+
+  <!-- Field track lines -->
+  <path d="M 0 100 Q 120 70 240 100" stroke="#22c55e" stroke-width="3" fill="none" opacity="0.6"/>
+  <path d="M 0 115 Q 120 85 240 115" stroke="#16a34a" stroke-width="2" fill="none" opacity="0.5"/>
+  <path d="M 0 130 Q 120 100 240 130" stroke="#15803d" stroke-width="2" fill="none" opacity="0.4"/>
+
+  <!-- Trophy Illustration -->
+  <g transform="translate(105, 20)">
+    <!-- Cup -->
+    <path d="M 5 10 L 25 10 L 22 32 Q 15 42 8 32 Z" fill="#eab308" stroke="#ca8a04" stroke-width="1.5"/>
+    <!-- Handles -->
+    <path d="M 5 14 Q -4 18 5 26" fill="none" stroke="#ca8a04" stroke-width="2"/>
+    <path d="M 25 14 Q 34 18 25 26" fill="none" stroke="#ca8a04" stroke-width="2"/>
+    <!-- Stem and Base -->
+    <rect x="13" y="36" width="4" height="10" fill="#ca8a04"/>
+    <rect x="7" y="46" width="16" height="5" rx="1" fill="#a16207"/>
+    <!-- Star -->
+    <polygon points="15,16 17,21 22,21 18,24 20,29 15,26 10,29 12,24 8,21 13,21" fill="#fef08a"/>
+  </g>
+
+  <!-- Athletes silhouettes (runners / players) -->
+  <!-- Left Runner -->
+  <g transform="translate(45, 45)" fill="#047857">
+    <circle cx="15" cy="8" r="5"/>
+    <path d="M 12 15 L 18 26 L 10 38" stroke="#047857" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M 17 22 L 26 32" stroke="#047857" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M 10 18 L 2 24" stroke="#047857" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <path d="M 15 16 L 24 14" stroke="#047857" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  </g>
+
+  <!-- Right Player / Jumper -->
+  <g transform="translate(160, 42)" fill="#0f766e">
+    <circle cx="15" cy="8" r="5"/>
+    <path d="M 15 14 L 16 28 L 25 36" stroke="#0f766e" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M 16 28 L 8 36" stroke="#0f766e" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M 15 17 L 24 10" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <path d="M 14 18 L 6 22" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  </g>
+
+  <!-- Title banner text -->
+  <text x="120" y="98" font-family="'Inter', system-ui, sans-serif" font-size="18" font-weight="900" letter-spacing="2" text-anchor="middle" fill="#065f46">
+    SPORTS DAY
+  </text>
+  <text x="120" y="116" font-family="'Inter', system-ui, sans-serif" font-size="9" font-weight="700" letter-spacing="1.5" text-anchor="middle" fill="#047857">
+    PASSION • STRENGTH • GLORY
+  </text>
+</svg>

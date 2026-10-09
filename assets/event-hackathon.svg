@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 140" width="100%" height="100%">
+  <defs>
+    <linearGradient id="techBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#31104b"/>
+    </linearGradient>
+    <linearGradient id="neonText" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#c084fc"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="240" height="140" rx="10" fill="url(#techBg)"/>
+  
+  <!-- Grid Lines -->
+  <path d="M 0 30 H 240 M 0 70 H 240 M 0 110 H 240" stroke="#334155" stroke-width="0.5" stroke-dasharray="4,4" opacity="0.4"/>
+  <path d="M 40 0 V 140 M 100 0 V 140 M 160 0 V 140 M 200 0 V 140" stroke="#334155" stroke-width="0.5" stroke-dasharray="4,4" opacity="0.4"/>
+
+  <!-- Code bracket visuals -->
+  <text x="35" y="55" font-family="monospace" font-size="28" font-weight="900" fill="#38bdf8" opacity="0.4">&lt;/&gt;</text>
+  <text x="175" y="115" font-family="monospace" font-size="24" font-weight="900" fill="#a855f7" opacity="0.4">{ ; }</text>
+
+  <!-- Laptop outline -->
+  <g transform="translate(100, 30)">
+    <rect x="0" y="0" width="40" height="26" rx="3" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+    <rect x="5" y="4" width="30" height="18" rx="1" fill="#0f172a"/>
+    <line x1="10" y1="9" x2="25" y2="9" stroke="#38bdf8" stroke-width="1.5"/>
+    <line x1="10" y1="14" x2="20" y2="14" stroke="#a855f7" stroke-width="1.5"/>
+    <path d="M -6 26 L 46 26 L 40 30 L -2 30 Z" fill="#64748b"/>
+  </g>
+
+  <!-- Main Title -->
+  <text x="120" y="95" font-family="'Inter', system-ui, sans-serif" font-size="19" font-weight="900" letter-spacing="3" text-anchor="middle" fill="url(#neonText)">
+    HACKATHON
+  </text>
+  <text x="120" y="115" font-family="'Inter', system-ui, sans-serif" font-size="9" font-weight="600" letter-spacing="2" text-anchor="middle" fill="#94a3b8">
+    BUILD • INNOVATE • WIN
+  </text>
+</svg>

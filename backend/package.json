@@ -1,0 +1,26 @@
+{
+  "name": "iiitnr-campus-hub-backend",
+  "version": "2.0.0",
+  "description": "Enterprise Full-Stack Backend for IIIT-NR Student Campus Hub with SQLite Database",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "seed": "node scripts/seed.js",
+    "test": "node scripts/test-e2e.js"
+  },
+  "keywords": [
+    "iiitnr",
+    "campus-hub",
+    "sqlite3",
+    "express",
+    "fullstack"
+  ],
+  "author": "IIIT-NR Academic Cell",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "sqlite3": "^6.0.1"
+  }
+}
