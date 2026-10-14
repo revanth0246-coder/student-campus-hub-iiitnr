@@ -69,9 +69,17 @@ async function initDatabase() {
       batch TEXT,
       department TEXT,
       designation TEXT,
+      last_login DATETIME,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  // Safe migration for last_login in existing databases
+  try {
+    await runAsync(`ALTER TABLE users ADD COLUMN last_login DATETIME;`);
+  } catch (e) {
+    // Column already exists or fresh table
+  }
 
   // 2. Auth Sessions Table
   await runAsync(`
@@ -107,6 +115,7 @@ async function initDatabase() {
       title TEXT NOT NULL,
       type TEXT NOT NULL,
       semester TEXT DEFAULT 'Sem 1',
+      unit TEXT DEFAULT 'Unit 1-4',
       link TEXT NOT NULL,
       description TEXT,
       contributor TEXT DEFAULT 'Admin / Academic Affairs',
@@ -116,14 +125,18 @@ async function initDatabase() {
     )
   `);
 
-  // 5. Assignments Table (Admin Only Creation)
+  // 5. Assignments Table
   await runAsync(`
     CREATE TABLE IF NOT EXISTS assignments (
       id TEXT PRIMARY KEY,
       subject TEXT NOT NULL,
       title TEXT NOT NULL,
       due_date TEXT NOT NULL,
+      priority TEXT DEFAULT 'Medium',
+      status TEXT DEFAULT 'Pending',
+      description TEXT,
       faculty TEXT DEFAULT 'Admin / Academic Affairs',
+      student_id TEXT,
       is_broadcast INTEGER DEFAULT 1,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
@@ -183,10 +196,152 @@ async function initDatabase() {
     )
   `);
 
+  // 10. Exams Table (Exams & Syllabus Planner)
+  await runAsync(`
+    CREATE TABLE IF NOT EXISTS exams (
+      id TEXT PRIMARY KEY,
+      subject TEXT NOT NULL,
+      title TEXT NOT NULL,
+      exam_date TEXT NOT NULL,
+      exam_time TEXT DEFAULT '10:00 AM - 01:00 PM',
+      room TEXT DEFAULT 'Room 203',
+      syllabus TEXT,
+      created_by TEXT DEFAULT 'Academic Affairs',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // 11. Mess Menu Table (Weekly Hostel Mess Schedule)
+  await runAsync(`
+    CREATE TABLE IF NOT EXISTS mess_menu (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      day_of_week TEXT NOT NULL UNIQUE,
+      breakfast TEXT NOT NULL,
+      lunch TEXT NOT NULL,
+      snacks TEXT NOT NULL,
+      dinner TEXT NOT NULL,
+      special_note TEXT,
+      updated_by TEXT DEFAULT 'Hostel Mess Committee',
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // 12. Mess Meal Feedback Table (Student Ratings & Reviews)
+  await runAsync(`
+    CREATE TABLE IF NOT EXISTS mess_feedback (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      student_roll TEXT NOT NULL,
+      student_name TEXT,
+      meal_type TEXT NOT NULL,
+      rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),
+      comment TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // 13. Campus Exchange Listings (Buy & Sell, Lost & Found)
+  await runAsync(`
+    CREATE TABLE IF NOT EXISTS marketplace_listings (
+      id TEXT PRIMARY KEY,
+      user_id TEXT,
+      user_name TEXT NOT NULL,
+      user_roll TEXT NOT NULL,
+      type TEXT NOT NULL CHECK(type IN ('sell', 'lost', 'found')),
+      title TEXT NOT NULL,
+      description TEXT NOT NULL,
+      category TEXT DEFAULT 'General',
+      price TEXT,
+      location TEXT,
+      image_url TEXT,
+      status TEXT DEFAULT 'active' CHECK(status IN ('active', 'sold', 'resolved')),
+      contact_pref TEXT DEFAULT 'In-App Message',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // 14. Campus Exchange Inquiries
+  await runAsync(`
+    CREATE TABLE IF NOT EXISTS marketplace_inquiries (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      listing_id TEXT NOT NULL,
+      sender_roll TEXT NOT NULL,
+      sender_name TEXT NOT NULL,
+      message TEXT NOT NULL,
+      contact_info TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (listing_id) REFERENCES marketplace_listings(id) ON DELETE CASCADE
+    )
+  `);
+
+  // 15. Resource Bookmarks Table
+  await runAsync(`
+    CREATE TABLE IF NOT EXISTS resource_bookmarks (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      student_roll TEXT NOT NULL,
+      resource_id TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(student_roll, resource_id)
+    )
+  `);
+
+  // 16. Resource Reports Table (Broken Links & Flagged Content)
+  await runAsync(`
+    CREATE TABLE IF NOT EXISTS resource_reports (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      resource_id TEXT NOT NULL,
+      student_roll TEXT NOT NULL,
+      reason TEXT NOT NULL,
+      status TEXT DEFAULT 'pending',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // 17. Centralized Notifications Table
+  await runAsync(`
+    CREATE TABLE IF NOT EXISTS notifications (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_roll TEXT,
+      type TEXT NOT NULL,
+      title TEXT NOT NULL,
+      message TEXT NOT NULL,
+      link_view TEXT,
+      is_read INTEGER DEFAULT 0,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // Safe migrations for assignments and resources
+  try { await runAsync(`ALTER TABLE assignments ADD COLUMN priority TEXT DEFAULT 'Medium';`); } catch (e) {}
+  try { await runAsync(`ALTER TABLE assignments ADD COLUMN status TEXT DEFAULT 'Pending';`); } catch (e) {}
+  try { await runAsync(`ALTER TABLE assignments ADD COLUMN description TEXT;`); } catch (e) {}
+  try { await runAsync(`ALTER TABLE assignments ADD COLUMN student_id TEXT;`); } catch (e) {}
+  try { await runAsync(`ALTER TABLE resources ADD COLUMN unit TEXT DEFAULT 'All Units';`); } catch (e) {}
+
   // Check if initial seeding is needed
   const adminCount = await getAsync(`SELECT COUNT(*) as count FROM users WHERE role = 'admin'`);
   if (!adminCount || adminCount.count === 0) {
     await seedInitialData();
+  } else {
+    // Ensure primary admin credentials match revanth0246@gmail.com
+    try {
+      const primaryAdmin = await getAsync(`SELECT id FROM users WHERE email = 'revanth0246@gmail.com'`);
+      if (!primaryAdmin) {
+        const oldAdmin = await getAsync(`SELECT id FROM users WHERE role = 'admin' LIMIT 1`);
+        if (oldAdmin) {
+          await runAsync(`
+            UPDATE users 
+            SET name = 'Revanth', email = 'revanth0246@gmail.com', password_hash = ? 
+            WHERE id = ?
+          `, [hashPassword('revanth0406'), oldAdmin.id]);
+        }
+      }
+    } catch (e) {}
+  }
+
+  // Check if additional module seeding is needed
+  const messCount = await getAsync(`SELECT COUNT(*) as count FROM mess_menu`);
+  if (!messCount || messCount.count === 0) {
+    await seedAdditionalModules();
   }
 }
 
@@ -201,12 +356,12 @@ async function seedInitialData() {
   `, [
     'admin_001',
     'ADMIN',
-    'Dr. Anurag Sharma',
-    'admin@iiitnr.ac.in',
-    hashPassword('admin123'),
+    'Revanth',
+    'revanth0246@gmail.com',
+    hashPassword('revanth0406'),
     'admin',
     'Office of Academic Affairs',
-    'Dean of Academics & Student Welfare',
+    'Chief Administrator',
     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=faces'
   ]);
 
@@ -549,7 +704,258 @@ async function seedInitialData() {
     `, [e.id, e.title, e.date_str, e.venue, e.category, e.description, e.badge_color, e.banner, e.created_by]);
   }
 
+  await seedAdditionalModules();
   console.log('✅ SQLite Database successfully seeded!');
+}
+
+async function seedAdditionalModules() {
+  console.log('🌱 Seeding Exams, Mess Menu, Campus Exchange, and Notifications...');
+
+  // 1. Seed Exams
+  const initialExams = [
+    {
+      id: 'exam_1',
+      subject: 'Mathematics-I (Slot A)',
+      title: 'Mid-Semester Theory Examination',
+      exam_date: '2026-11-20',
+      exam_time: '10:00 AM - 01:00 PM',
+      room: 'Room 203',
+      syllabus: 'Module 1: Differential Calculus & Taylor Series; Module 2: Linear Algebra, Eigenvalues & Eigenvectors; Module 3: Multiple Integrals & Vector Calculus.',
+      created_by: 'Office of Academic Affairs'
+    },
+    {
+      id: 'exam_2',
+      subject: 'Computer Programming with C & Python (Slot B)',
+      title: 'Lab & Practical Evaluation + Theory',
+      exam_date: '2026-11-23',
+      exam_time: '02:00 PM - 05:00 PM',
+      room: 'CC Lab 1 & 2',
+      syllabus: 'Memory allocation, Double pointers, Recursion, Structs, File Handlers, Python OOP, NumPy & Pandas fundamentals.',
+      created_by: 'Dept of CSE & DSAI'
+    },
+    {
+      id: 'exam_3',
+      subject: 'Digital Electronics & Logic Design (Slot C)',
+      title: 'Mid-Semester Theory Examination',
+      exam_date: '2026-11-25',
+      exam_time: '10:00 AM - 01:00 PM',
+      room: 'Room 203',
+      syllabus: 'Boolean algebra simplification, Karnaugh Maps (K-Maps), Multiplexers, Decoders, Flip-Flops (SR, JK, D, T), Synchronous Counters.',
+      created_by: 'Dept of ECE'
+    },
+    {
+      id: 'exam_4',
+      subject: 'Engineering Physics (Slot F)',
+      title: 'Mid-Semester Theory Examination',
+      exam_date: '2026-11-27',
+      exam_time: '10:00 AM - 01:00 PM',
+      room: 'Room 203',
+      syllabus: 'Wave optics (Interference & Diffraction), Quantum mechanics fundamentals (Wave function, Schrodinger equation), Solid-state band theory.',
+      created_by: 'Dept of Science & Humanities'
+    },
+    {
+      id: 'exam_5',
+      subject: 'Professional Communication (Slot G)',
+      title: 'Mid-Semester Theory & Viva',
+      exam_date: '2026-11-30',
+      exam_time: '10:00 AM - 12:00 PM',
+      room: 'Language Lab / Room 203',
+      syllabus: 'Technical documentation, Business email etiquette, Research paper formatting, Phonetics, and Group discussion methodology.',
+      created_by: 'Academic Cell'
+    }
+  ];
+
+  for (const ex of initialExams) {
+    try {
+      await runAsync(`
+        INSERT INTO exams (id, subject, title, exam_date, exam_time, room, syllabus, created_by)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `, [ex.id, ex.subject, ex.title, ex.exam_date, ex.exam_time, ex.room, ex.syllabus, ex.created_by]);
+    } catch (e) {}
+  }
+
+  // 2. Seed Weekly Mess Menu (Monday to Sunday)
+  const initialMess = [
+    {
+      day: 'Monday',
+      breakfast: 'Poha with Sev, Boiled Eggs / Boiled Sprouts, Jalebi, Bread-Butter-Jam, Tea & Coffee',
+      lunch: 'Rajma Masala, Steamed Basmati Rice, Seasonal Mix Veg, Fresh Phulka, Curd, Green Salad, Papad',
+      snacks: 'Aloo Samosa with Sweet & Mint Chutney, Hot Masala Chai',
+      dinner: 'Dal Tadka, Shahi Paneer / Chicken Curry, Jeera Rice, Tawa Roti, Gulab Jamun (2 pcs)',
+      note: 'Fresh seasonal fruit distributed during lunch.'
+    },
+    {
+      day: 'Tuesday',
+      breakfast: 'Idli, Crispy Medu Vada, Hot Sambar, Fresh Coconut Chutney, Banana, Tea & Coffee',
+      lunch: 'Chole Bhature, Veg Pulao, Boondi Raita, Onion-Lemon Salad, Mango Pickle',
+      snacks: 'Grilled Veg Sandwich with Ketchup, Hot Bournvita / Tea',
+      dinner: 'Dal Makhani, Mix Veg Korma, Steamed Rice, Tawa Roti with Butter, Fruit Custard',
+      note: 'Special South Indian breakfast spread.'
+    },
+    {
+      day: 'Wednesday',
+      breakfast: 'Aloo Paratha with Amul Butter, Fresh Curd, Mixed Pickle, Tea & Coffee',
+      lunch: 'Kadhi Pakora, Jeera Rice, Bhindi Do Pyaza, Soft Phulka, Roasted Papad, Salad',
+      snacks: 'Pani Puri & Sukha Bhel, Hot Lemon Tea',
+      dinner: 'Kadhai Paneer / Egg Curry, Moong Dal Fry, Veg Pulao, Butter Roti, Vanilla Ice Cream',
+      note: 'Evening snacks counter opens 5:00 PM.'
+    },
+    {
+      day: 'Thursday',
+      breakfast: 'Crispy Masala Dosa, Sambar, Roasted Chana Dal Chutney, Boiled Sprouts, Tea & Coffee',
+      lunch: 'Dal Fry, Aloo Gobi Matar, Phulka, Steamed Rice, Sweet Lassi, Cucumber Salad',
+      snacks: 'Bread Pakora with Green Chutney, Filter Coffee',
+      dinner: 'Dum Aloo Kashmiri, Chana Dal Tadka, Steamed Rice, Roti, Rice Kheer',
+      note: 'Pure vegetarian day across all messes.'
+    },
+    {
+      day: 'Friday',
+      breakfast: 'Mumbai Pav Bhaji, Chopped Onions & Lemon, Boiled Eggs / Sprouts, Tea & Coffee',
+      lunch: 'South Indian Sambar, Aloo Capsicum, Steamed Rice, Soft Phulka, Curd, Appalam',
+      snacks: 'Veg Hakka Noodles / White Sauce Pasta, Masala Chai',
+      dinner: 'Matar Paneer / Fish Curry, Dal Fry, Jeera Rice, Butter Roti, Sponge Rasgulla',
+      note: 'Non-veg alternative available on token request.'
+    },
+    {
+      day: 'Saturday',
+      breakfast: 'Poori with Bedmi Aloo Sabzi, Sooji Halwa, Pickle, Tea & Coffee',
+      lunch: 'Hyderabadi Veg Dum Biryani, Mirchi Ka Salan, Onion Cucumber Raita, Roasted Papad',
+      snacks: 'Sweet Corn Chaat, Green Tea / Hot Coffee',
+      dinner: 'Sev Tamatar Ki Sabzi, Dal Tadka, Steamed Rice, Phulka, Moong Dal Halwa',
+      note: 'Hostel mess feedback forms accepted today.'
+    },
+    {
+      day: 'Sunday',
+      breakfast: 'Amritsari Chole Kulche, Sweet Lassi, Pickled Green Chillies, Tea',
+      lunch: '★ Special Sunday Feast: Paneer Butter Masala / Mutton Curry, Veg Biryani, Butter Naan, Gulab Jamun',
+      snacks: 'Cream Biscuits, Rusks & Masala Tea',
+      dinner: 'Light Moong Dal Khichdi, Gujarati Kadhi, Aloo Chokha, Roasted Papad, Pickle',
+      note: '★ Special Sunday Lunch served 12:30 PM - 02:30 PM.'
+    }
+  ];
+
+  for (const m of initialMess) {
+    try {
+      await runAsync(`
+        INSERT INTO mess_menu (day_of_week, breakfast, lunch, snacks, dinner, special_note)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `, [m.day, m.breakfast, m.lunch, m.snacks, m.dinner, m.note]);
+    } catch (e) {}
+  }
+
+  // 3. Seed Campus Exchange (Buy & Sell + Lost & Found)
+  const initialListings = [
+    {
+      id: 'ex_1',
+      user_id: 'student_001',
+      user_name: 'Sahil Pulipaka',
+      user_roll: '24DSAI001',
+      type: 'sell',
+      title: 'Casio FX-991EX Classwiz Scientific Calculator',
+      description: 'Original Casio Classwiz non-programmable calculator allowed in IIIT-NR university exams. High resolution display, dual powered (solar + battery). Barely used for 1 semester, completely scratchless with sliding hard case.',
+      category: 'Electronics',
+      price: '850',
+      location: 'Hostel H1, Room 312',
+      image_url: 'https://images.unsplash.com/photo-1594980596870-8aa52a78d8cd?w=500&auto=format&fit=crop&q=80',
+      status: 'active'
+    },
+    {
+      id: 'ex_2',
+      user_id: 'student_002',
+      user_name: 'Aarav Sharma',
+      user_roll: '24CSE015',
+      type: 'sell',
+      title: "Thomas' Calculus (14th Metric Edition, Pearson)",
+      description: 'Prescribed standard textbook for B.Tech Maths-1 (Slot A). Excellent condition, all chapters intact, no missing pages. Great reference for tutorial sheets and mid-sem prep.',
+      category: 'Textbooks',
+      price: '480',
+      location: 'Hostel H2, Room 108',
+      image_url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500&auto=format&fit=crop&q=80',
+      status: 'active'
+    },
+    {
+      id: 'ex_3',
+      user_id: 'student_001',
+      user_name: 'Sahil Pulipaka',
+      user_roll: '24DSAI001',
+      type: 'lost',
+      title: 'Blue Boat Rockerz Earbuds Case in Room 203',
+      description: 'Misplaced my matte blue Boat Rockerz earbuds charging case on 08 October during the 3:30 PM Digital Electronics class, likely around 3rd row center bench. Has a small sonic sticker on the back.',
+      category: 'Electronics',
+      price: '',
+      location: 'Academic Block, Room 203',
+      image_url: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&auto=format&fit=crop&q=80',
+      status: 'active'
+    },
+    {
+      id: 'ex_4',
+      user_id: 'admin_001',
+      user_name: 'Security & Campus Welfare',
+      user_roll: 'ADMIN',
+      type: 'found',
+      title: 'IIIT-NR Student RFID ID Card (Roll: 24CSE015)',
+      description: 'Found a student smart ID card on the wooden table outside the Central Library ground floor. Owner can claim it from the Main Gate Security Office after verifying student identity.',
+      category: 'Documents',
+      price: '',
+      location: 'Central Library, Ground Floor',
+      image_url: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=500&auto=format&fit=crop&q=80',
+      status: 'active'
+    }
+  ];
+
+  for (const l of initialListings) {
+    try {
+      await runAsync(`
+        INSERT INTO marketplace_listings (id, user_id, user_name, user_roll, type, title, description, category, price, location, image_url, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `, [l.id, l.user_id, l.user_name, l.user_roll, l.type, l.title, l.description, l.category, l.price, l.location, l.image_url, l.status]);
+    } catch (e) {}
+  }
+
+  // 4. Seed Centralized Notifications
+  const initialNotifications = [
+    {
+      user_roll: null,
+      type: 'assignment',
+      title: 'Assignment Deadline Approaching',
+      message: 'Maths-1 Tutorial Sheet 4 (Calculus & Series) is due tomorrow by 11:59 PM. Submit before portal locks.',
+      link_view: 'assignments',
+      is_read: 0
+    },
+    {
+      user_roll: null,
+      type: 'announcement',
+      title: 'End-Semester Exam Schedule Notified',
+      message: 'Dean Academics published tentative dates for B.Tech 1st Semester w.e.f. 20 Nov 2026.',
+      link_view: 'announcements',
+      is_read: 0
+    },
+    {
+      user_roll: null,
+      type: 'event',
+      title: 'HackNR 2026 Team Registrations Open',
+      message: 'Flagship 36-hour hackathon with cash prizes up to INR 3,50,000. Limited seats remaining.',
+      link_view: 'events',
+      is_read: 0
+    },
+    {
+      user_roll: null,
+      type: 'mess',
+      title: 'Hostel Special Sunday Feast Announced',
+      message: 'Hostel Mess Committee finalized the Sunday Feast menu with Paneer Tikka Masala, Veg Biryani & Sweets.',
+      link_view: 'mess',
+      is_read: 1
+    }
+  ];
+
+  for (const n of initialNotifications) {
+    try {
+      await runAsync(`
+        INSERT INTO notifications (user_roll, type, title, message, link_view, is_read)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `, [n.user_roll, n.type, n.title, n.message, n.link_view, n.is_read]);
+    } catch (e) {}
+  }
 }
 
 module.exports = {
@@ -560,5 +966,6 @@ module.exports = {
   hashPassword,
   verifyPassword,
   initDatabase,
-  seedInitialData
+  seedInitialData,
+  seedAdditionalModules
 };

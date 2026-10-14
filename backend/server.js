@@ -2,10 +2,12 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 const { initDatabase, getAsync, allAsync } = require('./config/database');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const HOST = process.env.HOST || '0.0.0.0';
 
 // Middleware
 app.use(cors());
@@ -42,11 +44,55 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/timetable', require('./routes/timetable'));
 app.use('/api/resources', require('./routes/resources'));
 app.use('/api/assignments', require('./routes/assignments'));
+app.use('/api/exams', require('./routes/exams'));
+app.use('/api/mess', require('./routes/mess'));
+app.use('/api/exchange', require('./routes/exchange'));
 app.use('/api/announcements', require('./routes/announcements'));
 app.use('/api/events', require('./routes/events'));
+app.use('/api/notifications', require('./routes/notifications'));
+app.use('/api/search', require('./routes/search'));
 app.use('/api/profile', require('./routes/profile'));
 app.use('/api/upload', require('./routes/upload'));
 app.use('/api/database', require('./routes/database'));
+
+function getNetworkAddresses() {
+  const nets = os.networkInterfaces();
+  const addresses = [];
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name]) {
+      if (net.family === 'IPv4' && !net.internal) {
+        addresses.push({ interface: name, address: net.address, url: `http://${net.address}:${PORT}` });
+      }
+    }
+  }
+  return addresses;
+}
+
+// Network & Multi-Device Access API
+app.get('/api/network', (req, res) => {
+  const lanAddresses = getNetworkAddresses();
+  let tunnelInfo = null;
+  const tunnelFile = path.join(__dirname, 'database', 'network_tunnel.json');
+  if (fs.existsSync(tunnelFile)) {
+    try {
+      tunnelInfo = JSON.parse(fs.readFileSync(tunnelFile, 'utf8'));
+    } catch (e) {}
+  }
+
+  res.json({
+    success: true,
+    port: PORT,
+    localUrl: `http://localhost:${PORT}`,
+    lanUrls: lanAddresses,
+    primaryLanUrl: lanAddresses.length > 0 ? lanAddresses[0].url : `http://localhost:${PORT}`,
+    tunnelUrl: tunnelInfo?.url || null,
+    tunnelActive: !!(tunnelInfo?.url && tunnelInfo?.active),
+    instructions: {
+      sameWifi: lanAddresses.length > 0 ? lanAddresses[0].url : `http://localhost:${PORT}`,
+      crossNetworkCmd: 'npm run tunnel'
+    }
+  });
+});
 
 // Direct /db route redirects to app with database view
 app.get('/db', (req, res) => {
@@ -180,7 +226,7 @@ app.get(['/api', '/api/docs'], async (req, res) => {
             <div>
               <span class="px-2 py-0.5 text-xs font-bold bg-blue-950 text-blue-400 border border-blue-800 rounded">POST</span>
               <span class="text-sm font-mono ml-2 text-slate-200">/api/auth/login</span>
-              <p class="text-xs text-slate-400">Test Admin Auth (admin@iiitnr.ac.in)</p>
+              <p class="text-xs text-slate-400">Test Admin Auth (revanth0246@gmail.com)</p>
             </div>
             <button onclick="testLogin('admin')" class="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-xs font-semibold rounded text-white transition">Test Admin</button>
           </div>
@@ -256,7 +302,7 @@ app.get(['/api', '/api/docs'], async (req, res) => {
     async function testLogin(role) {
       const url = '/api/auth/login';
       const body = role === 'admin' 
-        ? { emailOrRoll: 'admin@iiitnr.ac.in', password: 'admin123' }
+        ? { emailOrRoll: 'revanth0246@gmail.com', password: 'revanth0406' }
         : { emailOrRoll: '24DSAI001', password: 'student123' };
 
       document.getElementById('requestUrl').textContent = 'POST ' + window.location.origin + url + ' (' + role + ')';
@@ -308,14 +354,18 @@ app.use((req, res) => {
 
 // Start Server and initialize SQLite database
 initDatabase().then(() => {
-  app.listen(PORT, () => {
+  app.listen(PORT, HOST, () => {
+    const lan = getNetworkAddresses();
     console.log('\n======================================================');
     console.log('🎓 IIIT-NR Student Campus Hub - Enterprise Backend');
     console.log('======================================================');
-    console.log(`🚀 Server listening on    : http://localhost:${PORT}`);
-    console.log(`💾 SQLite Database Engine : backend/database/campus_hub.sqlite`);
-    console.log(`📡 REST API Base URL      : http://localhost:${PORT}/api`);
-    console.log(`💻 Web Application        : http://localhost:${PORT}/`);
+    console.log(`🚀 Local Machine URL     : http://localhost:${PORT}/`);
+    lan.forEach(l => {
+      console.log(`📱 Same Wi-Fi / Hotspot  : ${l.url}/ (${l.interface})`);
+    });
+    console.log(`🌐 Cross-Network Tunnel  : Run "npm run tunnel" for internet access`);
+    console.log(`💾 SQLite Database Engine: backend/database/campus_hub.sqlite`);
+    console.log(`📡 REST API Base URL     : http://localhost:${PORT}/api`);
     console.log('======================================================\n');
   });
 }).catch(err => {

@@ -4,12 +4,11 @@ const { runAsync, getAsync } = require('../config/database');
 // Generate and persist a token
 async function createSession(user) {
   const token = 'agy_token_' + crypto.randomBytes(24).toString('hex');
-  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 days
 
   await runAsync(`
     INSERT INTO sessions (token, user_id, role, expires_at)
-    VALUES (?, ?, ?, ?)
-  `, [token, user.id, user.role, expiresAt]);
+    VALUES (?, ?, ?, datetime('now', '+30 days'))
+  `, [token, user.id, user.role]);
 
   return token;
 }
@@ -25,10 +24,11 @@ async function authenticate(req, res, next) {
   if (token) {
     try {
       const session = await getAsync(`
-        SELECT s.*, u.id as user_id, u.name, u.email, u.roll, u.role
+        SELECT s.token, s.user_id, s.role, s.created_at as session_login_time, s.expires_at,
+               u.id as user_id, u.name, u.email, u.roll, u.role, u.branch, u.year, u.semester, u.cgpa, u.avatar, u.batch, u.department, u.designation, u.last_login
         FROM sessions s
         JOIN users u ON s.user_id = u.id
-        WHERE s.token = ? AND s.expires_at > datetime('now')
+        WHERE s.token = ? AND datetime(s.expires_at) > datetime('now')
       `, [token]);
 
       if (session) {
@@ -37,7 +37,17 @@ async function authenticate(req, res, next) {
           name: session.name,
           email: session.email,
           roll: session.roll,
-          role: session.role
+          role: session.role,
+          branch: session.branch,
+          year: session.year,
+          semester: session.semester,
+          cgpa: session.cgpa,
+          avatar: session.avatar,
+          batch: session.batch,
+          department: session.department,
+          designation: session.designation,
+          last_login: session.last_login,
+          session_login_time: session.session_login_time
         };
         return next();
       }

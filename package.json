@@ -7,7 +7,9 @@
     "start": "node backend/server.js",
     "dev": "node backend/server.js",
     "seed": "node backend/scripts/seed.js",
-    "test": "node backend/scripts/test-e2e.js"
+    "test": "node backend/scripts/test-e2e.js",
+    "tunnel": "node backend/scripts/tunnel.js",
+    "cross-network": "node backend/scripts/tunnel.js"
   },
   "keywords": [
     "iiitnr",
@@ -16,5 +18,8 @@
     "express"
   ],
   "author": "IIIT-NR Academic Cell",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "localtunnel": "^2.0.2"
+  }
 }

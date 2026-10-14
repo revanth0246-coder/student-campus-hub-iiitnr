@@ -10,10 +10,10 @@
 const DEFAULT_ADMIN = {
   id: 'admin_001',
   role: 'admin',
-  name: 'Academic Affairs Cell',
-  email: 'admin@iiitnr.ac.in',
-  designation: 'College Administration & Dean Academic Office',
-  department: 'Academic Section, IIIT-NR',
+  name: 'Revanth',
+  email: 'revanth0246@gmail.com',
+  designation: 'Chief Administrator',
+  department: 'Office of Academic Affairs, IIIT-NR',
   avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=faces'
 };
 
@@ -392,13 +392,247 @@ const DEFAULT_EVENTS = [
   }
 ];
 
+const DEFAULT_EXAMS = [
+  {
+    id: 'exam_1',
+    subject: 'Slot A (Mathematics)',
+    title: 'Calculus, Matrices & Linear Algebra Mid-Term Exam',
+    examDate: '2026-10-10',
+    examTime: '10:00 AM - 01:00 PM',
+    room: 'Room 203',
+    syllabus: 'Eigenvalues & Eigenvectors, Cayley-Hamilton theorem, Multivariable calculus, Partial derivatives, Jacobians.',
+    createdBy: 'Admin / Dept. of Mathematics'
+  },
+  {
+    id: 'exam_2',
+    subject: 'Slot B (Computer Programming)',
+    title: 'Problem Solving with C & Python Mid-Term Exam',
+    examDate: '2026-10-12',
+    examTime: '10:00 AM - 01:00 PM',
+    room: 'Room 203 & CC Lab',
+    syllabus: 'Pointers and address arithmetic, Dynamic memory allocation (malloc/calloc), Recursion, Structures, File I/O.',
+    createdBy: 'Admin / Dept. of CSE'
+  },
+  {
+    id: 'exam_3',
+    subject: 'Slot C (Digital Logic)',
+    title: 'Digital Electronics & Logic Design Mid-Term Exam',
+    examDate: '2026-10-14',
+    examTime: '10:00 AM - 01:00 PM',
+    room: 'Room 203',
+    syllabus: 'Karnaugh Maps minimization, Combinational logic (Adders, Multiplexers, Decoders), Sequential logic, Flip-Flops.',
+    createdBy: 'Admin / Academic Affairs'
+  },
+  {
+    id: 'exam_4',
+    subject: 'Slot F (Physics)',
+    title: 'Engineering Physics & Electromagnetics Theory Exam',
+    examDate: '2026-10-16',
+    examTime: '10:00 AM - 01:00 PM',
+    room: 'Room 203',
+    syllabus: 'Wave optics (Interference & Diffraction), Maxwell electromagnetic equations, Lasers and Fiber optics.',
+    createdBy: 'Admin / Faculty of Physics'
+  },
+  {
+    id: 'exam_5',
+    subject: 'Slot N (Discrete Mathematics)',
+    title: 'Discrete Mathematics & Logic Mid-Term Exam',
+    examDate: '2026-10-18',
+    examTime: '10:00 AM - 01:00 PM',
+    room: 'Room 203',
+    syllabus: 'Propositional & Predicate logic, Graph theory, Tree traversals, Recurrence relations, Proof by induction.',
+    createdBy: 'Admin / Academic Affairs'
+  }
+];
+
+const DEFAULT_MESS = [
+  {
+    day: 'Monday',
+    breakfast: 'Idli, Sambar, Coconut Chutney, Bread Butter, Tea / Coffee',
+    lunch: 'Paneer Butter Masala, Dal Tadka, Jeera Rice, Chapati, Fresh Salad',
+    snacks: 'Veg Cutlet, Mint Chutney, Hot Masala Tea',
+    dinner: 'Aloo Gobi Matar, Mix Dal, Steamed Basmati Rice, Phulka, Gulab Jamun',
+    note: 'South Indian Breakfast & Evening Special'
+  },
+  {
+    day: 'Tuesday',
+    breakfast: 'Poha with Sev & Fried Peanuts, Boiled Sprouts, Banana, Milk / Tea',
+    lunch: 'Rajma Masala, Steamed Rice, Phulka, Boondi Raita, Roasted Papad',
+    snacks: 'Samosa, Tamarind Chutney, Ginger Tea',
+    dinner: 'Kadai Chicken / Shahi Paneer, Dal Makhani, Pulao, Tandoori Roti, Kheer',
+    note: 'Special North Indian Delicacy Day'
+  },
+  {
+    day: 'Wednesday',
+    breakfast: 'Methi Paratha, Fresh Curd, Mixed Pickle, Boiled Eggs / Banana, Tea',
+    lunch: 'Chole Bhature / Chole Rice, Yellow Moong Dal, Onion Salad, Curd',
+    snacks: 'Aloo Bonda, Green Coriander Chutney, Tea / Coffee',
+    dinner: 'Egg Curry / Paneer Bhurji, Dal Tadka, Steamed Rice, Chapati, Ice Cream',
+    note: 'Mid-Week Protein Special'
+  },
+  {
+    day: 'Thursday',
+    breakfast: 'Uttapam with Vegetables, Sambar, Tomato Chutney, Fruit Bowl, Tea / Coffee',
+    lunch: 'Kadhi Pakora, Steamed Rice, Aloo Jeera, Chapati, Papad, Green Salad',
+    snacks: 'Pani Puri / Bhel Puri Counter, Filter Coffee',
+    dinner: 'Veg Biryani / Hyderabadi Chicken Biryani, Mix Veg Raita, Mirchi Ka Salan, Sweet Corn Soup',
+    note: 'Thursday Biryani Feast Night'
+  },
+  {
+    day: 'Friday',
+    breakfast: 'Aloo Paratha with Butter Cube, Fresh Curd, Pickle, Tea / Coffee',
+    lunch: 'Palak Paneer, Moong Dal, Steamed Rice, Tawa Roti, Cucumber Salad',
+    snacks: 'Bread Pakora, Tomato Ketchup, Hot Tea',
+    dinner: 'Malai Kofta, Dal Fry, Jeera Rice, Butter Naan / Phulka, Rasgulla',
+    note: 'Hostel Committee Review Dinner'
+  },
+  {
+    day: 'Saturday',
+    breakfast: 'Crispy Masala Dosa, Sambar, Coconut Chutney, Boiled Egg / Fruit, Tea',
+    lunch: 'Black Chana Curry, Steamed Rice, Chapati, Mix Veg Dry, Spiced Buttermilk',
+    snacks: 'Pav Bhaji with Amul Butter, Lemon Soda / Tea',
+    dinner: 'South Indian Veg Thali / Fish Curry, Dal, Rice, Appalam, Payasam',
+    note: 'Weekend Special Snacks Counter'
+  },
+  {
+    day: 'Sunday',
+    breakfast: 'Poori Bhaji (Aloo Tamatar), Sooji Halwa, Banana, Masala Chai / Milk',
+    lunch: 'Grand Sunday Feast: Paneer Tikka Masala / Butter Chicken, Dal Makhani, Veg Pulao, Butter Naan, Ice Cream',
+    snacks: 'Biscuits, Rusks, Tea / Coffee',
+    dinner: 'Khichdi / Light Dal Rice, Aloo Bhaja, Roasted Papad, Pickle, Warm Milk',
+    note: 'Grand Sunday Special Feast (Lunch)'
+  }
+];
+
+const DEFAULT_MESS_FEEDBACK = [
+  {
+    studentName: 'Sahil Pulipaka',
+    studentRoll: '24DSAI001',
+    mealType: 'Lunch',
+    rating: 5,
+    comment: 'The Paneer Butter Masala and Dal Tadka were flavorful and served piping hot! Great hygiene today.',
+    time: 'Today 1:30 PM'
+  },
+  {
+    studentName: 'Aarav Sharma',
+    studentRoll: '24CSE015',
+    mealType: 'Dinner',
+    rating: 4,
+    comment: 'Biryani night was solid! Would appreciate extra raita counter during peak dinner rush.',
+    time: 'Yesterday 8:45 PM'
+  }
+];
+
+const DEFAULT_EXCHANGE = [
+  {
+    id: 'ex_1',
+    type: 'sell',
+    title: 'Casio Scientific Calculator fx-991EX ClassWiz',
+    category: 'Electronics',
+    price: '950',
+    location: 'Hostel H1, Room 214',
+    imageUrl: 'https://images.unsplash.com/photo-1594980596870-8aa52a78d8cd?w=500&auto=format&fit=crop&q=80',
+    description: 'Mint condition, official Casio genuine calculator with warranty card. Ideal for Mathematics & Engineering Physics coursework.',
+    userName: 'Sahil Pulipaka',
+    userRoll: '24DSAI001',
+    date: '04 Oct 2026',
+    status: 'active'
+  },
+  {
+    id: 'ex_2',
+    type: 'sell',
+    title: 'Thomas Calculus 14th Edition Paperback',
+    category: 'Textbooks',
+    price: '450',
+    location: 'Central Library Ground Floor',
+    imageUrl: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500&auto=format&fit=crop&q=80',
+    description: 'Very neat copy, no markings. Covers multivariable calculus, partial derivatives, and multiple integrals thoroughly.',
+    userName: 'Aarav Sharma',
+    userRoll: '24CSE015',
+    date: '02 Oct 2026',
+    status: 'active'
+  },
+  {
+    id: 'ex_3',
+    type: 'lost',
+    title: 'Blue Wildcraft Backpack with College ID Card',
+    category: 'Documents',
+    price: '',
+    location: 'Room 203 (Academic Block)',
+    imageUrl: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&auto=format&fit=crop&q=80',
+    description: 'Left behind during Tuesday evening programming lab. Contains my blue subject folder and hostel keys. Finder please reach out!',
+    userName: 'Sahil Pulipaka',
+    userRoll: '24DSAI001',
+    date: '07 Oct 2026',
+    status: 'active'
+  },
+  {
+    id: 'ex_4',
+    type: 'found',
+    title: 'Boat Rockerz Wireless Bluetooth Headphones',
+    category: 'Electronics',
+    price: '',
+    location: 'Hostel Dining Hall (Table 14)',
+    imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=80',
+    description: 'Found black wireless headphones on the dining table after dinner. Kept safely with the hostel security desk.',
+    userName: 'Academic Affairs Cell',
+    userRoll: 'ADMIN',
+    date: '08 Oct 2026',
+    status: 'active'
+  }
+];
+
+const DEFAULT_NOTIFICATIONS = [
+  {
+    id: 1,
+    title: 'Mid-Semester Examinations Released',
+    message: 'Autumn 2026 mid-term theory exam schedule published. Room 203 assigned.',
+    type: 'exam',
+    linkView: 'planner',
+    isRead: false,
+    timeStr: 'Today 10:00 AM'
+  },
+  {
+    id: 2,
+    title: 'Today Mess Menu: South Indian Special',
+    message: 'Monday hostel dining schedule updated. Idli, Paneer Butter Masala & Gulab Jamun.',
+    type: 'mess',
+    linkView: 'mess',
+    isRead: false,
+    timeStr: 'Today 08:00 AM'
+  },
+  {
+    id: 3,
+    title: 'Assignment Due: Digital Logic ALU Design',
+    message: 'Course assignment Boolean Minimization due soon. Check Planner.',
+    type: 'assignment',
+    linkView: 'planner',
+    isRead: false,
+    timeStr: 'Yesterday 04:30 PM'
+  },
+  {
+    id: 4,
+    title: 'Campus Hackathon 2026 Registrations',
+    message: '36-hour National Hackathon registrations open. High prize pool.',
+    type: 'event',
+    linkView: 'events',
+    isRead: true,
+    timeStr: '05 Oct 02:15 PM'
+  }
+];
+
 // ==========================================
 // 2. STATE MANAGEMENT & SQLITE BACKEND CLIENT
 // ==========================================
 
-const API_BASE = (window.location.port === '5000' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? `${window.location.protocol}//${window.location.hostname}:5000/api`
-  : 'http://localhost:5000/api';
+const API_BASE = (() => {
+  if (typeof window === 'undefined' || !window.location) return 'http://localhost:5000/api';
+  if (window.location.protocol === 'file:') return 'http://localhost:5000/api';
+  if (window.location.port === '5000' || !window.location.port) {
+    return `${window.location.origin}/api`;
+  }
+  return `${window.location.protocol}//${window.location.hostname}:5000/api`;
+})();
 
 let isBackendConnected = false;
 let authToken = localStorage.getItem('iiitnr_auth_token') || null;
@@ -409,10 +643,32 @@ let currentAssignmentFilter = 'all';
 
 async function checkBackendConnection() {
   try {
-    const res = await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(2500) });
+    const res = await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(3000) });
     if (res.ok) {
       isBackendConnected = true;
       updateBackendStatusBadge(true);
+      // Validate session token with SQLite backend if active
+      if (authToken) {
+        try {
+          const meRes = await fetch(`${API_BASE}/auth/me`, {
+            headers: { 'Authorization': `Bearer ${authToken}` }
+          });
+          if (meRes.ok) {
+            const meData = await meRes.json();
+            if (meData.success && meData.user) {
+              currentUser = { ...currentUser, ...meData.user };
+              if (!currentUser.loginTime && (currentUser.session_login_time || currentUser.last_login)) {
+                const t = currentUser.session_login_time || currentUser.last_login;
+                const d = new Date(t);
+                currentUser.loginTime = !isNaN(d.getTime()) 
+                  ? d.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
+                  : t;
+              }
+              localStorage.setItem('iiitnr_active_session', JSON.stringify(currentUser));
+            }
+          }
+        } catch (e) {}
+      }
       await syncAllFromBackend();
       return true;
     }
@@ -444,13 +700,18 @@ async function syncAllFromBackend() {
   if (!isBackendConnected) return;
 
   try {
-    const [ttRes, resRes, asgnRes, annRes, evRes, stuRes] = await Promise.allSettled([
+    const rollQuery = currentUser?.roll ? `?roll=${encodeURIComponent(currentUser.roll)}` : '';
+    const [ttRes, resRes, asgnRes, annRes, evRes, stuRes, examRes, messRes, exRes, notifRes] = await Promise.allSettled([
       fetch(`${API_BASE}/timetable`).then(r => r.json()),
-      fetch(`${API_BASE}/resources`).then(r => r.json()),
-      fetch(`${API_BASE}/assignments`).then(r => r.json()),
+      fetch(`${API_BASE}/resources${rollQuery}`).then(r => r.json()),
+      fetch(`${API_BASE}/assignments${rollQuery}`).then(r => r.json()),
       fetch(`${API_BASE}/announcements`).then(r => r.json()),
-      fetch(`${API_BASE}/events`).then(r => r.json()),
-      fetch(`${API_BASE}/auth/students`).then(r => r.json())
+      fetch(`${API_BASE}/events${rollQuery}`).then(r => r.json()),
+      fetch(`${API_BASE}/auth/students`).then(r => r.json()),
+      fetch(`${API_BASE}/exams`).then(r => r.json()),
+      fetch(`${API_BASE}/mess`).then(r => r.json()),
+      fetch(`${API_BASE}/exchange`).then(r => r.json()),
+      fetch(`${API_BASE}/notifications${rollQuery}`).then(r => r.json())
     ]);
 
     if (ttRes.status === 'fulfilled' && ttRes.value?.success && ttRes.value.timetable) {
@@ -471,6 +732,19 @@ async function syncAllFromBackend() {
     if (stuRes.status === 'fulfilled' && stuRes.value?.success && stuRes.value.students) {
       setStudents(stuRes.value.students);
     }
+    if (examRes.status === 'fulfilled' && examRes.value?.success && examRes.value.exams) {
+      setExams(examRes.value.exams);
+    }
+    if (messRes.status === 'fulfilled' && messRes.value?.success && messRes.value.menu) {
+      setMessMenu(messRes.value.menu);
+    }
+    if (exRes.status === 'fulfilled' && exRes.value?.success && exRes.value.listings) {
+      setExchangeListings(exRes.value.listings);
+    }
+    if (notifRes.status === 'fulfilled' && notifRes.value?.success && notifRes.value.notifications) {
+      setNotifications(notifRes.value.notifications);
+      updateNotificationBadgeUI(notifRes.value.unreadCount ?? notifRes.value.notifications.filter(n => !n.isRead).length);
+    }
 
     refreshAllViews();
   } catch (err) {
@@ -484,14 +758,21 @@ async function apiCall(endpoint, method = 'GET', data = null) {
     const headers = { 'Content-Type': 'application/json' };
     if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
     if (currentUser?.role) headers['x-user-role'] = currentUser.role;
+    if (currentUser?.roll) headers['x-user-roll'] = currentUser.roll;
 
     const opts = { method, headers };
     if (data && (method === 'POST' || method === 'PUT')) {
       opts.body = JSON.stringify(data);
     }
     const res = await fetch(`${API_BASE}${endpoint}`, opts);
-    if (!res.ok) return null;
-    return await res.json();
+    let json = null;
+    try {
+      json = await res.json();
+    } catch (e) {}
+    if (!res.ok) {
+      return json || { success: false, status: res.status, message: res.statusText };
+    }
+    return json;
   } catch (err) {
     console.warn(`API call ${endpoint} fallback:`, err);
     return null;
@@ -509,6 +790,10 @@ function initStorage() {
     localStorage.setItem('iiitnr_timetable', JSON.stringify(DEFAULT_TIMETABLE));
     localStorage.setItem('iiitnr_study_resources', JSON.stringify(DEFAULT_RESOURCES));
     localStorage.setItem('iiitnr_global_assignments', JSON.stringify(DEFAULT_GLOBAL_ASSIGNMENTS));
+    localStorage.setItem('iiitnr_exams', JSON.stringify(DEFAULT_EXAMS));
+    localStorage.setItem('iiitnr_mess_menu', JSON.stringify(DEFAULT_MESS));
+    localStorage.setItem('iiitnr_exchange_listings', JSON.stringify(DEFAULT_EXCHANGE));
+    localStorage.setItem('iiitnr_notifications', JSON.stringify(DEFAULT_NOTIFICATIONS));
     localStorage.setItem('iiitnr_v3_synced', 'true');
   } else {
     if (!localStorage.getItem('iiitnr_study_resources')) {
@@ -519,6 +804,18 @@ function initStorage() {
     }
     if (!localStorage.getItem('iiitnr_global_assignments')) {
       localStorage.setItem('iiitnr_global_assignments', JSON.stringify(DEFAULT_GLOBAL_ASSIGNMENTS));
+    }
+    if (!localStorage.getItem('iiitnr_exams')) {
+      localStorage.setItem('iiitnr_exams', JSON.stringify(DEFAULT_EXAMS));
+    }
+    if (!localStorage.getItem('iiitnr_mess_menu')) {
+      localStorage.setItem('iiitnr_mess_menu', JSON.stringify(DEFAULT_MESS));
+    }
+    if (!localStorage.getItem('iiitnr_exchange_listings')) {
+      localStorage.setItem('iiitnr_exchange_listings', JSON.stringify(DEFAULT_EXCHANGE));
+    }
+    if (!localStorage.getItem('iiitnr_notifications')) {
+      localStorage.setItem('iiitnr_notifications', JSON.stringify(DEFAULT_NOTIFICATIONS));
     }
   }
 
@@ -534,6 +831,13 @@ function initStorage() {
   if (savedUser) {
     try {
       currentUser = JSON.parse(savedUser);
+      if (currentUser && !currentUser.loginTime) {
+        currentUser.loginTime = new Date().toLocaleDateString('en-IN', {
+          day: '2-digit', month: 'short', year: 'numeric'
+        }) + ' ' + new Date().toLocaleTimeString('en-IN', {
+          hour: '2-digit', minute: '2-digit', hour12: true
+        });
+      }
       if (currentUser && currentUser.role === 'student' && (activeView === 'database' || window.location.hash === '#database')) {
         activeView = 'timetable';
         if (window.location.hash === '#database') window.location.hash = '#timetable';
@@ -548,11 +852,12 @@ function initStorage() {
   }
 
   // Dark mode init
-  const savedTheme = localStorage.getItem('iiitnr_theme') || 'light';
+  const savedTheme = localStorage.getItem('iiitnr_theme') || 'indigo';
   applyTheme(savedTheme);
 
   // Probe SQLite Backend connection
   checkBackendConnection();
+  fetchNotifications();
 }
 
 // Getters and Setters helper
@@ -585,8 +890,31 @@ function getGlobalAssignments() {
 function setGlobalAssignments(data) {
   localStorage.setItem('iiitnr_global_assignments', JSON.stringify(data));
 }
+function getExams() {
+  return JSON.parse(localStorage.getItem('iiitnr_exams') || JSON.stringify(DEFAULT_EXAMS));
+}
+function setExams(data) {
+  localStorage.setItem('iiitnr_exams', JSON.stringify(data));
+}
+function getMessMenu() {
+  return JSON.parse(localStorage.getItem('iiitnr_mess_menu') || JSON.stringify(DEFAULT_MESS));
+}
+function setMessMenu(data) {
+  localStorage.setItem('iiitnr_mess_menu', JSON.stringify(data));
+}
+function getExchangeListings() {
+  return JSON.parse(localStorage.getItem('iiitnr_exchange_listings') || JSON.stringify(DEFAULT_EXCHANGE));
+}
+function setExchangeListings(data) {
+  localStorage.setItem('iiitnr_exchange_listings', JSON.stringify(data));
+}
+function getNotifications() {
+  return JSON.parse(localStorage.getItem('iiitnr_notifications') || JSON.stringify(DEFAULT_NOTIFICATIONS));
+}
+function setNotifications(data) {
+  localStorage.setItem('iiitnr_notifications', JSON.stringify(data));
+}
 function getLocalAssignments() {
-  // Device-specific / Student-specific assignments
   const key = currentUser && currentUser.role === 'student' 
     ? `iiitnr_local_assignments_${currentUser.roll}` 
     : 'iiitnr_local_assignments_device';
@@ -658,8 +986,8 @@ function quickFill(role) {
     document.getElementById('student-pass').value = 'student123';
   } else {
     switchAuthTab('admin');
-    document.getElementById('admin-email').value = 'admin@iiitnr.ac.in';
-    document.getElementById('admin-pass').value = 'admin123';
+    document.getElementById('admin-email').value = 'revanth0246@gmail.com';
+    document.getElementById('admin-pass').value = 'revanth0406';
   }
 }
 
@@ -670,34 +998,50 @@ async function handleAuthLogin(event, role) {
     const roll = document.getElementById('student-roll').value.trim();
     const pass = document.getElementById('student-pass').value.trim();
 
-    if (isBackendConnected) {
-      try {
-        const res = await fetch(`${API_BASE}/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ emailOrRoll: roll, password: pass })
-        });
-        const data = await res.json();
-        if (data.success && data.user) {
-          currentUser = data.user;
-          if (data.token) {
-            authToken = data.token;
-            localStorage.setItem('iiitnr_auth_token', data.token);
-          }
-          localStorage.setItem('iiitnr_active_session', JSON.stringify(currentUser));
-          hideAuthScreen();
-          showToast(`Welcome back, ${currentUser.name}! (SQLite Auth)`, 'success');
-          refreshAllViews();
-          return;
-        } else {
-          showToast(data.message || 'Invalid Student Roll Number or Password!', 'error');
-          return;
-        }
-      } catch (err) {
-        console.warn('Backend login fallback:', err);
-      }
+    if (!roll || !pass) {
+      showToast('Please enter your Roll Number and Password.', 'error');
+      return;
     }
 
+    // 1. ALWAYS attempt SQLite backend login first
+    try {
+      const res = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ emailOrRoll: roll, password: pass })
+      });
+      const data = await res.json();
+      if (data.success && data.user) {
+        isBackendConnected = true;
+        updateBackendStatusBadge(true);
+        currentUser = data.user;
+        const now = new Date();
+        const formattedLoginTime = now.toLocaleDateString('en-IN', {
+          day: '2-digit', month: 'short', year: 'numeric'
+        }) + ' ' + now.toLocaleTimeString('en-IN', {
+          hour: '2-digit', minute: '2-digit', hour12: true
+        });
+        currentUser.loginTime = formattedLoginTime;
+        currentUser.loginTimestamp = now.toISOString();
+        if (data.token) {
+          authToken = data.token;
+          localStorage.setItem('iiitnr_auth_token', data.token);
+        }
+        localStorage.setItem('iiitnr_active_session', JSON.stringify(currentUser));
+        hideAuthScreen();
+        showToast(`Welcome back, ${currentUser.name}! (SQLite Auth)`, 'success');
+        await syncAllFromBackend();
+        refreshAllViews();
+        return;
+      } else if (res.status === 401 || res.status === 400 || res.status === 403) {
+        showToast(data.message || 'Invalid Student Roll Number or Password!', 'error');
+        return;
+      }
+    } catch (err) {
+      console.warn('Backend login network fallback:', err);
+    }
+
+    // 2. Offline fallback if backend server is unreachable
     const students = getStudents();
     const matched = students.find(s => 
       (s.roll.toLowerCase() === roll.toLowerCase() || s.email.toLowerCase() === roll.toLowerCase()) && 
@@ -706,9 +1050,16 @@ async function handleAuthLogin(event, role) {
 
     if (matched) {
       currentUser = matched;
+      const now = new Date();
+      currentUser.loginTime = now.toLocaleDateString('en-IN', {
+        day: '2-digit', month: 'short', year: 'numeric'
+      }) + ' ' + now.toLocaleTimeString('en-IN', {
+        hour: '2-digit', minute: '2-digit', hour12: true
+      });
+      currentUser.loginTimestamp = now.toISOString();
       localStorage.setItem('iiitnr_active_session', JSON.stringify(currentUser));
       hideAuthScreen();
-      showToast(`Welcome back, ${currentUser.name}!`, 'success');
+      showToast(`Welcome back, ${currentUser.name}! (Offline Mode)`, 'success');
       refreshAllViews();
     } else {
       showToast('Invalid Student Roll Number or Password!', 'error');
@@ -717,42 +1068,65 @@ async function handleAuthLogin(event, role) {
     const email = document.getElementById('admin-email').value.trim();
     const pass = document.getElementById('admin-pass').value.trim();
 
-    if (isBackendConnected) {
-      try {
-        const res = await fetch(`${API_BASE}/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ emailOrRoll: email, password: pass })
-        });
-        const data = await res.json();
-        if (data.success && data.user) {
-          currentUser = data.user;
-          if (data.token) {
-            authToken = data.token;
-            localStorage.setItem('iiitnr_auth_token', data.token);
-          }
-          localStorage.setItem('iiitnr_active_session', JSON.stringify(currentUser));
-          hideAuthScreen();
-          showToast('Admin access granted: Academic Control Panel unlocked.', 'info');
-          refreshAllViews();
-          return;
-        } else {
-          showToast(data.message || 'Invalid Admin Credentials!', 'error');
-          return;
-        }
-      } catch (err) {
-        console.warn('Backend admin login fallback:', err);
-      }
+    if (!email || !pass) {
+      showToast('Please enter Admin Email and Passkey.', 'error');
+      return;
     }
 
-    if ((email === DEFAULT_ADMIN.email || email.toLowerCase() === 'admin' || email.toLowerCase() === 'admin@iiitnr.ac.in') && (pass === 'admin123' || pass === 'admin')) {
+    // 1. ALWAYS attempt SQLite backend login first
+    try {
+      const res = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ emailOrRoll: email, password: pass })
+      });
+      const data = await res.json();
+      if (data.success && data.user) {
+        isBackendConnected = true;
+        updateBackendStatusBadge(true);
+        currentUser = data.user;
+        const now = new Date();
+        const formattedLoginTime = now.toLocaleDateString('en-IN', {
+          day: '2-digit', month: 'short', year: 'numeric'
+        }) + ' ' + now.toLocaleTimeString('en-IN', {
+          hour: '2-digit', minute: '2-digit', hour12: true
+        });
+        currentUser.loginTime = formattedLoginTime;
+        currentUser.loginTimestamp = now.toISOString();
+        if (data.token) {
+          authToken = data.token;
+          localStorage.setItem('iiitnr_auth_token', data.token);
+        }
+        localStorage.setItem('iiitnr_active_session', JSON.stringify(currentUser));
+        hideAuthScreen();
+        showToast('Admin access granted: Academic Control Panel unlocked.', 'info');
+        await syncAllFromBackend();
+        refreshAllViews();
+        return;
+      } else if (res.status === 401 || res.status === 400 || res.status === 403) {
+        showToast(data.message || 'Invalid Admin Credentials!', 'error');
+        return;
+      }
+    } catch (err) {
+      console.warn('Backend admin login network fallback:', err);
+    }
+
+    // 2. Offline fallback for admin
+    if ((email.toLowerCase() === DEFAULT_ADMIN.email.toLowerCase() || email.toLowerCase() === 'admin' || email.toLowerCase() === 'revanth0246@gmail.com') && (pass === 'revanth0406' || pass === 'admin123' || pass === 'admin')) {
       currentUser = DEFAULT_ADMIN;
+      const now = new Date();
+      currentUser.loginTime = now.toLocaleDateString('en-IN', {
+        day: '2-digit', month: 'short', year: 'numeric'
+      }) + ' ' + now.toLocaleTimeString('en-IN', {
+        hour: '2-digit', minute: '2-digit', hour12: true
+      });
+      currentUser.loginTimestamp = now.toISOString();
       localStorage.setItem('iiitnr_active_session', JSON.stringify(currentUser));
       hideAuthScreen();
       showToast('Admin access granted: Academic Control Panel unlocked.', 'info');
       refreshAllViews();
     } else {
-      showToast('Invalid Admin Credentials! Use admin@iiitnr.ac.in / admin123', 'error');
+      showToast('Invalid Admin Credentials! Use revanth0246@gmail.com / revanth0406', 'error');
     }
   }
 }
@@ -790,35 +1164,44 @@ async function submitNewStudentRegistration(event) {
   const chosenAvatar = tempRegAvatar;
   tempRegAvatar = null;
 
-  if (isBackendConnected) {
-    try {
-      const res = await fetch(`${API_BASE}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name, roll, branch, year, semester: sem, cgpa, email, password: pass, avatar: chosenAvatar
-        })
+  // 1. ALWAYS attempt SQLite backend registration first
+  try {
+    const res = await fetch(`${API_BASE}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name, roll, branch, year, semester: sem, cgpa, email, password: pass, avatar: chosenAvatar
+      })
+    });
+    const data = await res.json();
+    if (data.success && data.user) {
+      isBackendConnected = true;
+      updateBackendStatusBadge(true);
+      currentUser = data.user;
+      const now = new Date();
+      currentUser.loginTime = now.toLocaleDateString('en-IN', {
+        day: '2-digit', month: 'short', year: 'numeric'
+      }) + ' ' + now.toLocaleTimeString('en-IN', {
+        hour: '2-digit', minute: '2-digit', hour12: true
       });
-      const data = await res.json();
-      if (data.success && data.user) {
-        currentUser = data.user;
-        if (data.token) {
-          authToken = data.token;
-          localStorage.setItem('iiitnr_auth_token', data.token);
-        }
-        localStorage.setItem('iiitnr_active_session', JSON.stringify(currentUser));
-        closeModal('modal-register-student');
-        hideAuthScreen();
-        showToast(`Account registered in SQLite! Welcome, ${name}.`, 'success');
-        refreshAllViews();
-        return;
-      } else {
-        showToast(data.message || 'Registration failed.', 'error');
-        return;
+      currentUser.loginTimestamp = now.toISOString();
+      if (data.token) {
+        authToken = data.token;
+        localStorage.setItem('iiitnr_auth_token', data.token);
       }
-    } catch (err) {
-      console.warn('Registration fallback to local cache:', err);
+      localStorage.setItem('iiitnr_active_session', JSON.stringify(currentUser));
+      closeModal('modal-register-student');
+      hideAuthScreen();
+      showToast(`Account registered in SQLite! Welcome, ${name}.`, 'success');
+      await syncAllFromBackend();
+      refreshAllViews();
+      return;
+    } else if (res.status === 400 || res.status === 409) {
+      showToast(data.message || 'Registration failed.', 'error');
+      return;
     }
+  } catch (err) {
+    console.warn('Registration network fallback to local cache:', err);
   }
 
   const students = getStudents();
@@ -858,6 +1241,9 @@ async function submitNewStudentRegistration(event) {
 // ==========================================
 
 function navigateTo(viewId) {
+  // Alias legacy assignments to unified planner
+  if (viewId === 'assignments') viewId = 'planner';
+
   // Prevent students or unauthenticated users from accessing database / SQL console
   if (viewId === 'database' && (!currentUser || currentUser.role !== 'admin')) {
     showToast('Access Denied: Database & SQL Console is strictly restricted to Administration.', 'error');
@@ -878,7 +1264,8 @@ function navigateTo(viewId) {
 
   // Update sidebar active buttons
   document.querySelectorAll('.nav-item').forEach(btn => {
-    if (btn.getAttribute('data-view') === viewId) {
+    const btnView = btn.getAttribute('data-view');
+    if (btnView === viewId || (viewId === 'planner' && btnView === 'assignments')) {
       btn.classList.add('active');
     } else {
       btn.classList.remove('active');
@@ -887,12 +1274,14 @@ function navigateTo(viewId) {
 
   // Update top bar title
   const titleMap = {
-    home: 'Home',
-    resources: 'Study Resources',
-    timetable: 'Class Timetable',
-    assignments: 'Assignment Tracker',
-    announcements: 'Latest Announcements',
-    events: 'Upcoming Events',
+    home: 'Student Dashboard',
+    resources: 'Study Resources & Notes Hub',
+    timetable: 'Class Timetable (Room 203)',
+    planner: 'Assignment & Exam Planner',
+    exchange: 'Campus Exchange (Buy, Sell & Lost)',
+    mess: 'Hostel Mess Menu & Weekly Schedule',
+    announcements: 'Latest Announcements & Circulars',
+    events: 'Campus Events & Registration',
     profile: 'Student Profile',
     database: 'Database Management Console'
   };
@@ -915,7 +1304,9 @@ function renderCurrentView(viewId) {
   if (viewId === 'home') renderHomeView();
   else if (viewId === 'resources') renderResourcesView();
   else if (viewId === 'timetable') renderTimetableView();
-  else if (viewId === 'assignments') renderAssignmentsView();
+  else if (viewId === 'planner' || viewId === 'assignments') renderPlannerView();
+  else if (viewId === 'exchange') renderExchangeView();
+  else if (viewId === 'mess') renderMessView();
   else if (viewId === 'announcements') renderAnnouncementsView();
   else if (viewId === 'events') renderEventsView();
   else if (viewId === 'profile') renderProfileView();
@@ -924,6 +1315,7 @@ function renderCurrentView(viewId) {
 
 function refreshAllViews() {
   updateUserUIElements();
+  fetchNotifications();
   renderCurrentView(activeView);
 }
 
@@ -966,36 +1358,6 @@ function updateUserUIElements() {
     if (ttBadge) {
       ttBadge.textContent = 'Read Only';
       ttBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300';
-    }
-  }
-
-  // 2. Study Resources controls visibility (Admin Only)
-  const adminAddResBtn = document.getElementById('admin-add-resource-btn');
-  const studentResNote = document.getElementById('student-resource-note');
-  if (adminAddResBtn && studentResNote) {
-    if (!isStudent) {
-      adminAddResBtn.classList.remove('hidden');
-      adminAddResBtn.classList.add('flex');
-      studentResNote.classList.add('hidden');
-    } else {
-      adminAddResBtn.classList.add('hidden');
-      adminAddResBtn.classList.remove('flex');
-      studentResNote.classList.remove('hidden');
-    }
-  }
-
-  // 3. Assignments controls visibility (Admin Only)
-  const adminAddAsgnBtn = document.getElementById('admin-add-assignment-btn');
-  const studentAsgnNote = document.getElementById('student-assignment-note');
-  if (adminAddAsgnBtn && studentAsgnNote) {
-    if (!isStudent) {
-      adminAddAsgnBtn.classList.remove('hidden');
-      adminAddAsgnBtn.classList.add('flex');
-      studentAsgnNote.classList.add('hidden');
-    } else {
-      adminAddAsgnBtn.classList.add('hidden');
-      adminAddAsgnBtn.classList.remove('flex');
-      studentAsgnNote.classList.remove('hidden');
     }
   }
 
@@ -1068,38 +1430,295 @@ function updateNotificationBadges() {
   const annBadgeEl = document.getElementById('badge-announcements-count');
 }
 
-// Dark / Light Theme
+// ==========================================
+// 5. THEMES & MULTI-DEVICE CONTROLLER
+// ==========================================
+
+const THEMES = [
+  {
+    id: 'indigo',
+    name: 'Midnight Indigo',
+    desc: 'Minimalistic Midnight Graphite + Electric Indigo accent (#6366F1 & #22D3EE)',
+    dotBg: '#6366f1',
+    badge: 'Default',
+    isDark: true,
+    preview: { bg: '#0b0d12', card: '#151923', text: '#f8fafc', accent: '#6366f1' }
+  },
+  {
+    id: 'bw',
+    name: 'Black & White',
+    desc: 'Stark monochrome, pitch OLED black (#000000) & pure white high contrast',
+    dotBg: '#ffffff',
+    border: '#000000',
+    badge: 'Requested',
+    isDark: true,
+    preview: { bg: '#000000', card: '#0c0c0c', text: '#ffffff', accent: '#ffffff' }
+  },
+  {
+    id: 'slate',
+    name: 'Slate Dark',
+    desc: 'Modern midnight navy slate with classic blue highlights',
+    dotBg: '#3b82f6',
+    badge: 'Popular',
+    isDark: true,
+    preview: { bg: '#0f172a', card: '#1e293b', text: '#f8fafc', accent: '#3b82f6' }
+  },
+  {
+    id: 'neon',
+    name: 'Cyberpunk Neon',
+    desc: 'Ultra dark pitch background with electric cyan (#06B6D4) and neon glow',
+    dotBg: '#06b6d4',
+    badge: 'Cyber',
+    isDark: true,
+    preview: { bg: '#06070d', card: '#111222', text: '#f1f5f9', accent: '#06b6d4' }
+  },
+  {
+    id: 'crimson',
+    name: 'Crimson Ember',
+    desc: 'Deep warm charcoal with crimson flame red highlights (#F43F5E)',
+    dotBg: '#f43f5e',
+    badge: 'Ember',
+    isDark: true,
+    preview: { bg: '#0f0a0c', card: '#1a1115', text: '#fce7f3', accent: '#f43f5e' }
+  },
+  {
+    id: 'nord',
+    name: 'Nord Frost',
+    desc: 'Arctic deep slate with crisp glacial ice blue accents (#38BDF8)',
+    dotBg: '#38bdf8',
+    badge: 'Frost',
+    isDark: true,
+    preview: { bg: '#141b24', card: '#1e2837', text: '#e5e9f0', accent: '#38bdf8' }
+  },
+  {
+    id: 'light',
+    name: 'Campus Light',
+    desc: 'Clean academic daytime theme with crisp white background and indigo contrast',
+    dotBg: '#4f46e5',
+    badge: 'Light',
+    isDark: false,
+    preview: { bg: '#f8fafc', card: '#ffffff', text: '#0f172a', accent: '#4f46e5' }
+  }
+];
+
+let currentTheme = localStorage.getItem('iiitnr_theme') || 'indigo';
+
 function toggleTheme() {
-  const html = document.documentElement;
-  const isDark = html.classList.contains('dark');
-  applyTheme(isDark ? 'light' : 'dark');
+  openThemePickerModal();
 }
 
-function applyTheme(theme) {
-  const html = document.documentElement;
-  const label = document.getElementById('theme-label');
-  const icon = document.getElementById('theme-icon');
+function applyTheme(themeId) {
+  const theme = THEMES.find(t => t.id === themeId) || THEMES[0];
+  currentTheme = theme.id;
+  localStorage.setItem('iiitnr_theme', currentTheme);
 
-  if (theme === 'dark') {
+  const html = document.documentElement;
+
+  // Remove old theme classes
+  THEMES.forEach(t => {
+    html.classList.remove(`theme-${t.id}`);
+  });
+
+  // Apply dark or light mode
+  if (theme.isDark) {
     html.classList.add('dark');
-    localStorage.setItem('iiitnr_theme', 'dark');
-    if (label) label.textContent = 'Dark Mode';
-    if (icon) {
-      icon.setAttribute('data-lucide', 'moon');
-      icon.classList.remove('text-amber-400');
-      icon.classList.add('text-blue-400');
-    }
   } else {
     html.classList.remove('dark');
-    localStorage.setItem('iiitnr_theme', 'light');
-    if (label) label.textContent = 'Light Mode';
-    if (icon) {
-      icon.setAttribute('data-lucide', 'sun');
-      icon.classList.add('text-amber-400');
-      icon.classList.remove('text-blue-400');
-    }
+  }
+
+  // Add theme class and data attribute
+  html.classList.add(`theme-${theme.id}`);
+  html.setAttribute('data-theme', theme.id);
+
+  // Update Sidebar Dot & Labels
+  const sideDot = document.getElementById('sidebar-theme-dot');
+  if (sideDot) {
+    sideDot.style.backgroundColor = theme.dotBg;
+    sideDot.style.borderColor = theme.border || 'rgba(255,255,255,0.3)';
+  }
+  const sideLabel = document.getElementById('theme-label');
+  if (sideLabel) sideLabel.textContent = `Theme: ${theme.name.split(' ')[0]}`;
+
+  const topThemeLabel = document.getElementById('top-theme-btn-label');
+  if (topThemeLabel) topThemeLabel.textContent = theme.name.split(' ')[0];
+
+  const profilePill = document.getElementById('profile-active-theme-pill');
+  if (profilePill) profilePill.textContent = `Active: ${theme.name}`;
+
+  // Re-render theme selector cards
+  renderThemePickerUI();
+  lucide.createIcons();
+}
+
+function openThemePickerModal() {
+  renderThemePickerUI();
+  const modal = document.getElementById('modal-theme-picker');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
   }
   lucide.createIcons();
+}
+
+function closeThemePickerModal() {
+  closeModal('modal-theme-picker');
+}
+
+function renderThemePickerUI() {
+  const modalContainer = document.getElementById('modal-theme-cards-container');
+  const profileContainer = document.getElementById('profile-theme-cards-container');
+
+  const htmlModal = THEMES.map(t => {
+    const isActive = t.id === currentTheme;
+    return `
+      <div onclick="applyTheme('${t.id}')" class="cursor-pointer p-3.5 rounded-2xl border-2 transition-all flex items-start gap-3 relative ${
+        isActive 
+          ? 'border-blue-600 dark:border-blue-400 bg-blue-50/50 dark:bg-blue-950/40 shadow-md ring-2 ring-blue-500/30' 
+          : 'border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 bg-slate-50/50 dark:bg-slate-800/40'
+      }">
+        <!-- Mini Palette Preview Swatch -->
+        <div class="w-12 h-12 rounded-xl flex-shrink-0 flex flex-col overflow-hidden border border-slate-300 dark:border-slate-700 shadow-inner" style="background-color: ${t.preview.bg}">
+          <div class="flex-1 flex items-center justify-center p-1" style="background-color: ${t.preview.card}">
+            <div class="w-4 h-4 rounded-full" style="background-color: ${t.preview.accent}"></div>
+          </div>
+          <div class="h-2.5 w-full flex items-center justify-around px-1" style="background-color: ${t.preview.bg}">
+            <div class="w-1.5 h-1.5 rounded-full" style="background-color: ${t.preview.text}"></div>
+            <div class="w-1.5 h-1.5 rounded-full" style="background-color: ${t.preview.accent}"></div>
+          </div>
+        </div>
+
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-1.5">
+            <span class="font-bold text-sm text-slate-900 dark:text-white truncate">${t.name}</span>
+            ${t.badge ? `<span class="text-[10px] font-bold px-1.5 py-0.2 rounded ${t.id === 'bw' ? 'bg-black text-white dark:bg-white dark:text-black border border-white/20' : 'bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300'}">${t.badge}</span>` : ''}
+          </div>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5 line-clamp-2">${t.desc}</p>
+        </div>
+
+        ${isActive ? `
+          <div class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center flex-shrink-0 shadow">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
+
+  if (modalContainer) modalContainer.innerHTML = htmlModal;
+
+  if (profileContainer) {
+    const htmlProfile = THEMES.map(t => {
+      const isActive = t.id === currentTheme;
+      return `
+        <button type="button" onclick="applyTheme('${t.id}')" class="p-3 rounded-2xl border-2 transition text-left flex flex-col justify-between h-24 ${
+          isActive 
+            ? 'border-blue-600 dark:border-blue-400 bg-blue-50/60 dark:bg-blue-950/40 ring-2 ring-blue-500/20' 
+            : 'border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 bg-slate-50 dark:bg-slate-800/40'
+        }">
+          <div class="flex items-center justify-between w-full">
+            <span class="w-3.5 h-3.5 rounded-full border border-white/20 shadow-sm" style="background-color: ${t.dotBg}"></span>
+            ${isActive ? `<span class="text-[10px] font-bold text-blue-600 dark:text-blue-400">✓ Active</span>` : ''}
+          </div>
+          <div>
+            <p class="text-xs font-bold text-slate-900 dark:text-white leading-tight truncate">${t.name}</p>
+            <span class="text-[10px] text-slate-400 leading-none truncate block mt-0.5">${t.badge || 'Palette'}</span>
+          </div>
+        </button>
+      `;
+    }).join('');
+    profileContainer.innerHTML = htmlProfile;
+  }
+}
+
+// ==========================================
+// 6. MULTI-DEVICE & NETWORK CONTROLLER
+// ==========================================
+
+let activeLanUrl = `http://${window.location.hostname || 'localhost'}:5000`;
+let activeTunnelUrl = null;
+
+async function openNetworkModal() {
+  const modal = document.getElementById('modal-network-devices');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+  await refreshNetworkInfo();
+  lucide.createIcons();
+}
+
+async function refreshNetworkInfo() {
+  const lanDisplay = document.getElementById('lan-url-display');
+  const qrImg = document.getElementById('network-qr-image');
+  const tunnelBox = document.getElementById('tunnel-active-box');
+  const tunnelDisplay = document.getElementById('tunnel-url-display');
+  const tunnelBadge = document.getElementById('tunnel-status-badge');
+
+  let targetUrl = `http://${window.location.hostname || 'localhost'}:5000`;
+
+  if (isBackendConnected) {
+    try {
+      const res = await fetch(`${API_BASE}/network`);
+      const data = await res.json();
+      if (data?.success) {
+        if (data.primaryLanUrl) {
+          targetUrl = data.primaryLanUrl;
+          activeLanUrl = targetUrl;
+        }
+
+        if (lanDisplay) lanDisplay.textContent = targetUrl;
+        if (qrImg) {
+          qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(targetUrl)}`;
+        }
+
+        // Tunnel status
+        if (data.tunnelActive && data.tunnelUrl) {
+          activeTunnelUrl = data.tunnelUrl;
+          if (tunnelBox) tunnelBox.classList.remove('hidden');
+          if (tunnelDisplay) tunnelDisplay.textContent = data.tunnelUrl;
+          if (tunnelBadge) {
+            tunnelBadge.textContent = '● Tunnel Active';
+            tunnelBadge.className = 'text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300';
+          }
+        } else {
+          activeTunnelUrl = null;
+          if (tunnelBox) tunnelBox.classList.add('hidden');
+          if (tunnelBadge) {
+            tunnelBadge.textContent = 'Tunnel Standby';
+            tunnelBadge.className = 'text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300';
+          }
+        }
+        return;
+      }
+    } catch (e) {
+      console.warn('Network info probe notice:', e);
+    }
+  }
+
+  // Fallback if backend offline
+  if (lanDisplay) lanDisplay.textContent = targetUrl;
+  if (qrImg) {
+    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(targetUrl)}`;
+  }
+}
+
+function copyLanUrl() {
+  const url = activeLanUrl || document.getElementById('lan-url-display')?.textContent.trim();
+  navigator.clipboard.writeText(url).then(() => {
+    showToast(`Copied Wi-Fi URL: ${url}`, 'success');
+  }).catch(() => {
+    showToast(`URL: ${url}`, 'info');
+  });
+}
+
+function copyTunnelUrl() {
+  const url = activeTunnelUrl || document.getElementById('tunnel-url-display')?.textContent.trim();
+  if (!url) return;
+  navigator.clipboard.writeText(url).then(() => {
+    showToast(`Copied Public Internet URL: ${url}`, 'success');
+  }).catch(() => {
+    showToast(`URL: ${url}`, 'info');
+  });
 }
 
 function toggleMobileSidebar() {
@@ -1120,31 +1739,46 @@ function closeMobileSidebar() {
 
 // --- A. HOME VIEW ---
 function renderHomeView() {
-  // Upcoming events row
+  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const todayDayName = dayNames[new Date().getDay()];
+
+  // Update session login status on hero banner
+  const welcomeSessionText = document.getElementById('home-welcome-session-text');
+  if (welcomeSessionText && currentUser) {
+    const sessionDisplay = currentUser.loginTime || (currentUser.last_login ? new Date(currentUser.last_login).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : 'Active Session');
+    welcomeSessionText.textContent = `Logged in: ${sessionDisplay} • ${currentUser.name} (${currentUser.role === 'admin' ? 'Admin' : currentUser.roll})`;
+  }
+
+  // 1. Upcoming events row
   const events = getEvents().slice(0, 3);
   const eventsContainer = document.getElementById('home-events-preview');
   if (eventsContainer) {
-    eventsContainer.innerHTML = events.map(ev => `
-      <div onclick="navigateTo('events')" class="cursor-pointer border border-slate-100 dark:border-slate-800 rounded-2xl p-4 bg-slate-50/70 dark:bg-slate-800/40 hover:bg-slate-100/80 transition flex items-center gap-3.5">
-        <div class="w-11 h-11 rounded-xl flex items-center justify-center text-white ${ev.badgeColor} shadow-md flex-shrink-0">
-          <i data-lucide="calendar" class="w-5 h-5"></i>
+    if (events.length === 0) {
+      eventsContainer.innerHTML = `<p class="col-span-3 text-center text-xs text-slate-400 py-4">No events scheduled.</p>`;
+    } else {
+      eventsContainer.innerHTML = events.map(ev => `
+        <div onclick="navigateTo('events')" class="cursor-pointer border border-slate-100 dark:border-slate-800 rounded-2xl p-4 bg-slate-50/70 dark:bg-slate-800/40 hover:bg-slate-100/80 transition flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-xl flex items-center justify-center text-white ${ev.badgeColor || 'bg-indigo-600'} shadow-md flex-shrink-0">
+            <i data-lucide="calendar" class="w-5 h-5"></i>
+          </div>
+          <div class="truncate">
+            <h4 class="font-bold text-sm text-slate-900 dark:text-white truncate">${ev.title}</h4>
+            <p class="text-xs text-slate-500 dark:text-slate-400 truncate">${ev.date}</p>
+          </div>
         </div>
-        <div class="truncate">
-          <h4 class="font-bold text-sm text-slate-900 dark:text-white truncate">${ev.title}</h4>
-          <p class="text-xs text-slate-500 dark:text-slate-400 truncate">${ev.date}</p>
-        </div>
-      </div>
-    `).join('');
+      `).join('');
+    }
   }
 
-  // Today's classes preview
+  // 2. Today's classes preview
   const timetable = getTimetable();
   const classesContainer = document.getElementById('home-today-classes');
+  const classesTitle = document.getElementById('home-today-classes-title');
+  if (classesTitle) {
+    classesTitle.textContent = `Today's Schedule (${todayDayName === 'Saturday' || todayDayName === 'Sunday' ? 'Mon Preview' : todayDayName})`;
+  }
   if (classesContainer && timetable.length > 0) {
-    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const currentDayName = dayNames[new Date().getDay()];
-    const activeDay = (currentDayName === 'Saturday' || currentDayName === 'Sunday') ? 'Monday' : currentDayName;
-    
+    const activeDay = (todayDayName === 'Saturday' || todayDayName === 'Sunday') ? 'Monday' : todayDayName;
     const dayRow = timetable.find(d => d.day === activeDay) || timetable[0];
     const dayPeriods = dayRow.periods || {};
     const todaySlots = TIMETABLE_PERIODS.filter(p => p !== '1:00 - 2:00').slice(0, 5).map(time => ({
@@ -1172,7 +1806,131 @@ function renderHomeView() {
     }).join('');
   }
 
-  // Featured Announcement
+  // 3. Today's Mess Menu Card
+  const messMenu = getMessMenu();
+  const messContainer = document.getElementById('home-today-mess');
+  const messTitle = document.getElementById('home-today-mess-title');
+  if (messTitle) messTitle.textContent = `Today's Mess Menu (${todayDayName})`;
+  if (messContainer) {
+    const todayMenu = messMenu.find(m => (m.day || m.day_of_week) === todayDayName) || messMenu[0];
+    if (todayMenu) {
+      messContainer.innerHTML = `
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div class="p-3 rounded-xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-900/40">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[11px] font-bold text-amber-700 dark:text-amber-300 flex items-center gap-1">
+                <i data-lucide="coffee" class="w-3.5 h-3.5"></i> Breakfast
+              </span>
+              <span class="text-[10px] text-slate-400">8:00 - 9:30 AM</span>
+            </div>
+            <p class="text-xs text-slate-700 dark:text-slate-300 font-medium line-clamp-2">${todayMenu.breakfast}</p>
+          </div>
+          <div class="p-3 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/50 dark:border-emerald-900/40">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[11px] font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1">
+                <i data-lucide="utensils" class="w-3.5 h-3.5"></i> Lunch
+              </span>
+              <span class="text-[10px] text-slate-400">12:30 - 2:00 PM</span>
+            </div>
+            <p class="text-xs text-slate-700 dark:text-slate-300 font-medium line-clamp-2">${todayMenu.lunch}</p>
+          </div>
+          <div class="p-3 rounded-xl bg-orange-50/50 dark:bg-orange-950/20 border border-orange-200/50 dark:border-orange-900/40">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[11px] font-bold text-orange-700 dark:text-orange-300 flex items-center gap-1">
+                <i data-lucide="cookie" class="w-3.5 h-3.5"></i> Snacks
+              </span>
+              <span class="text-[10px] text-slate-400">5:00 - 6:00 PM</span>
+            </div>
+            <p class="text-xs text-slate-700 dark:text-slate-300 font-medium line-clamp-2">${todayMenu.snacks}</p>
+          </div>
+          <div class="p-3 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-200/50 dark:border-indigo-900/40">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[11px] font-bold text-indigo-700 dark:text-indigo-300 flex items-center gap-1">
+                <i data-lucide="moon" class="w-3.5 h-3.5"></i> Dinner
+              </span>
+              <span class="text-[10px] text-slate-400">8:00 - 9:45 PM</span>
+            </div>
+            <p class="text-xs text-slate-700 dark:text-slate-300 font-medium line-clamp-2">${todayMenu.dinner}</p>
+          </div>
+        </div>
+        ${todayMenu.note ? `
+          <div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-600 dark:text-amber-400 flex items-center gap-2">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 flex-shrink-0"></i>
+            <span><strong>Chef's Note:</strong> ${todayMenu.note}</span>
+          </div>
+        ` : ''}
+      `;
+    }
+  }
+
+  // 4. Academic Tasks: Pending Assignments
+  const assignments = getGlobalAssignments();
+  const userRoll = currentUser?.roll || '';
+  const pendingAssignments = assignments.filter(a => {
+    const isCompleted = (a.completedBy && a.completedBy.includes(userRoll)) || a.status === 'Completed';
+    return !isCompleted;
+  }).slice(0, 3);
+
+  const assignContainer = document.getElementById('home-pending-assignments');
+  if (assignContainer) {
+    if (pendingAssignments.length === 0) {
+      assignContainer.innerHTML = `
+        <div class="p-6 text-center text-slate-400 text-xs bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
+          <i data-lucide="check-check" class="w-6 h-6 text-emerald-500 mx-auto mb-1"></i>
+          <span>All course assignments completed! Great job.</span>
+        </div>
+      `;
+    } else {
+      assignContainer.innerHTML = pendingAssignments.map(a => {
+        const priorityColor = a.priority === 'High' ? 'text-rose-500 bg-rose-50 dark:bg-rose-950/40' : (a.priority === 'Low' ? 'text-emerald-500 bg-emerald-50 dark:bg-emerald-950/40' : 'text-amber-500 bg-amber-50 dark:bg-amber-950/40');
+        return `
+          <div onclick="navigateTo('planner')" class="cursor-pointer flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 hover:border-indigo-500/40 transition">
+            <div class="truncate mr-2">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-slate-900 dark:text-white truncate">${a.title}</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.2 rounded ${priorityColor}">${a.priority || 'Medium'}</span>
+              </div>
+              <p class="text-[11px] text-slate-400 truncate">${a.subject} • Due ${formatDate(a.dueDate)}</p>
+            </div>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400 flex-shrink-0"></i>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  // 5. Upcoming Exams
+  const exams = getExams().slice(0, 3);
+  const examsContainer = document.getElementById('home-upcoming-exams');
+  if (examsContainer) {
+    if (exams.length === 0) {
+      examsContainer.innerHTML = `
+        <div class="p-6 text-center text-slate-400 text-xs bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
+          <i data-lucide="calendar" class="w-6 h-6 text-purple-500 mx-auto mb-1"></i>
+          <span>No upcoming examinations announced.</span>
+        </div>
+      `;
+    } else {
+      examsContainer.innerHTML = exams.map(ex => {
+        const diffDays = Math.ceil((new Date(ex.examDate) - new Date()) / (1000 * 60 * 60 * 24));
+        const countdownStr = diffDays > 0 ? `In ${diffDays} days` : (diffDays === 0 ? 'Today' : 'Concluded');
+        return `
+          <div onclick="navigateTo('planner'); switchPlannerTab('exams');" class="cursor-pointer flex items-center justify-between p-3 rounded-xl bg-purple-50/40 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900/30 hover:border-purple-500/40 transition">
+            <div class="truncate mr-2">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-slate-900 dark:text-white truncate">${ex.subject}</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-purple-100 text-purple-700 dark:bg-purple-900/60 dark:text-purple-300">${countdownStr}</span>
+              </div>
+              <p class="text-[11px] text-slate-400 truncate">${ex.title} • ${formatDate(ex.examDate)} (${ex.room || 'Room 203'})</p>
+            </div>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-purple-400 flex-shrink-0"></i>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  // 6. Featured Announcement
   const announcements = getAnnouncements();
   const featEl = document.getElementById('home-featured-announcement');
   if (featEl && announcements.length > 0) {
@@ -1197,19 +1955,43 @@ function renderHomeView() {
 }
 
 // --- B. STUDY RESOURCES VIEW (Mockup 2) ---
-// Requirement: RESOURCES SHOULD BE DONE BY ADMIN ONLY
+let isBookmarkedFilterActive = false;
+
+function toggleBookmarkedFilter() {
+  isBookmarkedFilterActive = !isBookmarkedFilterActive;
+  const btn = document.getElementById('btn-toggle-bookmarks');
+  const label = document.getElementById('bookmarks-filter-label');
+  if (btn) {
+    if (isBookmarkedFilterActive) {
+      btn.className = "px-3.5 py-2.5 bg-amber-500 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow-sm";
+      if (label) label.textContent = "Bookmarked (Active)";
+    } else {
+      btn.className = "px-3.5 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-semibold transition flex items-center gap-1.5";
+      if (label) label.textContent = "Bookmarked";
+    }
+  }
+  renderResourcesView();
+}
+
 function renderResourcesView() {
   const resources = getResources();
-  const search = (document.getElementById('resource-search-input')?.value || '').toLowerCase();
+  const search = (document.getElementById('resource-search-input')?.value || '').toLowerCase().trim();
   const cat = document.getElementById('resource-category-filter')?.value || 'all';
+  const unit = document.getElementById('resource-unit-filter')?.value || 'all';
+  const typeFilter = document.getElementById('resource-type-filter')?.value || 'all';
   const isAdmin = currentUser && currentUser.role === 'admin';
 
   const filtered = resources.filter(r => {
-    const matchesSearch = r.subject.toLowerCase().includes(search) || 
-                          r.title.toLowerCase().includes(search) || 
-                          (r.description && r.description.toLowerCase().includes(search));
+    const matchesSearch = !search || 
+      (r.subject && r.subject.toLowerCase().includes(search)) || 
+      (r.title && r.title.toLowerCase().includes(search)) || 
+      (r.description && r.description.toLowerCase().includes(search));
     const matchesCat = (cat === 'all') || (r.subject === cat);
-    return matchesSearch && matchesCat;
+    const matchesUnit = (unit === 'all') || (r.unit && r.unit.toLowerCase().includes(unit.toLowerCase()));
+    const matchesType = (typeFilter === 'all') || (r.type && r.type.toLowerCase() === typeFilter.toLowerCase());
+    const matchesBookmark = !isBookmarkedFilterActive || !!r.isBookmarked;
+
+    return matchesSearch && matchesCat && matchesUnit && matchesType && matchesBookmark;
   });
 
   const container = document.getElementById('resources-list-container');
@@ -1220,42 +2002,45 @@ function renderResourcesView() {
       <div class="text-center py-12 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800">
         <i data-lucide="book-x" class="w-12 h-12 text-slate-400 mx-auto mb-3"></i>
         <h3 class="font-bold text-slate-700 dark:text-slate-300">No resources found</h3>
-        <p class="text-xs text-slate-400 mt-1">${isAdmin ? 'Upload official course material using the button below.' : 'Official course materials will appear here once released by administration.'}</p>
-        ${isAdmin ? `<button onclick="openAddResourceModal()" class="mt-4 px-4 py-2 bg-blue-600 text-white text-xs font-semibold rounded-xl shadow">+ Upload Resource (Admin)</button>` : ''}
+        <p class="text-xs text-slate-400 mt-1">${isAdmin ? 'Upload course materials using the button below.' : 'No materials matched the chosen filters.'}</p>
+        ${isAdmin ? `<button onclick="openAddResourceModal()" class="mt-4 px-4 py-2 bg-indigo-600 text-white text-xs font-semibold rounded-xl shadow">+ Upload Resource (Admin)</button>` : ''}
       </div>
     `;
     lucide.createIcons();
     return;
   }
 
-  // Subject icon helper
   const getSubjectIconColor = (subject) => {
-    if (subject.includes('Data Structures')) return 'bg-blue-600 text-white';
-    if (subject.includes('Database')) return 'bg-emerald-600 text-white';
-    if (subject.includes('Object Oriented')) return 'bg-amber-600 text-white';
-    if (subject.includes('Operating')) return 'bg-purple-600 text-white';
+    if (subject.includes('Mathematics')) return 'bg-rose-600 text-white';
+    if (subject.includes('Programming')) return 'bg-purple-600 text-white';
+    if (subject.includes('Digital Logic')) return 'bg-emerald-600 text-white';
+    if (subject.includes('Physics')) return 'bg-slate-600 text-white';
+    if (subject.includes('Communication')) return 'bg-blue-600 text-white';
     return 'bg-indigo-600 text-white';
   };
 
   container.innerHTML = filtered.map(r => `
     <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow transition flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div class="flex items-start sm:items-center gap-4">
-        <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${getSubjectIconColor(r.subject)} shadow-md">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${getSubjectIconColor(r.subject || '')} shadow-md">
           <i data-lucide="book" class="w-6 h-6"></i>
         </div>
         <div>
           <div class="flex flex-wrap items-center gap-2 mb-1">
             <h3 class="font-bold text-slate-900 dark:text-white text-base">${r.subject}</h3>
-            <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">${r.semester || 'Sem 2'}</span>
-            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
-              Official Material
+            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">${r.semester || 'Sem 1'}</span>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+              ${r.unit || 'Unit 1-4'}
+            </span>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">
+              ${r.type || 'Notes'}
             </span>
           </div>
-          <p class="text-xs font-medium text-slate-700 dark:text-slate-300">${r.title}</p>
+          <p class="text-xs font-semibold text-slate-800 dark:text-slate-200">${r.title}</p>
           <p class="text-xs text-slate-400 mt-1 line-clamp-1">${r.description || 'Official course syllabus & reference materials.'}</p>
           <div class="flex items-center gap-3 text-[11px] text-slate-400 mt-2">
             <span class="flex items-center gap-1 text-slate-600 dark:text-slate-300 font-medium">
-              <i data-lucide="shield-check" class="w-3.5 h-3.5 text-blue-500"></i> ${r.contributor || 'Academic Affairs Cell'}
+              <i data-lucide="shield-check" class="w-3.5 h-3.5 text-blue-500"></i> ${r.contributor || 'Academic Affairs'}
             </span>
             <span>•</span>
             <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3"></i> ${r.date || 'Recent'}</span>
@@ -1263,20 +2048,25 @@ function renderResourcesView() {
         </div>
       </div>
 
-      <!-- Action Buttons matching Mockup 2: Notes / Papers -->
       <div class="flex items-center gap-2 self-start md:self-auto flex-wrap">
-        <a href="${r.link}" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-xs transition flex items-center gap-1.5 shadow-sm">
-          <i data-lucide="file-text" class="w-3.5 h-3.5"></i> Notes (${r.notesCount || 10})
-        </a>
         <a href="${r.link}" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-xs transition flex items-center gap-1.5 shadow-sm">
-          <i data-lucide="archive" class="w-3.5 h-3.5"></i> Papers (${r.papersCount || 5})
+          <i data-lucide="file-text" class="w-3.5 h-3.5"></i> Notes (${r.notesCount || 12})
         </a>
+        <a href="${r.link}" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl text-xs transition flex items-center gap-1.5 shadow-sm">
+          <i data-lucide="archive" class="w-3.5 h-3.5"></i> Papers (${r.papersCount || 6})
+        </a>
+        <button onclick="toggleBookmark('${r.id}')" title="${r.isBookmarked ? 'Remove Bookmark' : 'Bookmark Resource'}" class="p-2 border border-slate-200 dark:border-slate-800 rounded-xl transition ${r.isBookmarked ? 'text-amber-500 bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-800' : 'text-slate-400 hover:text-amber-500 hover:bg-slate-100 dark:hover:bg-slate-800'}">
+          <i data-lucide="bookmark" class="w-4 h-4 ${r.isBookmarked ? 'fill-amber-500' : ''}"></i>
+        </button>
         <button onclick="copyResourceLink('${r.link}')" title="Copy Link" class="p-2 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-          <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+          <i data-lucide="share-2" class="w-4 h-4"></i>
+        </button>
+        <button onclick="openReportResourceModal('${r.id}', '${r.title.replace(/'/g, "\\'")}')" title="Report broken link or issue" class="p-2 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition">
+          <i data-lucide="flag" class="w-4 h-4"></i>
         </button>
         ${isAdmin ? `
           <button onclick="deleteResource('${r.id}')" title="Delete Resource (Admin)" class="p-2 border border-rose-200 dark:border-rose-900 rounded-xl text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition">
-            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
           </button>
         ` : ''}
       </div>
@@ -1290,19 +2080,61 @@ function filterResources() {
   renderResourcesView();
 }
 
+async function toggleBookmark(id) {
+  const resources = getResources();
+  const res = resources.find(r => r.id === id);
+  if (res) {
+    res.isBookmarked = !res.isBookmarked;
+    setResources(resources);
+    if (isBackendConnected) {
+      await apiCall(`/resources/${id}/bookmark`, 'POST', { roll: currentUser?.roll || '24DSAI001' });
+    }
+    showToast(res.isBookmarked ? 'Resource bookmarked!' : 'Bookmark removed.', 'info');
+    renderResourcesView();
+  }
+}
+
+function openReportResourceModal(id, title) {
+  const modal = document.getElementById('modal-report-resource');
+  const idInput = document.getElementById('report-resource-id');
+  const titleEl = document.getElementById('report-resource-title');
+  if (idInput) idInput.value = id;
+  if (titleEl) titleEl.textContent = title;
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+}
+
+async function submitResourceReport(event) {
+  event.preventDefault();
+  const id = document.getElementById('report-resource-id').value;
+  const reason = document.getElementById('report-reason-select').value;
+  const details = document.getElementById('report-details')?.value.trim();
+
+  if (isBackendConnected) {
+    await apiCall(`/resources/${id}/report`, 'POST', {
+      roll: currentUser?.roll || '24DSAI001',
+      reason: `${reason}${details ? ' - ' + details : ''}`
+    });
+  }
+  closeModal('modal-report-resource');
+  showToast('Thank you! Your report has been submitted to the academic administration for verification.', 'success');
+}
+
 function openAddResourceModal() {
-  if (!currentUser || currentUser.role !== 'admin') {
-    showToast('Permission Denied: Only College Admin can upload study resources.', 'error');
+  if (!currentUser) {
+    showToast('Please sign in to upload study resources.', 'error');
     return;
   }
   document.getElementById('modal-add-resource').classList.remove('hidden');
   document.getElementById('modal-add-resource').classList.add('flex');
 }
 
-function submitNewResource(event) {
+async function submitNewResource(event) {
   event.preventDefault();
-  if (!currentUser || currentUser.role !== 'admin') {
-    showToast('Permission Denied: Only College Admin can upload study resources.', 'error');
+  if (!currentUser) {
+    showToast('Please sign in to upload study resources.', 'error');
     return;
   }
 
@@ -1310,8 +2142,13 @@ function submitNewResource(event) {
   const title = document.getElementById('res-title').value.trim();
   const type = document.getElementById('res-type').value;
   const sem = document.getElementById('res-sem').value.trim();
+  const unit = document.getElementById('res-unit')?.value || 'Unit 1-4';
   const link = document.getElementById('res-link').value.trim();
   const desc = document.getElementById('res-desc').value.trim();
+
+  const contributorName = currentUser.role === 'admin' 
+    ? `Admin (${currentUser.name})` 
+    : `Student (${currentUser.name}, ${currentUser.roll || ''})`;
 
   const resources = getResources();
   const newRes = {
@@ -1320,21 +2157,27 @@ function submitNewResource(event) {
     title: title,
     type: type,
     semester: sem,
+    unit: unit,
     link: link,
     notesCount: Math.floor(Math.random() * 8) + 4,
     papersCount: Math.floor(Math.random() * 5) + 3,
-    contributor: `Admin (${currentUser.name})`,
+    contributor: contributorName,
     date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-    description: desc
+    description: desc,
+    isBookmarked: false
   };
 
   resources.unshift(newRes);
   setResources(resources);
-  apiCall('/resources', 'POST', {
-    subject, title, type, semester: sem, link, description: desc, authorName: currentUser.name
-  });
+  
+  if (isBackendConnected) {
+    await apiCall('/resources', 'POST', {
+      subject, title, type, semester: sem, unit, link, description: desc, authorName: contributorName
+    });
+  }
+
   closeModal('modal-add-resource');
-  showToast('Official study resource published for all students!', 'success');
+  showToast('Study resource published to academic library!', 'success');
   renderResourcesView();
 }
 
@@ -1491,187 +2334,1050 @@ function resetDefaultTimetable() {
   }
 }
 
-// --- D. ASSIGNMENT TRACKER (Mockup 4) ---
-// Requirement: ASSIGNMENTS SHOULD BE DONE BY ADMIN ONLY
-function renderAssignmentsView() {
-  const assignments = getGlobalAssignments();
-  const userRoll = currentUser && currentUser.roll ? currentUser.roll : '';
-  const isAdmin = currentUser && currentUser.role === 'admin';
+// --- D. ASSIGNMENT & EXAM PLANNER VIEW ---
+let activePlannerTab = 'assignments';
+let currentAssignmentStatusFilter = 'all';
+let currentAssignmentPriorityFilter = 'All';
+let currentAssignmentSearchQuery = '';
 
-  // Map assignments with current student completion status
-  const list = assignments.map(a => {
-    const isCompleted = a.completedBy && a.completedBy.includes(userRoll);
-    return {
-      id: a.id,
-      subject: a.subject,
-      title: a.title,
-      dueDate: a.dueDate,
-      createdBy: a.createdBy || 'Admin / Academic Affairs',
-      status: isCompleted ? 'Completed' : 'Pending'
-    };
-  });
+function switchPlannerTab(tab) {
+  activePlannerTab = tab;
+  const btnAssign = document.getElementById('planner-tab-btn-assignments');
+  const btnExams = document.getElementById('planner-tab-btn-exams');
+  const secAssign = document.getElementById('planner-section-assignments');
+  const secExams = document.getElementById('planner-section-exams');
 
-  // Filter
-  const filtered = list.filter(a => {
-    if (currentAssignmentFilter === 'all') return true;
-    if (currentAssignmentFilter === 'pending') return a.status === 'Pending';
-    if (currentAssignmentFilter === 'completed') return a.status === 'Completed';
-    return true;
-  });
-
-  const tbody = document.getElementById('assignments-table-body');
-  if (!tbody) return;
-
-  if (filtered.length === 0) {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="6" class="py-10 text-center text-slate-400 text-xs">
-          ${isAdmin ? 'No assignments currently listed. Click "+ Add Assignment (Admin)" to issue a new one.' : 'No pending assignments from administration under this filter.'}
-        </td>
-      </tr>
-    `;
-    return;
+  if (tab === 'assignments') {
+    if (btnAssign) btnAssign.className = "flex-1 py-2 text-xs font-bold rounded-xl transition bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm flex items-center justify-center gap-2";
+    if (btnExams) btnExams.className = "flex-1 py-2 text-xs font-bold rounded-xl transition text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-2";
+    if (secAssign) secAssign.classList.remove('hidden');
+    if (secExams) secExams.classList.add('hidden');
+  } else {
+    if (btnExams) btnExams.className = "flex-1 py-2 text-xs font-bold rounded-xl transition bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm flex items-center justify-center gap-2";
+    if (btnAssign) btnAssign.className = "flex-1 py-2 text-xs font-bold rounded-xl transition text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-2";
+    if (secExams) secExams.classList.remove('hidden');
+    if (secAssign) secAssign.classList.add('hidden');
   }
 
-  tbody.innerHTML = filtered.map(a => {
-    const isCompleted = a.status === 'Completed';
-    const statusBadge = isCompleted 
-      ? `<span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">Completed</span>`
-      : `<span class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">Pending</span>`;
-
-    const actionBtn = isCompleted
-      ? `<button onclick="toggleAssignmentStatus('${a.id}')" class="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-semibold transition">Undo</button>`
-      : `<button onclick="toggleAssignmentStatus('${a.id}')" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold transition shadow-sm">Mark Done</button>`;
-
-    return `
-      <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition">
-        <td class="py-4 px-5 font-bold text-slate-900 dark:text-white">${a.subject}</td>
-        <td class="py-4 px-5">
-          <span class="font-medium text-slate-800 dark:text-slate-200 block">${a.title}</span>
-        </td>
-        <td class="py-4 px-5 text-slate-500 dark:text-slate-400 font-medium text-xs whitespace-nowrap">${formatDate(a.dueDate)}</td>
-        <td class="py-4 px-5">
-          <span class="text-xs font-medium text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
-            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-blue-500"></i> ${a.createdBy}
-          </span>
-        </td>
-        <td class="py-4 px-5">${statusBadge}</td>
-        <td class="py-4 px-5 text-right whitespace-nowrap">
-          <div class="flex items-center justify-end gap-2">
-            ${actionBtn}
-            ${isAdmin ? `
-              <button onclick="deleteAssignment('${a.id}')" title="Delete Assignment (Admin)" class="p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition">
-                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-              </button>
-            ` : ''}
-          </div>
-        </td>
-      </tr>
-    `;
-  }).join('');
-
-  // Update profile quick stats
-  updateProfileAssignmentStats(list);
-  updateNotificationBadges();
-  lucide.createIcons();
+  renderPlannerView();
 }
 
 function filterAssignmentStatus(status) {
-  currentAssignmentFilter = status;
-
-  ['all', 'pending', 'completed'].forEach(s => {
-    const btn = document.getElementById(`filter-assign-${s}`);
-    if (btn) {
-      if (s === status) {
-        btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 text-white transition";
+  currentAssignmentStatusFilter = status;
+  ['all', 'pending', 'progress', 'completed'].forEach(s => {
+    const el = document.getElementById(`filter-assign-${s}`);
+    if (el) {
+      const match = (s === 'all' && status === 'all') || 
+                    (s === 'pending' && status === 'Pending') ||
+                    (s === 'progress' && status === 'In Progress') ||
+                    (s === 'completed' && status === 'Completed');
+      if (match) {
+        el.className = "px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-600 text-white transition";
       } else {
-        btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition";
+        el.className = "px-3 py-1 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition";
       }
     }
   });
+  renderPlannerView();
+}
 
-  renderAssignmentsView();
+function filterAssignmentPriority(val) {
+  currentAssignmentPriorityFilter = val;
+  renderPlannerView();
+}
+
+function searchAssignments(query) {
+  currentAssignmentSearchQuery = (query || '').toLowerCase().trim();
+  renderPlannerView();
+}
+
+function renderPlannerView() {
+  const isAdmin = currentUser && currentUser.role === 'admin';
+  const userRoll = currentUser?.roll || '';
+
+  // Show/Hide Admin Schedule Exam button
+  const adminExamBtn = document.getElementById('admin-add-exam-btn');
+  if (adminExamBtn) {
+    if (isAdmin) {
+      adminExamBtn.classList.remove('hidden');
+      adminExamBtn.classList.add('flex');
+    } else {
+      adminExamBtn.classList.add('hidden');
+      adminExamBtn.classList.remove('flex');
+    }
+  }
+
+  // --- SUBTAB 1: ASSIGNMENTS ---
+  const assignments = getGlobalAssignments();
+  const list = assignments.map(a => {
+    const isCompleted = (a.completedBy && a.completedBy.includes(userRoll)) || a.status === 'Completed';
+    return {
+      ...a,
+      status: isCompleted ? 'Completed' : (a.status || 'Pending'),
+      priority: a.priority || 'Medium'
+    };
+  });
+
+  const filtered = list.filter(a => {
+    const matchesStatus = (currentAssignmentStatusFilter === 'all') || (a.status === currentAssignmentStatusFilter);
+    const matchesPriority = (currentAssignmentPriorityFilter === 'All') || (a.priority === currentAssignmentPriorityFilter);
+    const matchesSearch = !currentAssignmentSearchQuery || 
+      (a.title && a.title.toLowerCase().includes(currentAssignmentSearchQuery)) ||
+      (a.subject && a.subject.toLowerCase().includes(currentAssignmentSearchQuery)) ||
+      (a.description && a.description.toLowerCase().includes(currentAssignmentSearchQuery));
+    return matchesStatus && matchesPriority && matchesSearch;
+  });
+
+  const tbody = document.getElementById('assignments-table-body');
+  if (tbody) {
+    if (filtered.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" class="py-12 text-center text-slate-400 text-xs">
+            No course assignments match the current filter criteria. Click "+ Add Assignment" to record coursework.
+          </td>
+        </tr>
+      `;
+    } else {
+      tbody.innerHTML = filtered.map(a => {
+        const isCompleted = a.status === 'Completed';
+        const isProgress = a.status === 'In Progress';
+
+        // Due date calculation & highlighting
+        const dueObj = new Date(a.dueDate);
+        const todayObj = new Date();
+        todayObj.setHours(0,0,0,0);
+        dueObj.setHours(0,0,0,0);
+        const diffDays = Math.round((dueObj - todayObj) / (1000 * 60 * 60 * 24));
+
+        let dueBadgeClass = 'text-slate-500 dark:text-slate-400';
+        let dueNotice = '';
+        if (!isCompleted) {
+          if (diffDays < 0) {
+            dueBadgeClass = 'text-rose-600 dark:text-rose-400 font-bold';
+            dueNotice = '<span class="ml-1.5 px-1.5 py-0.2 rounded text-[10px] bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 font-bold">Overdue</span>';
+          } else if (diffDays === 0) {
+            dueBadgeClass = 'text-rose-600 dark:text-rose-400 font-bold';
+            dueNotice = '<span class="ml-1.5 px-1.5 py-0.2 rounded text-[10px] bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 font-bold">Due Today</span>';
+          } else if (diffDays <= 3) {
+            dueBadgeClass = 'text-amber-600 dark:text-amber-400 font-bold';
+            dueNotice = `<span class="ml-1.5 px-1.5 py-0.2 rounded text-[10px] bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-bold">${diffDays}d left</span>`;
+          }
+        }
+
+        const priorityBadge = a.priority === 'High'
+          ? `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 dark:text-rose-400">🔥 High</span>`
+          : (a.priority === 'Low'
+              ? `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">🌱 Low</span>`
+              : `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400">⚡ Medium</span>`);
+
+        const statusBadge = isCompleted
+          ? `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">Completed</span>`
+          : (isProgress
+              ? `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300">In Progress</span>`
+              : `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">Pending</span>`);
+
+        return `
+          <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition">
+            <td class="py-4 px-4 text-center">
+              <input type="checkbox" ${isCompleted ? 'checked' : ''} onchange="toggleAssignmentStatus('${a.id}')" class="w-4 h-4 text-indigo-600 rounded cursor-pointer transition focus:ring-indigo-500" />
+            </td>
+            <td class="py-4 px-4">
+              <div class="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
+                <span class="${isCompleted ? 'line-through text-slate-400 dark:text-slate-500' : ''}">${a.title}</span>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${a.subject} ${a.description ? '• ' + a.description : ''}</p>
+            </td>
+            <td class="py-4 px-4 whitespace-nowrap text-xs">
+              <span class="${dueBadgeClass}">${formatDate(a.dueDate)}</span>
+              ${dueNotice}
+            </td>
+            <td class="py-4 px-4 whitespace-nowrap">${priorityBadge}</td>
+            <td class="py-4 px-4 whitespace-nowrap">${statusBadge}</td>
+            <td class="py-4 px-4 text-right whitespace-nowrap">
+              <div class="flex items-center justify-end gap-1.5">
+                <button onclick="editAssignment('${a.id}')" title="Edit Assignment" class="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition">
+                  <i data-lucide="edit" class="w-4 h-4"></i>
+                </button>
+                <button onclick="deleteAssignment('${a.id}')" title="Delete Assignment" class="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+  }
+
+  // Update profile quick stats
+  updateProfileAssignmentStats(list);
+
+  // --- SUBTAB 2: EXAMS & SYLLABUS ---
+  const exams = getExams();
+  const examsContainer = document.getElementById('exams-cards-container');
+  if (examsContainer) {
+    if (exams.length === 0) {
+      examsContainer.innerHTML = `
+        <div class="col-span-2 text-center py-12 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800">
+          <i data-lucide="award" class="w-10 h-10 text-slate-400 mx-auto mb-2"></i>
+          <p class="text-xs text-slate-400">No semester examination schedules published yet.</p>
+        </div>
+      `;
+    } else {
+      examsContainer.innerHTML = exams.map(ex => {
+        const diffDays = Math.ceil((new Date(ex.examDate) - new Date()) / (1000 * 60 * 60 * 24));
+        const countdownStr = diffDays > 0 ? `In ${diffDays} days` : (diffDays === 0 ? 'Today' : 'Concluded');
+        return `
+          <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-purple-500/40 transition space-y-3.5">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300">
+                  ${ex.subject}
+                </span>
+                <h4 class="font-bold text-base text-slate-900 dark:text-white mt-1.5">${ex.title}</h4>
+              </div>
+              <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center gap-1 flex-shrink-0">
+                <i data-lucide="clock" class="w-3.5 h-3.5"></i> ${countdownStr}
+              </span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 text-xs pt-1">
+              <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+                <span class="text-[10px] text-slate-400 uppercase font-semibold block">Date & Timing</span>
+                <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1 mt-0.5">
+                  <i data-lucide="calendar" class="w-3.5 h-3.5 text-purple-500"></i> ${formatDate(ex.examDate)} (${ex.examTime || '10 AM - 1 PM'})
+                </span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+                <span class="text-[10px] text-slate-400 uppercase font-semibold block">Venue / Room</span>
+                <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1 mt-0.5">
+                  <i data-lucide="map-pin" class="w-3.5 h-3.5 text-rose-500"></i> ${ex.room || 'Room 203'}
+                </span>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 text-xs space-y-1">
+              <span class="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1">
+                <i data-lucide="book-open" class="w-3 h-3 text-indigo-500"></i> Syllabus Coverage
+              </span>
+              <p class="text-slate-700 dark:text-slate-300 leading-relaxed font-medium">${ex.syllabus || 'Review official course units 1 to 4 on resource hub.'}</p>
+            </div>
+
+            ${isAdmin ? `
+              <div class="flex justify-end pt-1">
+                <button onclick="deleteExam('${ex.id}')" class="text-xs text-rose-500 hover:underline font-semibold flex items-center gap-1">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Remove Exam (Admin)
+                </button>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  lucide.createIcons();
+}
+
+function renderAssignmentsView() {
+  renderPlannerView();
 }
 
 function toggleAssignmentStatus(id) {
-  const userRoll = currentUser && currentUser.roll ? currentUser.roll : 'admin_preview';
-  const assignments = getGlobalAssignments();
+  const userRoll = currentUser?.roll || 'guest';
+  let assignments = getGlobalAssignments();
   const item = assignments.find(g => g.id === id);
 
   if (item) {
     if (!item.completedBy) item.completedBy = [];
-    if (item.completedBy.includes(userRoll)) {
+    if (item.completedBy.includes(userRoll) || item.status === 'Completed') {
       item.completedBy = item.completedBy.filter(r => r !== userRoll);
-      showToast('Assignment marked as Pending.', 'info');
+      item.status = 'Pending';
+      showToast('Assignment status updated: Pending', 'info');
     } else {
       item.completedBy.push(userRoll);
+      item.status = 'Completed';
       showToast('Assignment marked as Completed!', 'success');
     }
     setGlobalAssignments(assignments);
-    apiCall(`/assignments/${id}/toggle-completion`, 'POST', { roll: userRoll });
+    if (isBackendConnected) {
+      apiCall(`/assignments/${id}/status`, 'PUT', { status: item.status });
+      apiCall(`/assignments/${id}/toggle-completion`, 'POST', { roll: userRoll });
+    }
   }
 
-  renderAssignmentsView();
+  renderPlannerView();
+  renderHomeView();
 }
 
-function openAddAssignmentModal() {
-  if (!currentUser || currentUser.role !== 'admin') {
-    showToast('Permission Denied: Only College Admin can create assignments.', 'error');
-    return;
-  }
+function openAddAssignmentModal(editId = null) {
   const modal = document.getElementById('modal-add-assignment');
+  const heading = document.getElementById('modal-asgn-heading');
+  const idInput = document.getElementById('asgn-edit-id');
+
+  if (editId) {
+    const assignments = getGlobalAssignments();
+    const item = assignments.find(a => a.id === editId);
+    if (item) {
+      if (idInput) idInput.value = item.id;
+      if (heading) heading.textContent = 'Edit Course Assignment';
+      document.getElementById('asgn-subject').value = item.subject || '';
+      document.getElementById('asgn-title').value = item.title || '';
+      document.getElementById('asgn-due').value = item.dueDate || '';
+      document.getElementById('asgn-priority').value = item.priority || 'Medium';
+      document.getElementById('asgn-status').value = item.status || 'Pending';
+      document.getElementById('asgn-faculty').value = item.faculty || (item.createdBy || '');
+      document.getElementById('asgn-desc').value = item.description || '';
+    }
+  } else {
+    if (idInput) idInput.value = '';
+    if (heading) heading.textContent = 'Add Course Assignment';
+    document.getElementById('asgn-subject').value = 'Slot A (Mathematics)';
+    document.getElementById('asgn-title').value = '';
+    document.getElementById('asgn-due').value = '';
+    document.getElementById('asgn-priority').value = 'Medium';
+    document.getElementById('asgn-status').value = 'Pending';
+    document.getElementById('asgn-faculty').value = currentUser?.role === 'admin' ? `Admin (${currentUser.name})` : (currentUser?.name || 'Self');
+    document.getElementById('asgn-desc').value = '';
+  }
+
   if (modal) {
     modal.classList.remove('hidden');
     modal.classList.add('flex');
   }
-  lucide.createIcons();
 }
 
-function submitNewAssignment(event) {
-  event.preventDefault();
-  if (!currentUser || currentUser.role !== 'admin') {
-    showToast('Permission Denied: Only College Admin can issue assignments.', 'error');
-    return;
-  }
+function editAssignment(id) {
+  openAddAssignmentModal(id);
+}
 
+async function submitNewAssignment(event) {
+  event.preventDefault();
+  const editId = document.getElementById('asgn-edit-id')?.value;
   const subject = document.getElementById('asgn-subject').value.trim();
   const title = document.getElementById('asgn-title').value.trim();
   const due = document.getElementById('asgn-due').value;
-  const faculty = document.getElementById('asgn-faculty')?.value.trim() || `Admin (${currentUser.name})`;
+  const priority = document.getElementById('asgn-priority').value;
+  const status = document.getElementById('asgn-status').value;
+  const faculty = document.getElementById('asgn-faculty')?.value.trim() || 'Self';
+  const desc = document.getElementById('asgn-desc')?.value.trim() || '';
 
-  const assignments = getGlobalAssignments();
-  const newAssignment = {
-    id: 'asgn_g_' + Date.now(),
-    subject: subject,
-    title: title,
-    dueDate: due,
-    isBroadcast: true,
-    createdBy: faculty,
-    createdRole: 'admin',
-    completedBy: []
-  };
+  let assignments = getGlobalAssignments();
 
-  assignments.unshift(newAssignment);
-  setGlobalAssignments(assignments);
-  apiCall('/assignments', 'POST', {
-    subject, title, dueDate: due, faculty
-  });
+  if (editId) {
+    const idx = assignments.findIndex(a => a.id === editId);
+    if (idx !== -1) {
+      assignments[idx] = {
+        ...assignments[idx],
+        subject, title, dueDate: due, priority, status, description: desc, faculty
+      };
+      setGlobalAssignments(assignments);
+      if (isBackendConnected) {
+        await apiCall(`/assignments/${editId}`, 'PUT', {
+          subject, title, dueDate: due, priority, status, description: desc
+        });
+      }
+      showToast('Assignment updated successfully!', 'success');
+    }
+  } else {
+    const newAssignment = {
+      id: 'asgn_' + Date.now(),
+      subject,
+      title,
+      dueDate: due,
+      priority,
+      status,
+      description: desc,
+      faculty,
+      createdBy: faculty,
+      isBroadcast: currentUser?.role === 'admin',
+      completedBy: status === 'Completed' ? [currentUser?.roll || 'student'] : []
+    };
+    assignments.unshift(newAssignment);
+    setGlobalAssignments(assignments);
+    if (isBackendConnected) {
+      await apiCall('/assignments', 'POST', {
+        subject, title, dueDate: due, priority, status, description: desc, faculty, studentRoll: currentUser?.roll
+      });
+    }
+    showToast('Assignment added to your planner!', 'success');
+  }
+
   closeModal('modal-add-assignment');
-  showToast('Official assignment issued to all students!', 'success');
-  renderAssignmentsView();
+  renderPlannerView();
+  renderHomeView();
 }
 
-function deleteAssignment(id) {
-  if (!currentUser || currentUser.role !== 'admin') {
-    showToast('Permission Denied: Only Admin can delete assignments.', 'error');
-    return;
-  }
+async function deleteAssignment(id) {
+  if (!confirm('Are you sure you want to remove this assignment?')) return;
   let assignments = getGlobalAssignments();
   assignments = assignments.filter(a => a.id !== id);
   setGlobalAssignments(assignments);
-  apiCall(`/assignments/${id}`, 'DELETE');
+  if (isBackendConnected) {
+    await apiCall(`/assignments/${id}`, 'DELETE');
+  }
   showToast('Assignment removed.', 'info');
-  renderAssignmentsView();
+  renderPlannerView();
+  renderHomeView();
+}
+
+function openAddExamModal() {
+  if (!currentUser || currentUser.role !== 'admin') {
+    showToast('Permission Denied: Only College Admin can schedule exams.', 'error');
+    return;
+  }
+  const modal = document.getElementById('modal-add-exam');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+}
+
+async function submitNewExam(event) {
+  event.preventDefault();
+  if (!currentUser || currentUser.role !== 'admin') {
+    showToast('Permission Denied: Only College Admin can schedule exams.', 'error');
+    return;
+  }
+
+  const subject = document.getElementById('exam-subject').value.trim();
+  const title = document.getElementById('exam-title').value.trim();
+  const examDate = document.getElementById('exam-date').value.trim();
+  const room = document.getElementById('exam-room')?.value.trim() || 'Room 203';
+  const examTime = document.getElementById('exam-time')?.value.trim() || '10:00 AM - 01:00 PM';
+  const syllabus = document.getElementById('exam-syllabus')?.value.trim() || '';
+
+  const exams = getExams();
+  const newExam = {
+    id: 'exam_' + Date.now(),
+    subject,
+    title,
+    examDate,
+    examTime,
+    room,
+    syllabus,
+    createdBy: `Admin (${currentUser.name})`
+  };
+
+  exams.unshift(newExam);
+  setExams(exams);
+  if (isBackendConnected) {
+    await apiCall('/exams', 'POST', {
+      subject, title, examDate, examTime, room, syllabus
+    });
+  }
+
+  closeModal('modal-add-exam');
+  showToast(`Exam "${subject}" scheduled in Room 203!`, 'success');
+  renderPlannerView();
+  renderHomeView();
+}
+
+async function deleteExam(id) {
+  if (!currentUser || currentUser.role !== 'admin') {
+    showToast('Permission Denied: Only College Admin can remove exams.', 'error');
+    return;
+  }
+  if (!confirm('Are you sure you want to cancel this examination schedule?')) return;
+
+  let exams = getExams();
+  exams = exams.filter(e => e.id !== id);
+  setExams(exams);
+  if (isBackendConnected) {
+    await apiCall(`/exams/${id}`, 'DELETE');
+  }
+  showToast('Exam schedule cancelled.', 'info');
+  renderPlannerView();
+  renderHomeView();
+}
+
+// --- E. CAMPUS EXCHANGE VIEW (BUY, SELL, LOST & FOUND) ---
+let activeExchangeTab = 'sell';
+
+function switchExchangeTab(type) {
+  activeExchangeTab = type;
+  ['sell', 'lost', 'found'].forEach(t => {
+    const btn = document.getElementById(`exchange-tab-btn-${t}`);
+    if (btn) {
+      if (t === type) {
+        btn.className = `px-4 py-1.5 text-xs font-bold rounded-lg transition bg-white dark:bg-slate-900 ${t === 'sell' ? 'text-emerald-600 dark:text-emerald-400' : (t === 'lost' ? 'text-amber-600 dark:text-amber-400' : 'text-blue-600 dark:text-blue-400')} shadow-sm flex items-center gap-1.5`;
+      } else {
+        btn.className = "px-4 py-1.5 text-xs font-bold rounded-lg transition text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5";
+      }
+    }
+  });
+
+  renderExchangeView();
+}
+
+function filterExchangeListings() {
+  renderExchangeView();
+}
+
+async function renderExchangeView() {
+  let listings = getExchangeListings();
+  const cat = document.getElementById('exchange-category-filter')?.value || 'all';
+  const search = (document.getElementById('exchange-search-input')?.value || '').toLowerCase().trim();
+
+  // If connected, sync fresh listings
+  if (isBackendConnected) {
+    try {
+      const q = new URLSearchParams();
+      if (activeExchangeTab) q.append('type', activeExchangeTab);
+      if (cat !== 'all') q.append('category', cat);
+      if (search) q.append('search', search);
+      const res = await fetch(`${API_BASE}/exchange?${q.toString()}`);
+      const data = await res.json();
+      if (data?.success && Array.isArray(data.listings)) {
+        listings = data.listings;
+        if (data.counts) {
+          const bSell = document.getElementById('exchange-badge-sell');
+          const bLost = document.getElementById('exchange-badge-lost');
+          const bFound = document.getElementById('exchange-badge-found');
+          if (bSell) bSell.textContent = data.counts.sell || 0;
+          if (bLost) bLost.textContent = data.counts.lost || 0;
+          if (bFound) bFound.textContent = data.counts.found || 0;
+        }
+      }
+    } catch (e) {
+      console.warn('Exchange fetch notice:', e);
+    }
+  }
+
+  // Filter in memory as well
+  const filtered = listings.filter(item => {
+    const matchesType = (item.type || 'sell') === activeExchangeTab;
+    const matchesCat = (cat === 'all') || (item.category === cat);
+    const matchesSearch = !search || 
+      (item.title && item.title.toLowerCase().includes(search)) ||
+      (item.description && item.description.toLowerCase().includes(search)) ||
+      (item.location && item.location.toLowerCase().includes(search));
+    return matchesType && matchesCat && matchesSearch;
+  });
+
+  const container = document.getElementById('exchange-listings-container');
+  if (!container) return;
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-full text-center py-16 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-3">
+        <div class="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
+          <i data-lucide="inbox" class="w-7 h-7"></i>
+        </div>
+        <h4 class="font-bold text-base text-slate-800 dark:text-slate-200">No Listings Found</h4>
+        <p class="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">No campus items currently posted in this category. Be the first to publish a verified post.</p>
+        <button onclick="openPostExchangeModal()" class="mt-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow transition">
+          + Post First Item
+        </button>
+      </div>
+    `;
+    lucide.createIcons();
+    return;
+  }
+
+  container.innerHTML = filtered.map(item => {
+    const isOwner = currentUser && (currentUser.id === item.userId || currentUser.roll === item.userRoll);
+    const isAdmin = currentUser && currentUser.role === 'admin';
+    const isSoldOrResolved = item.status === 'sold' || item.status === 'resolved';
+
+    let typeBadge = '';
+    if (item.type === 'sell') {
+      typeBadge = `<span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-emerald-500 text-white shadow-sm">₹${item.price || 'Free'}</span>`;
+    } else if (item.type === 'lost') {
+      typeBadge = `<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500 text-white shadow-sm">LOST ITEM</span>`;
+    } else {
+      typeBadge = `<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-500 text-white shadow-sm">FOUND ITEM</span>`;
+    }
+
+    const fallbackImg = item.type === 'lost'
+      ? 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&auto=format&fit=crop&q=80'
+      : (item.type === 'found'
+          ? 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=80'
+          : 'https://images.unsplash.com/photo-1588702547919-26089e690ecc?w=500&auto=format&fit=crop&q=80');
+
+    const displayImg = item.imageUrl || fallbackImg;
+
+    return `
+      <div class="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+        <div>
+          <div class="h-44 relative bg-slate-100 dark:bg-slate-800 overflow-hidden">
+            <img src="${displayImg}" alt="${item.title}" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+            <div class="absolute top-3 right-3">${typeBadge}</div>
+            <span class="absolute bottom-3 left-3 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-black/70 text-white backdrop-blur-sm">
+              ${item.category || 'General'}
+            </span>
+            ${isSoldOrResolved ? `
+              <div class="absolute inset-0 bg-black/75 flex items-center justify-center backdrop-blur-[2px]">
+                <span class="px-4 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-widest text-white bg-rose-600 shadow-lg">
+                  ${item.type === 'sell' ? 'Item Sold' : 'Returned / Resolved'}
+                </span>
+              </div>
+            ` : ''}
+          </div>
+
+          <div class="p-5 space-y-2.5">
+            <div class="flex items-start justify-between gap-2">
+              <h4 class="font-bold text-sm text-slate-900 dark:text-white line-clamp-1">${item.title}</h4>
+            </div>
+            <p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed">${item.description}</p>
+            
+            <div class="pt-2 flex flex-wrap items-center gap-2 text-[11px] text-slate-400 border-t border-slate-100 dark:border-slate-800">
+              <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3 text-rose-500"></i> ${item.location || 'Campus'}</span>
+              <span>•</span>
+              <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3"></i> ${item.date || 'Recent'}</span>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
+              <span class="text-slate-500 dark:text-slate-400">Owner:</span>
+              <span class="font-semibold text-slate-700 dark:text-slate-200">${item.userName || 'Student'} (${item.userRoll || 'IIITNR'})</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 pt-0 flex items-center justify-between gap-2">
+          ${(isOwner || isAdmin) ? `
+            <div class="flex items-center gap-2 w-full">
+              ${!isSoldOrResolved ? `
+                <button onclick="markExchangeStatus('${item.id}', '${item.type === 'sell' ? 'sold' : 'resolved'}')" class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold transition">
+                  ${item.type === 'sell' ? 'Mark as Sold' : 'Mark Returned'}
+                </button>
+              ` : ''}
+              <button onclick="deleteExchangeListing('${item.id}')" title="Delete listing" class="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+          ` : `
+            <button onclick="openExchangeInquiry('${item.id}', '${item.title.replace(/'/g, "\\'")}')" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold transition shadow-sm flex items-center justify-center gap-1.5">
+              <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
+              <span>${item.type === 'sell' ? 'Contact Seller' : (item.type === 'lost' ? 'I Found This Item' : 'Claim Belonging')}</span>
+            </button>
+          `}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  lucide.createIcons();
+}
+
+function openPostExchangeModal() {
+  document.getElementById('ex-title').value = '';
+  document.getElementById('ex-price').value = '';
+  document.getElementById('ex-location').value = 'Room 203 / Academic Block';
+  document.getElementById('ex-image').value = '';
+  document.getElementById('ex-desc').value = '';
+  document.getElementById('ex-category').value = 'Electronics';
+
+  toggleExchangePriceField('sell');
+  const modal = document.getElementById('modal-post-exchange');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+}
+
+function toggleExchangePriceField(type) {
+  const wrapper = document.getElementById('ex-price-wrapper');
+  if (wrapper) {
+    if (type === 'sell') wrapper.classList.remove('hidden');
+    else wrapper.classList.add('hidden');
+  }
+}
+
+function handleExchangePhotoUpload(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  compressImageToDataUrl(file, 600, 0.85, function(dataUrl) {
+    document.getElementById('ex-image').value = dataUrl;
+    showToast('Photo attached from gallery!', 'success');
+  });
+  event.target.value = '';
+}
+
+async function submitNewExchangeListing(event) {
+  event.preventDefault();
+  const typeRadio = document.querySelector('input[name="ex_type"]:checked');
+  const type = typeRadio ? typeRadio.value : 'sell';
+  const title = document.getElementById('ex-title').value.trim();
+  const category = document.getElementById('ex-category').value;
+  const price = document.getElementById('ex-price')?.value.trim() || '';
+  const location = document.getElementById('ex-location').value.trim();
+  const imageUrl = document.getElementById('ex-image').value.trim();
+  const desc = document.getElementById('ex-desc').value.trim();
+
+  const newPost = {
+    id: 'ex_' + Date.now(),
+    type,
+    title,
+    category,
+    price: type === 'sell' ? price : '',
+    location,
+    imageUrl,
+    description: desc,
+    userId: currentUser?.id || 'student_001',
+    userName: currentUser?.name || 'Campus Student',
+    userRoll: currentUser?.roll || '24DSAI001',
+    date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+    status: 'active'
+  };
+
+  const listings = getExchangeListings();
+  listings.unshift(newPost);
+  setExchangeListings(listings);
+
+  if (isBackendConnected) {
+    await apiCall('/exchange', 'POST', {
+      type, title, category, price, location, imageUrl, description: desc,
+      userId: currentUser?.id, userName: currentUser?.name, userRoll: currentUser?.roll
+    });
+  }
+
+  closeModal('modal-post-exchange');
+  showToast('Listing published successfully to Campus Exchange!', 'success');
+  renderExchangeView();
+}
+
+function openExchangeInquiry(id, title) {
+  const modal = document.getElementById('modal-exchange-inquiry');
+  const idInput = document.getElementById('inquiry-listing-id');
+  const titleEl = document.getElementById('inquiry-item-title');
+  if (idInput) idInput.value = id;
+  if (titleEl) titleEl.textContent = title;
+  document.getElementById('inquiry-message').value = '';
+  document.getElementById('inquiry-contact').value = currentUser ? `Roll: ${currentUser.roll} / Email: ${currentUser.email}` : '';
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+}
+
+async function submitExchangeInquiry(event) {
+  event.preventDefault();
+  const id = document.getElementById('inquiry-listing-id').value;
+  const message = document.getElementById('inquiry-message').value.trim();
+  const contact = document.getElementById('inquiry-contact').value.trim();
+
+  if (isBackendConnected) {
+    await apiCall(`/exchange/${id}/inquiry`, 'POST', {
+      senderRoll: currentUser?.roll || '24DSAI001',
+      senderName: currentUser?.name || 'Student',
+      message,
+      contactInfo: contact
+    });
+  }
+
+  closeModal('modal-exchange-inquiry');
+  showToast('Inquiry sent to the listing owner! They will be notified.', 'success');
+}
+
+async function markExchangeStatus(id, status) {
+  let listings = getExchangeListings();
+  const item = listings.find(l => l.id === id);
+  if (item) {
+    item.status = status;
+    setExchangeListings(listings);
+  }
+  if (isBackendConnected) {
+    await apiCall(`/exchange/${id}/status`, 'PUT', { status, userRoll: currentUser?.roll });
+  }
+  showToast(`Listing marked as ${status}.`, 'info');
+  renderExchangeView();
+}
+
+async function deleteExchangeListing(id) {
+  if (!confirm('Are you sure you want to delete this listing?')) return;
+  let listings = getExchangeListings();
+  listings = listings.filter(l => l.id !== id);
+  setExchangeListings(listings);
+  if (isBackendConnected) {
+    await apiCall(`/exchange/${id}?userRoll=${currentUser?.roll || ''}`, 'DELETE');
+  }
+  showToast('Listing removed from Campus Exchange.', 'info');
+  renderExchangeView();
+}
+
+// --- F. HOSTEL MESS MENU VIEW ---
+let currentMessDay = 'Monday';
+
+function selectMessDay(day) {
+  currentMessDay = day;
+  renderMessView();
+}
+
+async function renderMessView() {
+  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const todayDayName = dayNames[new Date().getDay()];
+  const daysOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const isAdmin = currentUser && currentUser.role === 'admin';
+
+  // Toggle admin edit button
+  const adminMessBtn = document.getElementById('admin-edit-mess-btn');
+  if (adminMessBtn) {
+    if (isAdmin) {
+      adminMessBtn.classList.remove('hidden');
+      adminMessBtn.classList.add('flex');
+    } else {
+      adminMessBtn.classList.add('hidden');
+      adminMessBtn.classList.remove('flex');
+    }
+  }
+
+  let menu = getMessMenu();
+  if (isBackendConnected) {
+    try {
+      const res = await fetch(`${API_BASE}/mess`);
+      const data = await res.json();
+      if (data?.success && Array.isArray(data.menu)) {
+        menu = data.menu;
+        setMessMenu(menu);
+      }
+    } catch (e) {}
+  }
+
+  // Render Day of the Week Pills
+  const pillsContainer = document.getElementById('mess-day-pills-container');
+  if (pillsContainer) {
+    pillsContainer.innerHTML = daysOrder.map(d => {
+      const isSelected = d === currentMessDay;
+      const isToday = d === todayDayName;
+      return `
+        <button onclick="selectMessDay('${d}')" class="px-4 py-2 rounded-2xl text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap shadow-sm ${
+          isSelected 
+            ? 'bg-amber-500 text-white shadow-amber-500/20' 
+            : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+        }">
+          <span>${d}</span>
+          ${isToday ? `<span class="px-1.5 py-0.2 rounded-full text-[9px] font-extrabold ${isSelected ? 'bg-white text-amber-600' : 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300'}">TODAY</span>` : ''}
+        </button>
+      `;
+    }).join('');
+  }
+
+  // Render Active Day Card
+  const activeDayCard = document.getElementById('mess-active-day-card');
+  const activeDayData = menu.find(m => (m.day || m.day_of_week) === currentMessDay) || menu[0];
+
+  if (activeDayCard && activeDayData) {
+    activeDayCard.innerHTML = `
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">Hostel Dining Schedule</span>
+          <h3 class="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+            ${activeDayData.day || activeDayData.day_of_week}
+            ${(activeDayData.day || activeDayData.day_of_week) === todayDayName ? `<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400">Today</span>` : ''}
+          </h3>
+        </div>
+        ${isAdmin ? `
+          <button onclick="openEditMessModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5 self-start sm:self-auto shadow-sm">
+            <i data-lucide="edit" class="w-3.5 h-3.5"></i> Edit ${activeDayData.day || activeDayData.day_of_week} Menu
+          </button>
+        ` : ''}
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Breakfast -->
+        <div class="p-5 rounded-2xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-900/40 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-amber-500/20 text-amber-700 dark:text-amber-300 flex items-center gap-1.5">
+              <i data-lucide="coffee" class="w-3.5 h-3.5"></i> Breakfast
+            </span>
+            <span class="text-xs font-semibold text-slate-400">8:00 AM - 9:30 AM</span>
+          </div>
+          <p class="text-sm font-semibold text-slate-800 dark:text-slate-100 leading-relaxed pt-1">${activeDayData.breakfast}</p>
+        </div>
+
+        <!-- Lunch -->
+        <div class="p-5 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-900/40 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5">
+              <i data-lucide="utensils" class="w-3.5 h-3.5"></i> Lunch
+            </span>
+            <span class="text-xs font-semibold text-slate-400">12:30 PM - 2:00 PM</span>
+          </div>
+          <p class="text-sm font-semibold text-slate-800 dark:text-slate-100 leading-relaxed pt-1">${activeDayData.lunch}</p>
+        </div>
+
+        <!-- Evening Snacks -->
+        <div class="p-5 rounded-2xl bg-orange-50/50 dark:bg-orange-950/20 border border-orange-200/60 dark:border-orange-900/40 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-orange-500/20 text-orange-700 dark:text-orange-300 flex items-center gap-1.5">
+              <i data-lucide="cookie" class="w-3.5 h-3.5"></i> Evening Snacks
+            </span>
+            <span class="text-xs font-semibold text-slate-400">5:00 PM - 6:00 PM</span>
+          </div>
+          <p class="text-sm font-semibold text-slate-800 dark:text-slate-100 leading-relaxed pt-1">${activeDayData.snacks}</p>
+        </div>
+
+        <!-- Dinner -->
+        <div class="p-5 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-200/60 dark:border-indigo-900/40 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5">
+              <i data-lucide="moon" class="w-3.5 h-3.5"></i> Dinner
+            </span>
+            <span class="text-xs font-semibold text-slate-400">8:00 PM - 9:45 PM</span>
+          </div>
+          <p class="text-sm font-semibold text-slate-800 dark:text-slate-100 leading-relaxed pt-1">${activeDayData.dinner}</p>
+        </div>
+      </div>
+
+      ${activeDayData.note ? `
+        <div class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-600 dark:text-amber-400 flex items-center gap-2.5">
+          <i data-lucide="sparkles" class="w-4 h-4 flex-shrink-0"></i>
+          <span><strong>Committee Note:</strong> ${activeDayData.note}</span>
+        </div>
+      ` : ''}
+    `;
+  }
+
+  // Render Student Feedback & Reviews
+  let feedbackList = DEFAULT_MESS_FEEDBACK;
+  if (isBackendConnected) {
+    try {
+      const fbRes = await fetch(`${API_BASE}/mess/feedback`);
+      const fbData = await fbRes.json();
+      if (fbData?.success && Array.isArray(fbData.reviews)) {
+        feedbackList = fbData.reviews;
+        const avgEl = document.getElementById('mess-avg-rating-badge');
+        if (avgEl && fbData.avgRating) {
+          avgEl.innerHTML = `<i data-lucide="star" class="w-3 h-3 fill-amber-500 text-amber-500"></i> ${fbData.avgRating} / 5.0`;
+        }
+      }
+    } catch (e) {}
+  }
+
+  const fbContainer = document.getElementById('mess-feedback-list-container');
+  if (fbContainer) {
+    fbContainer.innerHTML = feedbackList.map(r => `
+      <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 space-y-2">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-xs text-slate-900 dark:text-white">${r.studentName || 'Student'}</span>
+            <span class="text-[10px] text-slate-400">(${r.studentRoll || 'IIITNR'})</span>
+          </div>
+          <div class="flex items-center text-amber-400 text-xs">
+            ${'★'.repeat(Number(r.rating) || 5)}
+          </div>
+        </div>
+        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">${r.comment || 'Good quality meals provided.'}</p>
+        <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1">
+          <span class="px-2 py-0.5 rounded-md bg-slate-200 dark:bg-slate-800 font-semibold text-slate-600 dark:text-slate-300">${r.mealType || 'Meal'}</span>
+          <span>${r.time || 'Recent'}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  lucide.createIcons();
+}
+
+function openEditMessModal() {
+  if (!currentUser || currentUser.role !== 'admin') {
+    showToast('Permission Denied: Only College Admin can edit hostel dining schedule.', 'error');
+    return;
+  }
+  const daySelect = document.getElementById('mess-edit-day');
+  if (daySelect) daySelect.value = currentMessDay;
+  loadMessDayDetails(currentMessDay);
+
+  const modal = document.getElementById('modal-edit-mess');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+}
+
+function loadMessDayDetails(dayName) {
+  const menu = getMessMenu();
+  const dayData = menu.find(m => (m.day || m.day_of_week) === dayName);
+  if (dayData) {
+    document.getElementById('mess-edit-breakfast').value = dayData.breakfast || '';
+    document.getElementById('mess-edit-lunch').value = dayData.lunch || '';
+    document.getElementById('mess-edit-snacks').value = dayData.snacks || '';
+    document.getElementById('mess-edit-dinner').value = dayData.dinner || '';
+    document.getElementById('mess-edit-note').value = dayData.note || '';
+  }
+}
+
+async function submitEditMessMenu(event) {
+  event.preventDefault();
+  if (!currentUser || currentUser.role !== 'admin') {
+    showToast('Permission Denied: Only College Admin can edit hostel dining schedule.', 'error');
+    return;
+  }
+
+  const day = document.getElementById('mess-edit-day').value;
+  const breakfast = document.getElementById('mess-edit-breakfast').value.trim();
+  const lunch = document.getElementById('mess-edit-lunch').value.trim();
+  const snacks = document.getElementById('mess-edit-snacks').value.trim();
+  const dinner = document.getElementById('mess-edit-dinner').value.trim();
+  const note = document.getElementById('mess-edit-note').value.trim();
+
+  let menu = getMessMenu();
+  const idx = menu.findIndex(m => (m.day || m.day_of_week) === day);
+  if (idx !== -1) {
+    menu[idx] = { ...menu[idx], day, breakfast, lunch, snacks, dinner, note };
+    setMessMenu(menu);
+  }
+
+  if (isBackendConnected) {
+    await apiCall(`/mess/${day}`, 'PUT', { breakfast, lunch, snacks, dinner, note });
+  }
+
+  closeModal('modal-edit-mess');
+  showToast(`Mess schedule for ${day} updated successfully!`, 'success');
+  renderMessView();
+  renderHomeView();
+}
+
+function openMessFeedbackModal() {
+  const modal = document.getElementById('modal-mess-feedback');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+  setFeedbackRating(5);
+}
+
+function setFeedbackRating(stars) {
+  document.getElementById('feedback-rating-val').value = stars;
+  const label = document.getElementById('feedback-rating-label');
+  const labels = { 1: '1.0 (Needs Improvement)', 2: '2.0 (Fair)', 3: '3.0 (Average)', 4: '4.0 (Good)', 5: '5.0 (Excellent)' };
+  if (label) label.textContent = labels[stars] || `${stars}.0`;
+
+  for (let i = 1; i <= 5; i++) {
+    const starBtn = document.getElementById(`star-${i}`);
+    if (starBtn) {
+      if (i <= stars) {
+        starBtn.className = "text-amber-400 hover:scale-125 transition";
+      } else {
+        starBtn.className = "text-slate-300 dark:text-slate-600 hover:scale-125 transition";
+      }
+    }
+  }
+}
+
+async function submitMessFeedback(event) {
+  event.preventDefault();
+  const mealType = document.getElementById('feedback-meal-type').value;
+  const rating = Number(document.getElementById('feedback-rating-val').value) || 5;
+  const comment = document.getElementById('feedback-comment').value.trim();
+
+  if (isBackendConnected) {
+    await apiCall('/mess/feedback', 'POST', {
+      studentRoll: currentUser?.roll || '24DSAI001',
+      studentName: currentUser?.name || 'Campus Student',
+      mealType,
+      rating,
+      comment
+    });
+  }
+
+  closeModal('modal-mess-feedback');
+  showToast('Thank you! Your meal rating was recorded for the mess committee.', 'success');
+  renderMessView();
 }
 
 function updateProfileAssignmentStats(assignments) {
@@ -2249,6 +3955,41 @@ function renderProfileView() {
     badgeRoleEl.className = "px-3 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300";
   }
 
+  // Display login timestamp and active session status
+  const loginTimeEl = document.getElementById('profile-detail-logintime');
+  const sessionTimeEl = document.getElementById('profile-session-time');
+  let sessionDisplay = currentUser.loginTime;
+  if (!sessionDisplay && (currentUser.session_login_time || currentUser.last_login)) {
+    const rawTime = currentUser.session_login_time || currentUser.last_login;
+    const d = new Date(rawTime);
+    sessionDisplay = !isNaN(d.getTime()) 
+      ? d.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
+      : rawTime;
+  }
+  if (!sessionDisplay) {
+    sessionDisplay = 'Active Session';
+  }
+  if (loginTimeEl) {
+    loginTimeEl.textContent = sessionDisplay;
+  }
+  if (sessionTimeEl) {
+    sessionTimeEl.innerHTML = `<i data-lucide="clock" class="w-3.5 h-3.5"></i><span>Session: ${sessionDisplay}</span>`;
+  }
+
+  const manageAdminsBtn = document.getElementById('profile-btn-manage-admins');
+  if (manageAdminsBtn) {
+    if (currentUser.role === 'admin') {
+      manageAdminsBtn.classList.remove('hidden');
+      manageAdminsBtn.classList.add('flex');
+    } else {
+      manageAdminsBtn.classList.add('hidden');
+      manageAdminsBtn.classList.remove('flex');
+    }
+  }
+
+  // Render Theme Selector Cards in Profile View
+  renderThemePickerUI();
+
   lucide.createIcons();
 }
 
@@ -2361,44 +4102,547 @@ function formatDate(dateStr) {
   }
 }
 
-function handleGlobalSearch(query) {
-  const q = (query || '').toLowerCase().trim();
-  if (!q) return;
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
-  if (q.includes('resource') || q.includes('note') || q.includes('paper') || q.includes('dsa') || q.includes('dbms')) {
+// ==========================================
+// 6A. GLOBAL UNIFIED SEARCH CONTROLLER
+// ==========================================
+
+let searchDebounceTimer = null;
+
+function handleGlobalSearch(query) {
+  if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+
+  const q = (query || '').trim();
+  const dropdown = document.getElementById('global-search-dropdown');
+  const resultsContainer = document.getElementById('global-search-results');
+  const notifDd = document.getElementById('notification-dropdown');
+  if (notifDd) notifDd.classList.add('hidden');
+
+  if (!dropdown || !resultsContainer) return;
+
+  if (!q || q.length < 2) {
+    dropdown.classList.add('hidden');
+    resultsContainer.innerHTML = '';
+    return;
+  }
+
+  dropdown.classList.remove('hidden');
+  resultsContainer.innerHTML = `
+    <div class="py-6 text-center text-slate-400 dark:text-slate-500">
+      <div class="inline-block animate-spin w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full mb-2"></div>
+      <p class="text-xs">Searching campus records for "${escapeHtml(q)}"...</p>
+    </div>
+  `;
+
+  searchDebounceTimer = setTimeout(async () => {
+    try {
+      if (isBackendConnected) {
+        const res = await fetch(`${API_BASE}/search?q=${encodeURIComponent(q)}`).then(r => r.json());
+        if (res && res.success) {
+          renderGlobalSearchResults(res.results, res.total, q);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('Backend search error, falling back to local storage:', err);
+    }
+
+    // Local fallback search across cached entities
+    const term = q.toLowerCase();
+    const localAssignments = getGlobalAssignments().filter(a =>
+      (a.title && a.title.toLowerCase().includes(term)) ||
+      (a.subject && a.subject.toLowerCase().includes(term)) ||
+      (a.description && a.description.toLowerCase().includes(term))
+    ).slice(0, 5).map(a => ({ ...a, itemType: 'assignment', targetView: 'planner' }));
+
+    const localExams = getExams().filter(e =>
+      (e.title && e.title.toLowerCase().includes(term)) ||
+      (e.subject && e.subject.toLowerCase().includes(term)) ||
+      (e.syllabus && e.syllabus.toLowerCase().includes(term))
+    ).slice(0, 5).map(e => ({ ...e, itemType: 'exam', targetView: 'planner' }));
+
+    const localResources = getResources().filter(r =>
+      (r.title && r.title.toLowerCase().includes(term)) ||
+      (r.subject && r.subject.toLowerCase().includes(term)) ||
+      (r.description && r.description.toLowerCase().includes(term))
+    ).slice(0, 5).map(r => ({ ...r, itemType: 'resource', targetView: 'resources' }));
+
+    const localEvents = getEvents().filter(e =>
+      (e.title && e.title.toLowerCase().includes(term)) ||
+      (e.venue && e.venue.toLowerCase().includes(term)) ||
+      (e.description && e.description.toLowerCase().includes(term))
+    ).slice(0, 5).map(e => ({ ...e, itemType: 'event', targetView: 'events' }));
+
+    const localAnnouncements = getAnnouncements().filter(a =>
+      (a.title && a.title.toLowerCase().includes(term)) ||
+      (a.body && a.body.toLowerCase().includes(term)) ||
+      (a.category && a.category.toLowerCase().includes(term))
+    ).slice(0, 5).map(a => ({ ...a, itemType: 'announcement', targetView: 'announcements' }));
+
+    const localExchange = getExchangeListings().filter(l =>
+      l.status === 'active' && (
+        (l.title && l.title.toLowerCase().includes(term)) ||
+        (l.description && l.description.toLowerCase().includes(term)) ||
+        (l.category && l.category.toLowerCase().includes(term)) ||
+        (l.location && l.location.toLowerCase().includes(term))
+      )
+    ).slice(0, 5).map(l => ({ ...l, itemType: 'exchange', targetView: 'exchange' }));
+
+    const localResults = {
+      assignments: localAssignments,
+      exams: localExams,
+      resources: localResources,
+      events: localEvents,
+      announcements: localAnnouncements,
+      exchange: localExchange
+    };
+    const total = localAssignments.length + localExams.length + localResources.length +
+                  localEvents.length + localAnnouncements.length + localExchange.length;
+
+    renderGlobalSearchResults(localResults, total, q);
+  }, 200);
+}
+
+function renderGlobalSearchResults(results, total, query) {
+  const container = document.getElementById('global-search-results');
+  if (!container) return;
+
+  if (!results || total === 0) {
+    container.innerHTML = `
+      <div class="py-8 px-4 text-center text-slate-400 dark:text-slate-500">
+        <i data-lucide="search-x" class="w-8 h-8 mx-auto mb-2 text-slate-400 dark:text-slate-600"></i>
+        <p class="font-semibold text-slate-700 dark:text-slate-300">No campus records found for "${escapeHtml(query)}"</p>
+        <p class="text-[11px] mt-1 text-slate-400">Try searching for subject names, course codes, exams, items, or announcements.</p>
+      </div>
+    `;
+    lucide.createIcons();
+    return;
+  }
+
+  let html = `<div class="p-1 space-y-3">`;
+
+  // 1. Assignments
+  if (results.assignments && results.assignments.length > 0) {
+    html += `
+      <div>
+        <div class="flex items-center justify-between px-2 py-1 bg-indigo-50 dark:bg-indigo-950/40 rounded-lg text-indigo-600 dark:text-indigo-400 font-bold text-[10px] uppercase tracking-wider mb-1.5">
+          <span class="flex items-center gap-1.5"><i data-lucide="file-text" class="w-3.5 h-3.5"></i> Assignments (${results.assignments.length})</span>
+          <span>Planner</span>
+        </div>
+        <div class="space-y-1">
+          ${results.assignments.map(a => `
+            <div onclick='selectSearchResult("planner", "assignment", ${JSON.stringify(a)})' 
+                 class="p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/80 cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition flex items-center justify-between">
+              <div class="min-w-0 pr-2">
+                <p class="font-semibold text-xs text-slate-800 dark:text-slate-200 truncate">${escapeHtml(a.title)}</p>
+                <p class="text-[10px] text-slate-400 dark:text-slate-500">${escapeHtml(a.subject || 'Assignment')}</p>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded-md bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 font-semibold shrink-0">Due ${escapeHtml(a.dueDate || 'Soon')}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // 2. Exams
+  if (results.exams && results.exams.length > 0) {
+    html += `
+      <div>
+        <div class="flex items-center justify-between px-2 py-1 bg-amber-50 dark:bg-amber-950/40 rounded-lg text-amber-600 dark:text-amber-400 font-bold text-[10px] uppercase tracking-wider mb-1.5">
+          <span class="flex items-center gap-1.5"><i data-lucide="calendar" class="w-3.5 h-3.5"></i> Upcoming Exams (${results.exams.length})</span>
+          <span>Room 203</span>
+        </div>
+        <div class="space-y-1">
+          ${results.exams.map(e => `
+            <div onclick='selectSearchResult("planner", "exam", ${JSON.stringify(e)})' 
+                 class="p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/80 cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition flex items-center justify-between">
+              <div class="min-w-0 pr-2">
+                <p class="font-semibold text-xs text-slate-800 dark:text-slate-200 truncate">${escapeHtml(e.title)}</p>
+                <p class="text-[10px] text-slate-400 dark:text-slate-500">${escapeHtml(e.subject || 'Exam')} • ${escapeHtml(e.room || 'Room 203')}</p>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-semibold shrink-0">${escapeHtml(e.examDate || 'Scheduled')}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // 3. Resources
+  if (results.resources && results.resources.length > 0) {
+    html += `
+      <div>
+        <div class="flex items-center justify-between px-2 py-1 bg-sky-50 dark:bg-sky-950/40 rounded-lg text-sky-600 dark:text-sky-400 font-bold text-[10px] uppercase tracking-wider mb-1.5">
+          <span class="flex items-center gap-1.5"><i data-lucide="book-open" class="w-3.5 h-3.5"></i> Study Resources (${results.resources.length})</span>
+          <span>Academic Hub</span>
+        </div>
+        <div class="space-y-1">
+          ${results.resources.map(r => `
+            <div onclick='selectSearchResult("resources", "resource", ${JSON.stringify(r)})' 
+                 class="p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/80 cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition flex items-center justify-between">
+              <div class="min-w-0 pr-2">
+                <p class="font-semibold text-xs text-slate-800 dark:text-slate-200 truncate">${escapeHtml(r.title)}</p>
+                <p class="text-[10px] text-slate-400 dark:text-slate-500">${escapeHtml(r.subject || 'Resource')} • ${escapeHtml(r.semester || 'Sem 1')}</p>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded-md bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-300 font-semibold shrink-0">${escapeHtml(r.type || 'Resource')}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // 4. Events
+  if (results.events && results.events.length > 0) {
+    html += `
+      <div>
+        <div class="flex items-center justify-between px-2 py-1 bg-purple-50 dark:bg-purple-950/40 rounded-lg text-purple-600 dark:text-purple-400 font-bold text-[10px] uppercase tracking-wider mb-1.5">
+          <span class="flex items-center gap-1.5"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Campus Events (${results.events.length})</span>
+          <span>Activities</span>
+        </div>
+        <div class="space-y-1">
+          ${results.events.map(ev => `
+            <div onclick='selectSearchResult("events", "event", ${JSON.stringify(ev)})' 
+                 class="p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/80 cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition flex items-center justify-between">
+              <div class="min-w-0 pr-2">
+                <p class="font-semibold text-xs text-slate-800 dark:text-slate-200 truncate">${escapeHtml(ev.title)}</p>
+                <p class="text-[10px] text-slate-400 dark:text-slate-500">${escapeHtml(ev.venue || 'Campus')} • ${escapeHtml(ev.category || 'Event')}</p>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-300 font-semibold shrink-0">${escapeHtml(ev.date || 'Upcoming')}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // 5. Announcements
+  if (results.announcements && results.announcements.length > 0) {
+    html += `
+      <div>
+        <div class="flex items-center justify-between px-2 py-1 bg-emerald-50 dark:bg-emerald-950/40 rounded-lg text-emerald-600 dark:text-emerald-400 font-bold text-[10px] uppercase tracking-wider mb-1.5">
+          <span class="flex items-center gap-1.5"><i data-lucide="bell" class="w-3.5 h-3.5"></i> Circulars & Notices (${results.announcements.length})</span>
+          <span>Official</span>
+        </div>
+        <div class="space-y-1">
+          ${results.announcements.map(an => `
+            <div onclick='selectSearchResult("announcements", "announcement", ${JSON.stringify(an)})' 
+                 class="p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/80 cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition flex items-center justify-between">
+              <div class="min-w-0 pr-2">
+                <p class="font-semibold text-xs text-slate-800 dark:text-slate-200 truncate">${escapeHtml(an.title)}</p>
+                <p class="text-[10px] text-slate-400 dark:text-slate-500">${escapeHtml(an.category || 'Circular')}</p>
+              </div>
+              <span class="text-[10px] text-slate-400 shrink-0">${escapeHtml(an.date || '')}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // 6. Campus Exchange
+  if (results.exchange && results.exchange.length > 0) {
+    html += `
+      <div>
+        <div class="flex items-center justify-between px-2 py-1 bg-rose-50 dark:bg-rose-950/40 rounded-lg text-rose-600 dark:text-rose-400 font-bold text-[10px] uppercase tracking-wider mb-1.5">
+          <span class="flex items-center gap-1.5"><i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i> Campus Exchange (${results.exchange.length})</span>
+          <span>Buy, Sell & Lost-Found</span>
+        </div>
+        <div class="space-y-1">
+          ${results.exchange.map(ex => {
+            const badgeType = ex.type === 'lost' ? 'Lost' : (ex.type === 'found' ? 'Found' : (ex.price ? `₹${ex.price}` : 'For Sale'));
+            const badgeColor = ex.type === 'lost' ? 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300' : (ex.type === 'found' ? 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300');
+            return `
+              <div onclick='selectSearchResult("exchange", "exchange", ${JSON.stringify(ex)})' 
+                   class="p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/80 cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition flex items-center justify-between">
+                <div class="min-w-0 pr-2">
+                  <p class="font-semibold text-xs text-slate-800 dark:text-slate-200 truncate">${escapeHtml(ex.title)}</p>
+                  <p class="text-[10px] text-slate-400 dark:text-slate-500">${escapeHtml(ex.category || 'Exchange')} • ${escapeHtml(ex.location || 'Campus')}</p>
+                </div>
+                <span class="text-[10px] px-2 py-0.5 rounded-md ${badgeColor} font-bold shrink-0">${escapeHtml(badgeType)}</span>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  html += `</div>`;
+  container.innerHTML = html;
+  lucide.createIcons();
+}
+
+function selectSearchResult(targetView, itemType, item) {
+  closeGlobalSearch();
+
+  if (targetView === 'planner') {
+    navigateTo('planner');
+    if (itemType === 'exam') {
+      switchPlannerTab('exams');
+    } else {
+      switchPlannerTab('assignments');
+    }
+  } else if (targetView === 'exchange') {
+    navigateTo('exchange');
+    if (item && item.type) {
+      switchExchangeTab(item.type);
+    }
+  } else if (targetView === 'resources') {
     navigateTo('resources');
     const input = document.getElementById('resource-search-input');
-    if (input) {
-      input.value = q;
+    if (input && item && (item.title || item.subject)) {
+      input.value = item.title || item.subject;
       filterResources();
     }
-  } else if (q.includes('time') || q.includes('sched') || q.includes('class')) {
-    navigateTo('timetable');
-  } else if (q.includes('assign') || q.includes('homework') || q.includes('due')) {
-    navigateTo('assignments');
-  } else if (q.includes('notice') || q.includes('announc') || q.includes('exam')) {
-    navigateTo('announcements');
-  } else if (q.includes('event') || q.includes('hackathon') || q.includes('fest')) {
-    navigateTo('events');
+  } else {
+    navigateTo(targetView);
   }
+}
+
+function closeGlobalSearch() {
+  const dd = document.getElementById('global-search-dropdown');
+  if (dd) dd.classList.add('hidden');
+  const input = document.getElementById('global-search');
+  if (input) input.value = '';
+}
+
+// ==========================================
+// 6B. CENTRALIZED NOTIFICATION CENTER
+// ==========================================
+
+async function fetchNotifications() {
+  if (isBackendConnected) {
+    try {
+      const roll = currentUser?.roll || '24DSAI001';
+      const res = await fetch(`${API_BASE}/notifications?roll=${encodeURIComponent(roll)}`).then(r => r.json());
+      if (res && res.success && Array.isArray(res.notifications)) {
+        setNotifications(res.notifications);
+        updateNotificationBadgeUI(res.unreadCount ?? res.notifications.filter(n => !n.isRead).length);
+        return;
+      }
+    } catch (e) {
+      console.warn('Error fetching backend notifications:', e);
+    }
+  }
+
+  // Fallback to local storage
+  const localNotifs = getNotifications();
+  const unreadCount = localNotifs.filter(n => !n.isRead || n.isRead === 0).length;
+  updateNotificationBadgeUI(unreadCount);
+}
+
+function updateNotificationBadgeUI(unreadCount) {
+  const badge = document.getElementById('notification-badge');
+  const ddCount = document.getElementById('notification-dropdown-count');
+  
+  const count = typeof unreadCount === 'number' ? unreadCount : 0;
+  
+  if (badge) {
+    if (count > 0) {
+      badge.textContent = count > 99 ? '99+' : count;
+      badge.classList.remove('hidden');
+    } else {
+      badge.classList.add('hidden');
+    }
+  }
+
+  if (ddCount) {
+    ddCount.textContent = count > 0 ? `${count} new` : '0 new';
+  }
+}
+
+function renderNotificationList() {
+  const list = document.getElementById('quick-notifications-list');
+  if (!list) return;
+
+  const notifications = getNotifications();
+  if (!notifications || notifications.length === 0) {
+    list.innerHTML = `
+      <div class="py-8 text-center text-slate-400 dark:text-slate-500">
+        <i data-lucide="bell-off" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+        <p class="font-medium text-xs text-slate-700 dark:text-slate-300">No notifications right now</p>
+        <p class="text-[10px] mt-0.5 text-slate-400">Campus alerts and updates will appear here</p>
+      </div>
+    `;
+    lucide.createIcons();
+    return;
+  }
+
+  list.innerHTML = notifications.map(n => {
+    const isUnread = !n.isRead || n.isRead === 0;
+    let typeIcon = 'bell';
+    let badgeColor = 'text-indigo-500 bg-indigo-50 dark:bg-indigo-950/60';
+    if (n.type === 'assignment') {
+      typeIcon = 'file-text';
+      badgeColor = 'text-blue-500 bg-blue-50 dark:bg-blue-950/60';
+    } else if (n.type === 'exam') {
+      typeIcon = 'calendar-clock';
+      badgeColor = 'text-amber-500 bg-amber-50 dark:bg-amber-950/60';
+    } else if (n.type === 'mess') {
+      typeIcon = 'utensils';
+      badgeColor = 'text-emerald-500 bg-emerald-50 dark:bg-emerald-950/60';
+    } else if (n.type === 'event') {
+      typeIcon = 'sparkles';
+      badgeColor = 'text-purple-500 bg-purple-50 dark:bg-purple-950/60';
+    } else if (n.type === 'announcement') {
+      typeIcon = 'megaphone';
+      badgeColor = 'text-cyan-500 bg-cyan-50 dark:bg-cyan-950/60';
+    } else if (n.type === 'exchange') {
+      typeIcon = 'shopping-bag';
+      badgeColor = 'text-rose-500 bg-rose-50 dark:bg-rose-950/60';
+    }
+
+    const timeDisplay = n.timeStr || (n.createdAt ? formatDate(n.createdAt) : 'Recent');
+
+    return `
+      <div class="group relative p-2.5 rounded-xl border transition cursor-pointer ${isUnread ? 'bg-indigo-50/40 dark:bg-indigo-950/20 border-indigo-200 dark:border-indigo-900/60 shadow-sm' : 'bg-slate-50/60 dark:bg-slate-800/40 border-slate-100 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 opacity-80 hover:opacity-100'}"
+           onclick="handleNotificationClick(${n.id}, '${escapeHtml(n.linkView || 'home')}')">
+        <div class="flex items-start gap-2.5">
+          <div class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${badgeColor}">
+            <i data-lucide="${typeIcon}" class="w-3.5 h-3.5"></i>
+          </div>
+          <div class="flex-1 min-w-0 pr-4">
+            <div class="flex items-center gap-1.5 mb-0.5">
+              <p class="font-bold text-xs ${isUnread ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'} truncate">${escapeHtml(n.title)}</p>
+              ${isUnread ? '<span class="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0"></span>' : ''}
+            </div>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed mb-1">${escapeHtml(n.message)}</p>
+            <div class="flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500">
+              <span>${escapeHtml(timeDisplay)}</span>
+              <span class="capitalize text-slate-400 font-medium">${escapeHtml(n.type || 'Alert')}</span>
+            </div>
+          </div>
+          ${isUnread ? `
+            <button onclick="markNotificationRead(${n.id}, event)" title="Mark as read" class="absolute top-2.5 right-2 p-1 rounded-md text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-100/60 dark:hover:bg-indigo-900/40 transition">
+              <i data-lucide="check" class="w-3.5 h-3.5"></i>
+            </button>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  lucide.createIcons();
 }
 
 function toggleNotificationDropdown() {
   const dd = document.getElementById('notification-dropdown');
+  const searchDd = document.getElementById('global-search-dropdown');
+  if (searchDd) searchDd.classList.add('hidden');
+
   if (dd) {
     dd.classList.toggle('hidden');
     if (!dd.classList.contains('hidden')) {
-      const list = document.getElementById('quick-notifications-list');
-      const announcements = getAnnouncements().slice(0, 3);
-      list.innerHTML = announcements.map(a => `
-        <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
-          <p class="font-bold text-slate-800 dark:text-slate-100 truncate">${a.title}</p>
-          <span class="text-[10px] text-slate-400">${a.date}</span>
-        </div>
-      `).join('');
+      renderNotificationList();
     }
   }
 }
+
+async function markNotificationRead(id, event) {
+  if (event) {
+    event.stopPropagation();
+  }
+  
+  let notifs = getNotifications();
+  notifs = notifs.map(n => {
+    if (n.id === id || String(n.id) === String(id)) {
+      return { ...n, isRead: 1 };
+    }
+    return n;
+  });
+  setNotifications(notifs);
+  
+  const unreadCount = notifs.filter(n => !n.isRead || n.isRead === 0).length;
+  updateNotificationBadgeUI(unreadCount);
+  renderNotificationList();
+
+  if (isBackendConnected) {
+    try {
+      await fetch(`${API_BASE}/notifications/${id}/read`, { method: 'PUT' });
+    } catch (e) {
+      console.warn('Backend mark notification read error:', e);
+    }
+  }
+}
+
+async function markAllNotificationsAsRead() {
+  let notifs = getNotifications();
+  if (notifs.length === 0) return;
+
+  notifs = notifs.map(n => ({ ...n, isRead: 1 }));
+  setNotifications(notifs);
+  updateNotificationBadgeUI(0);
+  renderNotificationList();
+  showToast('All notifications marked as read.', 'info');
+
+  if (isBackendConnected) {
+    try {
+      await fetch(`${API_BASE}/notifications/read-all`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ roll: currentUser?.roll || '24DSAI001' })
+      });
+    } catch (e) {
+      console.warn('Backend mark all read error:', e);
+    }
+  }
+}
+
+async function handleNotificationClick(id, linkView) {
+  await markNotificationRead(id);
+  const dd = document.getElementById('notification-dropdown');
+  if (dd) dd.classList.add('hidden');
+
+  let target = linkView || 'home';
+  if (target === 'assignments') {
+    navigateTo('planner');
+    switchPlannerTab('assignments');
+  } else if (target === 'exams') {
+    navigateTo('planner');
+    switchPlannerTab('exams');
+  } else {
+    navigateTo(target);
+  }
+}
+
+// Global click and Escape listeners for floating menus
+document.addEventListener('click', (e) => {
+  const searchInput = document.getElementById('global-search');
+  const searchDd = document.getElementById('global-search-dropdown');
+  if (searchDd && !searchDd.classList.contains('hidden')) {
+    if (searchInput && !searchInput.contains(e.target) && !searchDd.contains(e.target)) {
+      searchDd.classList.add('hidden');
+    }
+  }
+
+  const notifBtn = document.querySelector('[onclick*="toggleNotificationDropdown"]');
+  const notifDd = document.getElementById('notification-dropdown');
+  if (notifDd && !notifDd.classList.contains('hidden')) {
+    if (notifBtn && !notifBtn.contains(e.target) && !notifDd.contains(e.target)) {
+      notifDd.classList.add('hidden');
+    }
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const searchDd = document.getElementById('global-search-dropdown');
+    if (searchDd) searchDd.classList.add('hidden');
+    const notifDd = document.getElementById('notification-dropdown');
+    if (notifDd) notifDd.classList.add('hidden');
+  }
+});
 
 // ==========================================
 // 7. DATABASE MANAGEMENT CONSOLE CONTROLLER
@@ -2531,12 +4775,14 @@ function renderDbTableGrid(rows) {
     return;
   }
 
+  const isUsersTable = currentActiveDbTable === 'users';
   // Get keys from first row
   const keys = Object.keys(rows[0]);
   headersEl.innerHTML = `
     <tr>
       <th class="px-4 py-3 text-slate-500 font-bold border-b border-slate-200 dark:border-slate-800">#</th>
       ${keys.map(k => `<th class="px-4 py-3 font-bold border-b border-slate-200 dark:border-slate-800">${k}</th>`).join('')}
+      ${isUsersTable ? `<th class="px-4 py-3 font-bold border-b border-slate-200 dark:border-slate-800 text-center">Admin Controls</th>` : ''}
     </tr>
   `;
 
@@ -2549,10 +4795,32 @@ function renderDbTableGrid(rows) {
         if (String(val).startsWith('http') || String(val).startsWith('data:image')) {
           return `<td class="px-4 py-3 max-w-[180px] truncate"><span class="text-blue-500 underline truncate block" title="${val}">[Media / Link]</span></td>`;
         }
+        if (k === 'role') {
+          const isAdm = String(val).toLowerCase() === 'admin';
+          return `<td class="px-4 py-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isAdm ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300' : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'}">${val}</span></td>`;
+        }
         return `<td class="px-4 py-3 max-w-[220px] truncate text-slate-800 dark:text-slate-200" title="${String(val || '')}">${val !== undefined && val !== null ? String(val) : '<span class="text-slate-400 italic">NULL</span>'}</td>`;
       }).join('')}
+      ${isUsersTable ? `
+        <td class="px-4 py-3 text-center whitespace-nowrap">
+          ${r.role === 'student' ? `
+            <button onclick="promoteUserToAdmin('${r.id}', '${escapeHtml(r.name || '')}', '${escapeHtml(r.email || '')}')" class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/70 dark:hover:bg-indigo-900 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 rounded-lg text-[10px] font-bold inline-flex items-center gap-1 transition shadow-sm">
+              <i data-lucide="shield-plus" class="w-3 h-3"></i> Make Admin
+            </button>
+          ` : (r.email === 'revanth0246@gmail.com' ? `
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">Root Admin</span>
+          ` : `
+            <div class="inline-flex items-center gap-1.5">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 dark:bg-indigo-950/70 dark:text-indigo-300">Admin</span>
+              <button onclick="demoteUserToStudent('${r.id}', '${escapeHtml(r.name || '')}')" class="text-rose-500 hover:text-rose-700 text-[10px] font-semibold underline">Revoke</button>
+            </div>
+          `)}
+        </td>
+      ` : ''}
     </tr>
   `).join('');
+
+  lucide.createIcons();
 }
 
 function filterDbTableRows() {
@@ -2712,6 +4980,290 @@ async function resetDatabaseFromUI() {
     initStorage();
     showToast('Local database reset to official defaults.', 'success');
     renderDatabaseView();
+  }
+}
+
+// ==========================================
+// 14. ADMIN ROLE DELEGATION & MANAGEMENT
+// ==========================================
+
+async function openMakeAdminModal() {
+  if (!currentUser || currentUser.role !== 'admin') {
+    showToast('Access Denied: Only Administrators can appoint or manage administrators.', 'error');
+    return;
+  }
+
+  const modal = document.getElementById('modal-make-admin');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    switchAdminModalTab('promote');
+    await loadAdminModalData();
+    lucide.createIcons();
+  }
+}
+
+function switchAdminModalTab(tab) {
+  const promoteTabBtn = document.getElementById('tab-btn-promote');
+  const createTabBtn = document.getElementById('tab-btn-create');
+  const promoteForm = document.getElementById('form-promote-admin');
+  const createForm = document.getElementById('form-create-admin');
+
+  if (tab === 'promote') {
+    if (promoteTabBtn) promoteTabBtn.className = "flex-1 py-2 rounded-xl bg-white dark:bg-slate-700 text-indigo-600 dark:text-white shadow-sm flex items-center justify-center gap-1.5 transition";
+    if (createTabBtn) createTabBtn.className = "flex-1 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-1.5 transition";
+    if (promoteForm) promoteForm.classList.remove('hidden');
+    if (createForm) createForm.classList.add('hidden');
+  } else {
+    if (createTabBtn) createTabBtn.className = "flex-1 py-2 rounded-xl bg-white dark:bg-slate-700 text-indigo-600 dark:text-white shadow-sm flex items-center justify-center gap-1.5 transition";
+    if (promoteTabBtn) promoteTabBtn.className = "flex-1 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-1.5 transition";
+    if (createForm) createForm.classList.remove('hidden');
+    if (promoteForm) promoteForm.classList.add('hidden');
+  }
+  lucide.createIcons();
+}
+
+async function loadAdminModalData() {
+  const selectEl = document.getElementById('promote-user-select');
+  const adminsListEl = document.getElementById('modal-admins-list');
+  const adminBadgeEl = document.getElementById('active-admins-count-badge');
+
+  let allUsers = [];
+  if (isBackendConnected) {
+    try {
+      const res = await apiCall('/auth/users');
+      if (res?.success && Array.isArray(res.users)) {
+        allUsers = res.users;
+      } else {
+        const stuRes = await apiCall('/auth/students');
+        const students = stuRes?.students || getStudents();
+        allUsers = [DEFAULT_ADMIN, ...students];
+      }
+    } catch (e) {
+      allUsers = [DEFAULT_ADMIN, ...getStudents()];
+    }
+  } else {
+    allUsers = [DEFAULT_ADMIN, ...getStudents()];
+  }
+
+  // Populate student select dropdown
+  if (selectEl) {
+    const students = allUsers.filter(u => u.role === 'student');
+    if (students.length === 0) {
+      selectEl.innerHTML = `<option value="">No registered students found</option>`;
+    } else {
+      selectEl.innerHTML = students.map(s => `
+        <option value="${s.id}">${s.name} (${s.roll || 'N/A'} - ${s.email})</option>
+      `).join('');
+    }
+  }
+
+  // Populate active admins list
+  if (adminsListEl) {
+    const admins = allUsers.filter(u => u.role === 'admin');
+    if (adminBadgeEl) adminBadgeEl.textContent = `${admins.length} Admin${admins.length > 1 ? 's' : ''}`;
+
+    if (admins.length === 0) {
+      adminsListEl.innerHTML = `<p class="text-slate-400 italic">No administrators found.</p>`;
+    } else {
+      adminsListEl.innerHTML = admins.map(a => `
+        <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between">
+          <div class="flex items-center gap-2.5 truncate">
+            <div class="w-8 h-8 rounded-lg bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-xs flex-shrink-0">
+              ${(a.name || 'A').charAt(0).toUpperCase()}
+            </div>
+            <div class="truncate">
+              <div class="font-bold text-slate-800 dark:text-slate-100 truncate flex items-center gap-1.5">
+                <span>${escapeHtml(a.name)}</span>
+                ${a.email === 'revanth0246@gmail.com' ? '<span class="text-[9px] px-1.5 py-0.2 rounded font-extrabold bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300">Root</span>' : ''}
+              </div>
+              <p class="text-[11px] text-slate-400 truncate">${escapeHtml(a.email)} • ${escapeHtml(a.designation || 'Administrator')}</p>
+            </div>
+          </div>
+          <div>
+            ${a.email === 'revanth0246@gmail.com' ? `
+              <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60">Active Root</span>
+            ` : `
+              <button onclick="demoteUserToStudent('${a.id}', '${escapeHtml(a.name)}')" class="px-2 py-1 text-[10px] font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition">
+                Revoke Admin
+              </button>
+            `}
+          </div>
+        </div>
+      `).join('');
+    }
+  }
+}
+
+async function submitPromoteAdminForm(event) {
+  event.preventDefault();
+  if (!currentUser || currentUser.role !== 'admin') {
+    showToast('Permission Denied.', 'error');
+    return;
+  }
+
+  const selectedUserId = document.getElementById('promote-user-select')?.value;
+  const roll = document.getElementById('promote-roll-input')?.value.trim();
+  const email = document.getElementById('promote-email-input')?.value.trim();
+  const designation = document.getElementById('promote-designation-input')?.value.trim() || 'Campus Administrator';
+
+  const payload = { designation };
+  if (roll) payload.roll = roll;
+  else if (email) payload.email = email;
+  else if (selectedUserId) payload.userId = selectedUserId;
+  else {
+    showToast('Please select a student or enter a Roll Number/Email.', 'error');
+    return;
+  }
+
+  if (isBackendConnected) {
+    try {
+      const res = await apiCall('/auth/make-admin', 'POST', payload);
+      if (res?.success) {
+        showToast(res.message || 'User promoted to Administrator successfully!', 'success');
+        closeModal('modal-make-admin');
+        await syncAllFromBackend();
+        if (activeView === 'database') renderDatabaseView();
+        return;
+      } else {
+        showToast(res?.message || 'Failed to promote user to Administrator.', 'error');
+        return;
+      }
+    } catch (e) {
+      showToast('Error communicating with SQLite backend.', 'error');
+    }
+  }
+
+  // Local fallback
+  const students = getStudents();
+  const targetIdx = students.findIndex(s => s.id === selectedUserId || (roll && s.roll.toUpperCase() === roll.toUpperCase()) || (email && s.email.toLowerCase() === email.toLowerCase()));
+  if (targetIdx !== -1) {
+    students[targetIdx].role = 'admin';
+    students[targetIdx].designation = designation;
+    setStudents(students);
+    showToast(`User ${students[targetIdx].name} promoted to Administrator in local cache!`, 'success');
+    closeModal('modal-make-admin');
+    if (activeView === 'database') renderDatabaseView();
+  } else {
+    showToast('User not found in local records.', 'error');
+  }
+}
+
+async function submitCreateAdminForm(event) {
+  event.preventDefault();
+  if (!currentUser || currentUser.role !== 'admin') {
+    showToast('Permission Denied.', 'error');
+    return;
+  }
+
+  const name = document.getElementById('newadmin-name')?.value.trim();
+  const email = document.getElementById('newadmin-email')?.value.trim().toLowerCase();
+  const password = document.getElementById('newadmin-pass')?.value.trim();
+  const department = document.getElementById('newadmin-dept')?.value.trim() || 'Office of Academic Affairs';
+  const designation = document.getElementById('newadmin-designation')?.value.trim() || 'Campus Administrator';
+
+  if (!name || !email || !password) {
+    showToast('Please fill in Name, Email, and Passkey.', 'error');
+    return;
+  }
+
+  if (isBackendConnected) {
+    try {
+      const res = await apiCall('/auth/create-admin', 'POST', { name, email, password, department, designation });
+      if (res?.success) {
+        showToast(res.message || 'New Administrator account created successfully!', 'success');
+        closeModal('modal-make-admin');
+        await syncAllFromBackend();
+        if (activeView === 'database') renderDatabaseView();
+        return;
+      } else {
+        showToast(res?.message || 'Failed to create Administrator account.', 'error');
+        return;
+      }
+    } catch (e) {
+      showToast('Error communicating with SQLite backend.', 'error');
+    }
+  }
+
+  // Local fallback
+  const newAdmin = {
+    id: 'admin_' + Date.now(),
+    role: 'admin',
+    name,
+    email,
+    department,
+    designation,
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=faces'
+  };
+  const students = getStudents();
+  students.push(newAdmin);
+  setStudents(students);
+  showToast(`Administrator ${name} created successfully!`, 'success');
+  closeModal('modal-make-admin');
+  if (activeView === 'database') renderDatabaseView();
+}
+
+async function promoteUserToAdmin(userId, name, email) {
+  if (!currentUser || currentUser.role !== 'admin') {
+    showToast('Permission Denied: Only Administrators can promote other users.', 'error');
+    return;
+  }
+
+  if (!confirm(`Are you sure you want to grant full Administrator privileges to ${name || email}?`)) {
+    return;
+  }
+
+  if (isBackendConnected) {
+    const res = await apiCall('/auth/make-admin', 'POST', { userId, email });
+    if (res?.success) {
+      showToast(res.message || `${name} is now an Administrator!`, 'success');
+      await syncAllFromBackend();
+      switchDbTable('users');
+    } else {
+      showToast(res?.message || 'Failed to promote user.', 'error');
+    }
+  } else {
+    const students = getStudents();
+    const idx = students.findIndex(s => s.id === userId);
+    if (idx !== -1) {
+      students[idx].role = 'admin';
+      setStudents(students);
+      showToast(`${name} is now an Administrator in local cache!`, 'success');
+      switchDbTable('users');
+    }
+  }
+}
+
+async function demoteUserToStudent(userId, name) {
+  if (!currentUser || currentUser.role !== 'admin') {
+    showToast('Permission Denied.', 'error');
+    return;
+  }
+
+  if (!confirm(`Are you sure you want to revoke Administrator privileges from ${name}?`)) {
+    return;
+  }
+
+  if (isBackendConnected) {
+    const res = await apiCall(`/auth/users/${userId}/role`, 'PUT', { role: 'student' });
+    if (res?.success) {
+      showToast(res.message || 'Administrator privileges revoked.', 'info');
+      await syncAllFromBackend();
+      if (currentActiveDbTable === 'users') switchDbTable('users');
+      await loadAdminModalData();
+    } else {
+      showToast(res?.message || 'Failed to revoke privileges.', 'error');
+    }
+  } else {
+    const students = getStudents();
+    const idx = students.findIndex(s => s.id === userId);
+    if (idx !== -1) {
+      students[idx].role = 'student';
+      setStudents(students);
+      showToast('Admin privileges revoked in local cache.', 'info');
+      if (currentActiveDbTable === 'users') switchDbTable('users');
+      await loadAdminModalData();
+    }
   }
 }
 

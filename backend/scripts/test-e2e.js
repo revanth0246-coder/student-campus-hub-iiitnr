@@ -37,12 +37,12 @@ async function runTests() {
     if (data.status !== 'ok' || !data.database) throw new Error('Health check invalid');
   });
 
-  // 2. Admin Authentication
+  // 2. Admin Authentication (Revanth)
   await test('POST /api/auth/login (Admin Login & Token Generation)', async () => {
     const res = await fetch(`${BASE_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ emailOrRoll: 'admin@iiitnr.ac.in', password: 'admin123' })
+      body: JSON.stringify({ emailOrRoll: 'revanth0246@gmail.com', password: 'revanth0406' })
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
@@ -257,10 +257,138 @@ async function runTests() {
     if (!adminStatsRes.ok) throw new Error(`Admin failed to access database stats (HTTP ${adminStatsRes.status})`);
   });
 
+  // 14. Network & Multi-Device Access API
+  await test('GET /api/network (Multi-Device & Cross-Network Access URLs)', async () => {
+    const netRes = await fetch(`${BASE_URL}/network`);
+    if (!netRes.ok) throw new Error(`HTTP ${netRes.status}`);
+    const netData = await netRes.json();
+    if (!netData.success || !netData.localUrl || !Array.isArray(netData.lanUrls)) {
+      throw new Error('Network metadata structure invalid');
+    }
+  });
+
+  // 15. Semester Exams API
+  await test('GET /api/exams (Semester Exams & Syllabus Schedule)', async () => {
+    const res = await fetch(`${BASE_URL}/exams`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (!data.success || !Array.isArray(data.exams) || data.exams.length === 0) {
+      throw new Error('Exams list invalid');
+    }
+  });
+
+  // 16. Mess Menu & Today's Dining Schedule
+  await test('GET /api/mess & /api/mess/today (Hostel Mess Schedule)', async () => {
+    const res = await fetch(`${BASE_URL}/mess`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (!data.success || !Array.isArray(data.menu) || data.menu.length !== 7) {
+      throw new Error('7-Day mess schedule invalid');
+    }
+
+    const todayRes = await fetch(`${BASE_URL}/mess/today`);
+    if (!todayRes.ok) throw new Error(`HTTP ${todayRes.status}`);
+    const todayData = await todayRes.json();
+    if (!todayData.success || !todayData.breakfast) {
+      throw new Error("Today's mess menu invalid");
+    }
+  });
+
+  // 17. Campus Exchange Listings
+  await test('GET /api/exchange (Buy, Sell & Lost-Found Listings)', async () => {
+    const res = await fetch(`${BASE_URL}/exchange`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (!data.success || !Array.isArray(data.listings) || data.listings.length === 0) {
+      throw new Error('Exchange listings invalid');
+    }
+  });
+
+  // 18. Notifications System
+  await test('GET & PUT /api/notifications (Centralized Notifications & Read Status)', async () => {
+    const res = await fetch(`${BASE_URL}/notifications?roll=24DSAI001`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (!data.success || !Array.isArray(data.notifications)) {
+      throw new Error('Notifications list invalid');
+    }
+
+    const markRes = await fetch(`${BASE_URL}/notifications/1/read`, { method: 'PUT' });
+    if (!markRes.ok) throw new Error(`HTTP ${markRes.status}`);
+    const markData = await markRes.json();
+    if (!markData.success) throw new Error('Mark notification read failed');
+  });
+
+  // 19. Global Multi-Entity Search
+  await test('GET /api/search (Unified Multi-Entity Search Engine)', async () => {
+    const res = await fetch(`${BASE_URL}/search?q=calculus`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (!data.success || !data.results || data.total === 0) {
+      throw new Error('Global search did not return expected matches');
+    }
+    if (!Array.isArray(data.results.exams) || !Array.isArray(data.results.resources)) {
+      throw new Error('Global search categories malformed');
+    }
+  });
+
+  // 20. Student Assignment Checklist Toggle
+  await test('POST /api/assignments/:id/toggle-completion (Student Checklist Toggle)', async () => {
+    const toggleRes = await fetch(`${BASE_URL}/assignments/asgn_1/toggle-completion`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ roll: '24DSAI001' })
+    });
+    if (!toggleRes.ok) throw new Error(`HTTP ${toggleRes.status}`);
+    const toggleData = await toggleRes.json();
+    if (!toggleData.success) throw new Error('Toggle assignment completion failed');
+  });
+
+  // 21. Admin Privilege: Right to Make Other Admin
+  await test('POST /api/auth/make-admin & Role Delegation (Admin Right to Make Other Admin)', async () => {
+    // 21a. Non-admin cannot promote anyone (403 Forbidden)
+    const unauthorizedRes = await fetch(`${BASE_URL}/auth/make-admin`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${studentToken}`
+      },
+      body: JSON.stringify({ roll: '24DSAI001' })
+    });
+    if (unauthorizedRes.status !== 403) throw new Error(`Expected 403 for non-admin, got ${unauthorizedRes.status}`);
+
+    // 21b. Admin can create new admin account
+    const createRes = await fetch(`${BASE_URL}/auth/create-admin`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${adminToken}`
+      },
+      body: JSON.stringify({
+        name: 'Co-Admin User',
+        email: 'coadmin@iiitnr.ac.in',
+        password: 'adminpass123',
+        designation: 'Associate Dean'
+      })
+    });
+    if (!createRes.ok) throw new Error(`Create admin failed with HTTP ${createRes.status}`);
+    const createData = await createRes.json();
+    if (!createData.success) throw new Error('Create admin response unsuccessful');
+
+    // 21c. Admin can list all users including new admin
+    const listRes = await fetch(`${BASE_URL}/auth/users`, {
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    });
+    if (!listRes.ok) throw new Error(`List users failed with HTTP ${listRes.status}`);
+    const listData = await listRes.json();
+    const hasNewAdmin = listData.users.some(u => u.email === 'coadmin@iiitnr.ac.in' && u.role === 'admin');
+    if (!hasNewAdmin) throw new Error('New admin not found in users table');
+  });
+
   console.log('\n======================================================');
   console.log(`📊 Test Results: ${passed} Passed, ${failed} Failed`);
   if (failed === 0) {
-    console.log('🎉 ALL 13 ENTERPRISE SQLITE API TESTS PASSED (100%)');
+    console.log(`🎉 ALL ${passed} ENTERPRISE SQLITE API TESTS PASSED (100%)`);
   } else {
     console.log('⚠️ Some tests failed. Review output above.');
   }

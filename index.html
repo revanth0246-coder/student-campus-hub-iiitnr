@@ -45,6 +45,9 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/iiitnr_logo.png" />
+
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans antialiased min-h-screen transition-colors duration-200">
@@ -53,11 +56,11 @@
   <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 overflow-y-auto">
     <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-8 relative">
       <div class="text-center mb-6">
-        <div class="w-16 h-16 bg-blue-600/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-inner">
-          <i data-lucide="graduation-cap" class="w-9 h-9"></i>
+        <div class="w-20 h-20 bg-white rounded-full p-1.5 mx-auto mb-3 shadow-md border border-slate-200 dark:border-slate-700 flex items-center justify-center ring-4 ring-blue-500/20">
+          <img src="assets/iiitnr_logo.png" alt="IIIT Naya Raipur Official Logo" class="w-full h-full object-contain" />
         </div>
         <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">IIIT-NR Campus Hub</h2>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">International Institute of Information Technology, Naya Raipur</p>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Dr. SPM International Institute of Information Technology, Naya Raipur</p>
       </div>
 
       <!-- Login Tab Selector -->
@@ -81,7 +84,7 @@
             <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Student (Sahil)
           </button>
           <button type="button" onclick="quickFill('admin')" class="py-1.5 px-2 bg-white dark:bg-slate-800 border border-blue-200 dark:border-slate-700 rounded-lg hover:border-blue-500 text-slate-700 dark:text-slate-200 font-medium text-left truncate flex items-center gap-1.5 transition">
-            <span class="w-2 h-2 rounded-full bg-blue-600"></span> Admin (Office)
+            <span class="w-2 h-2 rounded-full bg-blue-600"></span> Admin (Revanth)
           </button>
         </div>
       </div>
@@ -114,14 +117,14 @@
           <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Admin Email</label>
           <div class="relative">
             <i data-lucide="mail" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
-            <input type="email" id="admin-email" required placeholder="admin@iiitnr.ac.in" class="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="admin@iiitnr.ac.in" />
+            <input type="email" id="admin-email" required placeholder="revanth0246@gmail.com" class="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="revanth0246@gmail.com" />
           </div>
         </div>
         <div>
           <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Admin Passkey</label>
           <div class="relative">
             <i data-lucide="key" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
-            <input type="password" id="admin-pass" required placeholder="••••••••" class="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="admin123" />
+            <input type="password" id="admin-pass" required placeholder="••••••••" class="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="revanth0406" />
           </div>
         </div>
         <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-lg shadow-indigo-600/25 transition flex items-center justify-center gap-2">
@@ -146,26 +149,21 @@
     <!-- DESKTOP / TABLET SIDEBAR (Styled exactly matching the screenshots) -->
     <aside id="main-sidebar" class="w-64 bg-slate-900 text-slate-300 flex flex-col fixed inset-y-0 left-0 z-30 transition-transform duration-300 -translate-x-full md:translate-x-0">
       <!-- Sidebar Header / Logo -->
-      <div class="p-5 flex items-center gap-3 border-b border-slate-800">
-        <div class="w-9 h-9 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-md">
-          <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+      <div class="p-4 flex items-center gap-3 border-b border-slate-800">
+        <div class="w-10 h-10 bg-white rounded-xl p-1 flex items-center justify-center shadow-md flex-shrink-0">
+          <img src="assets/iiitnr_logo.png" alt="IIIT-NR Official Logo" class="w-full h-full object-contain" />
         </div>
-        <div>
-          <h1 class="text-base font-bold text-white tracking-tight leading-snug">Student Campus Hub</h1>
-          <span class="text-[10px] font-medium text-blue-400 tracking-wider uppercase block">IIIT Naya Raipur</span>
+        <div class="truncate">
+          <h1 class="text-sm font-bold text-white tracking-tight leading-snug truncate">IIIT Naya Raipur</h1>
+          <span class="text-[10px] font-semibold text-blue-400 tracking-wider uppercase block truncate">Student Campus Hub</span>
         </div>
       </div>
 
       <!-- Navigation Menu -->
       <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         <button onclick="navigateTo('home')" class="nav-item flex items-center gap-3.5 w-full px-4 py-2.5 rounded-xl text-sm font-medium transition" data-view="home">
-          <i data-lucide="home" class="w-4 h-4"></i>
-          <span>Home</span>
-        </button>
-
-        <button onclick="navigateTo('resources')" class="nav-item flex items-center gap-3.5 w-full px-4 py-2.5 rounded-xl text-sm font-medium transition" data-view="resources">
-          <i data-lucide="book-open" class="w-4 h-4"></i>
-          <span>Resources</span>
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+          <span>Dashboard</span>
         </button>
 
         <button onclick="navigateTo('timetable')" class="nav-item flex items-center gap-3.5 w-full px-4 py-2.5 rounded-xl text-sm font-medium transition" data-view="timetable">
@@ -173,21 +171,36 @@
           <span>Timetable</span>
         </button>
 
-        <button onclick="navigateTo('assignments')" class="nav-item flex items-center gap-3.5 w-full px-4 py-2.5 rounded-xl text-sm font-medium transition" data-view="assignments">
+        <button onclick="navigateTo('planner')" class="nav-item flex items-center gap-3.5 w-full px-4 py-2.5 rounded-xl text-sm font-medium transition" data-view="planner">
           <i data-lucide="clipboard-list" class="w-4 h-4"></i>
-          <span>Assignments</span>
+          <span>Planner</span>
           <span id="badge-pending-count" class="ml-auto bg-amber-500/20 text-amber-400 text-[11px] font-semibold px-2 py-0.5 rounded-full hidden">0</span>
+        </button>
+
+        <button onclick="navigateTo('resources')" class="nav-item flex items-center gap-3.5 w-full px-4 py-2.5 rounded-xl text-sm font-medium transition" data-view="resources">
+          <i data-lucide="book-open" class="w-4 h-4"></i>
+          <span>Resources</span>
+        </button>
+
+        <button onclick="navigateTo('exchange')" class="nav-item flex items-center gap-3.5 w-full px-4 py-2.5 rounded-xl text-sm font-medium transition" data-view="exchange">
+          <i data-lucide="arrow-left-right" class="w-4 h-4"></i>
+          <span>Campus Exchange</span>
+        </button>
+
+        <button onclick="navigateTo('mess')" class="nav-item flex items-center gap-3.5 w-full px-4 py-2.5 rounded-xl text-sm font-medium transition" data-view="mess">
+          <i data-lucide="utensils" class="w-4 h-4"></i>
+          <span>Mess Menu</span>
+        </button>
+
+        <button onclick="navigateTo('events')" class="nav-item flex items-center gap-3.5 w-full px-4 py-2.5 rounded-xl text-sm font-medium transition" data-view="events">
+          <i data-lucide="calendar-heart" class="w-4 h-4"></i>
+          <span>Events</span>
         </button>
 
         <button onclick="navigateTo('announcements')" class="nav-item flex items-center gap-3.5 w-full px-4 py-2.5 rounded-xl text-sm font-medium transition" data-view="announcements">
           <i data-lucide="megaphone" class="w-4 h-4"></i>
           <span>Announcements</span>
           <span id="badge-announcements-count" class="ml-auto bg-blue-500/20 text-blue-400 text-[11px] font-semibold px-2 py-0.5 rounded-full">4</span>
-        </button>
-
-        <button onclick="navigateTo('events')" class="nav-item flex items-center gap-3.5 w-full px-4 py-2.5 rounded-xl text-sm font-medium transition" data-view="events">
-          <i data-lucide="calendar-heart" class="w-4 h-4"></i>
-          <span>Events</span>
         </button>
 
         <button onclick="navigateTo('profile')" class="nav-item flex items-center gap-3.5 w-full px-4 py-2.5 rounded-xl text-sm font-medium transition" data-view="profile">
@@ -204,13 +217,22 @@
 
       <!-- Sidebar Footer (Theme Toggle + Current User & Logout) -->
       <div class="p-4 border-t border-slate-800 space-y-3">
-        <!-- Theme Toggle Button -->
-        <button id="theme-toggle-btn" onclick="toggleTheme()" class="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-800 rounded-xl transition">
+        <!-- Theme Selector Button -->
+        <button id="theme-picker-btn" onclick="openThemePickerModal()" class="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-800 rounded-xl transition group">
           <div class="flex items-center gap-2">
-            <i id="theme-icon" data-lucide="sun" class="w-4 h-4 text-amber-400"></i>
-            <span id="theme-label">Light Mode</span>
+            <span id="sidebar-theme-dot" class="w-3.5 h-3.5 rounded-full border border-white/20 bg-blue-500 flex-shrink-0"></span>
+            <span id="theme-label">Theme: Light</span>
           </div>
-          <span class="text-[10px] text-slate-400 bg-slate-700/50 px-1.5 py-0.5 rounded">Toggle</span>
+          <span class="text-[10px] text-slate-400 bg-slate-700/60 group-hover:bg-slate-700 px-1.5 py-0.5 rounded transition">Themes</span>
+        </button>
+
+        <!-- Multi-Device / Network Access Button -->
+        <button onclick="openNetworkModal()" class="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/50 hover:bg-slate-800 rounded-xl transition group">
+          <div class="flex items-center gap-2">
+            <i data-lucide="smartphone" class="w-4 h-4 text-emerald-400"></i>
+            <span>Connect Devices</span>
+          </div>
+          <span class="text-[10px] text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-1.5 py-0.5 rounded group-hover:bg-emerald-900/60 transition">Wi-Fi/Web</span>
         </button>
 
         <!-- Current User Card -->
@@ -239,47 +261,69 @@
           <button onclick="toggleMobileSidebar()" class="md:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
             <i data-lucide="menu" class="w-5 h-5"></i>
           </button>
+          <img src="assets/iiitnr_logo.png" alt="IIIT-NR Emblem" class="w-8 h-8 rounded-full bg-white p-0.5 shadow-sm object-contain hidden sm:block flex-shrink-0 ring-1 ring-slate-200 dark:ring-slate-700" />
           <div class="hidden sm:block">
             <span class="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider">IIIT Naya Raipur</span>
             <h2 id="top-view-title" class="text-lg font-bold text-slate-900 dark:text-white leading-none">Home</h2>
           </div>
         </div>
 
-        <!-- Center: Search Input Bar -->
-        <div class="flex-1 max-w-md mx-3">
+        <!-- Center: Search Input Bar & Live Dropdown -->
+        <div class="flex-1 max-w-md mx-3 relative">
           <div class="relative">
             <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-3 text-slate-400"></i>
-            <input type="text" id="global-search" oninput="handleGlobalSearch(this.value)" placeholder="Search subjects, resources, announcements..." class="w-full pl-9 pr-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm rounded-xl border border-transparent focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:outline-none transition" />
+            <input type="text" id="global-search" oninput="handleGlobalSearch(this.value)" placeholder="Search subjects, resources, exams, exchange..." class="w-full pl-9 pr-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm rounded-xl border border-transparent focus:border-indigo-500 focus:bg-white dark:focus:bg-slate-900 focus:outline-none transition" autocomplete="off" />
+          </div>
+          <!-- Live Global Search Results Dropdown -->
+          <div id="global-search-dropdown" class="hidden absolute left-0 right-0 mt-2 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-3 z-50 max-h-96 overflow-y-auto">
+            <div id="global-search-results" class="space-y-3 text-xs">
+              <!-- Rendered via JS -->
+            </div>
           </div>
         </div>
 
         <!-- Right: Actions & User Avatar -->
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 sm:gap-3">
           <!-- Backend Connection Indicator -->
-          <div id="backend-status-pill" class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 rounded-full text-[11px] font-semibold border border-emerald-200 dark:border-emerald-800" title="SQLite Backend Status">
+          <div id="backend-status-pill" class="hidden xl:flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 rounded-full text-[11px] font-semibold border border-emerald-200 dark:border-emerald-800" title="SQLite Backend Status">
             <span id="backend-status-dot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span id="backend-status-label">SQLite Backend Connected</span>
+            <span id="backend-status-label">SQLite Connected</span>
           </div>
 
+          <!-- Cross-Device & Network Access Quick Button -->
+          <button onclick="openNetworkModal()" title="Connect Mobile Phone or Other Devices on Any Network" class="flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 text-emerald-700 dark:text-emerald-300 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 rounded-xl transition border border-emerald-200 dark:border-emerald-800 shadow-sm">
+            <i data-lucide="smartphone" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
+            <span class="text-xs font-semibold hidden md:inline">Connect Devices</span>
+          </button>
+
+          <!-- Theme Palette Selector Button -->
+          <button onclick="openThemePickerModal()" title="Choose Theme (Midnight, B&W, Slate, Neon, etc.)" class="flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl transition border border-slate-200 dark:border-slate-700 shadow-sm">
+            <i data-lucide="palette" class="w-4 h-4 text-indigo-400"></i>
+            <span class="text-xs font-semibold hidden lg:inline" id="top-theme-btn-label">Theme</span>
+          </button>
+
           <!-- Role Badge -->
-          <div id="role-pill-indicator" class="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-full text-xs font-semibold border border-blue-200 dark:border-blue-800">
-            <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+          <div id="role-pill-indicator" class="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-semibold border border-indigo-200 dark:border-indigo-900">
+            <span class="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
             <span id="role-pill-text">Student Mode</span>
           </div>
 
-          <!-- Notification Bell -->
+          <!-- Centralized Notification Bell -->
           <div class="relative">
-            <button onclick="toggleNotificationDropdown()" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl relative transition">
+            <button onclick="toggleNotificationDropdown()" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl relative transition" title="Centralized Notifications">
               <i data-lucide="bell" class="w-5 h-5"></i>
-              <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+              <span id="notification-badge" class="absolute -top-0.5 -right-0.5 bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full hidden">0</span>
             </button>
             <!-- Dropdown -->
-            <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-4 z-40">
+            <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-4 z-50">
               <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                <span class="font-bold text-sm text-slate-800 dark:text-slate-100">Notifications</span>
-                <span class="text-xs text-blue-600 dark:text-blue-400 cursor-pointer" onclick="navigateTo('announcements')">View All</span>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-sm text-slate-800 dark:text-slate-100">Notifications & Alerts</span>
+                  <span id="notification-dropdown-count" class="text-[10px] px-1.5 py-0.5 bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 font-bold rounded-full">0 new</span>
+                </div>
+                <button type="button" class="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-semibold" onclick="markAllNotificationsAsRead()">Mark all as read</button>
               </div>
-              <div class="py-2 space-y-2 text-xs" id="quick-notifications-list">
+              <div class="py-2 space-y-2 text-xs max-h-80 overflow-y-auto" id="quick-notifications-list">
                 <!-- Rendered dynamically -->
               </div>
             </div>
@@ -316,6 +360,10 @@
                 <p class="mt-2 text-slate-300 text-sm sm:text-base leading-relaxed">
                   Everything you need for your college life in one place: official admin-curated study resources, verified weekly schedules, course assignment tracking, and verified campus announcements.
                 </p>
+                <div id="home-welcome-session-pill" class="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-white/10 border border-white/20 rounded-xl text-xs text-blue-200">
+                  <i data-lucide="clock" class="w-3.5 h-3.5 text-teal-300"></i>
+                  <span id="home-welcome-session-text">Session Active</span>
+                </div>
                 <div class="mt-6 flex flex-wrap gap-3">
                   <button onclick="navigateTo('resources')" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl text-sm shadow-lg shadow-blue-600/30 transition flex items-center gap-2">
                     <span>Explore Resources</span>
@@ -341,68 +389,130 @@
             </div>
           </div>
 
-          <!-- Quick Navigation Cards (4 Color-Coded Tiles from mockup) -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- Study Resources Tile -->
-            <div onclick="navigateTo('resources')" class="cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-blue-500/50 p-5 rounded-2xl shadow-sm hover:shadow-md transition group">
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 flex items-center justify-center group-hover:scale-110 transition">
-                  <i data-lucide="book-marked" class="w-6 h-6"></i>
-                </div>
-                <div>
-                  <h3 class="font-bold text-slate-900 dark:text-white text-base">Study Resources</h3>
-                  <p class="text-xs text-slate-500 dark:text-slate-400">Notes & Previous Papers</p>
-                </div>
+          <!-- Quick Navigation Cards (6 Modern Feature Tiles) -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            <!-- Planner Tile -->
+            <div onclick="navigateTo('planner')" class="cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500/50 p-4 rounded-2xl shadow-sm hover:shadow-md transition group text-center">
+              <div class="w-10 h-10 mx-auto rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center group-hover:scale-110 transition mb-2">
+                <i data-lucide="clipboard-list" class="w-5 h-5"></i>
               </div>
+              <h3 class="font-bold text-slate-900 dark:text-white text-xs">Planner</h3>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400">Assignments & Exams</p>
             </div>
 
             <!-- Timetable Tile -->
-            <div onclick="navigateTo('timetable')" class="cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 p-5 rounded-2xl shadow-sm hover:shadow-md transition group">
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 flex items-center justify-center group-hover:scale-110 transition">
-                  <i data-lucide="calendar" class="w-6 h-6"></i>
-                </div>
-                <div>
-                  <h3 class="font-bold text-slate-900 dark:text-white text-base">Timetable</h3>
-                  <p class="text-xs text-slate-500 dark:text-slate-400">View Your Class Schedule</p>
-                </div>
+            <div onclick="navigateTo('timetable')" class="cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 p-4 rounded-2xl shadow-sm hover:shadow-md transition group text-center">
+              <div class="w-10 h-10 mx-auto rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center group-hover:scale-110 transition mb-2">
+                <i data-lucide="calendar" class="w-5 h-5"></i>
+              </div>
+              <h3 class="font-bold text-slate-900 dark:text-white text-xs">Timetable</h3>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400">Room 203 Schedule</p>
+            </div>
+
+            <!-- Study Resources Tile -->
+            <div onclick="navigateTo('resources')" class="cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-blue-500/50 p-4 rounded-2xl shadow-sm hover:shadow-md transition group text-center">
+              <div class="w-10 h-10 mx-auto rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center group-hover:scale-110 transition mb-2">
+                <i data-lucide="book-open" class="w-5 h-5"></i>
+              </div>
+              <h3 class="font-bold text-slate-900 dark:text-white text-xs">Resources</h3>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400">Notes & Papers</p>
+            </div>
+
+            <!-- Campus Exchange Tile -->
+            <div onclick="navigateTo('exchange')" class="cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-cyan-500/50 p-4 rounded-2xl shadow-sm hover:shadow-md transition group text-center">
+              <div class="w-10 h-10 mx-auto rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center group-hover:scale-110 transition mb-2">
+                <i data-lucide="arrow-left-right" class="w-5 h-5"></i>
+              </div>
+              <h3 class="font-bold text-slate-900 dark:text-white text-xs">Exchange</h3>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400">Buy, Sell & Lost</p>
+            </div>
+
+            <!-- Mess Menu Tile -->
+            <div onclick="navigateTo('mess')" class="cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-amber-500/50 p-4 rounded-2xl shadow-sm hover:shadow-md transition group text-center">
+              <div class="w-10 h-10 mx-auto rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center group-hover:scale-110 transition mb-2">
+                <i data-lucide="utensils" class="w-5 h-5"></i>
+              </div>
+              <h3 class="font-bold text-slate-900 dark:text-white text-xs">Mess Menu</h3>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400">Hostel Meals</p>
+            </div>
+
+            <!-- Events Tile -->
+            <div onclick="navigateTo('events')" class="cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-rose-500/50 p-4 rounded-2xl shadow-sm hover:shadow-md transition group text-center">
+              <div class="w-10 h-10 mx-auto rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center group-hover:scale-110 transition mb-2">
+                <i data-lucide="calendar-heart" class="w-5 h-5"></i>
+              </div>
+              <h3 class="font-bold text-slate-900 dark:text-white text-xs">Events</h3>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400">Campus Activities</p>
+            </div>
+          </div>
+
+          <!-- Daily Overview: Today's Classes & Today's Mess Menu -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Today's Classes -->
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <i data-lucide="clock" class="w-4 h-4 text-emerald-500"></i>
+                  <span id="home-today-classes-title">Today's Class Schedule</span>
+                </h3>
+                <button onclick="navigateTo('timetable')" class="text-xs text-indigo-500 hover:underline">Full Timetable</button>
+              </div>
+              <div class="space-y-2.5" id="home-today-classes">
+                <!-- Injected via JS -->
               </div>
             </div>
 
-            <!-- Assignments Tile -->
-            <div onclick="navigateTo('assignments')" class="cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-amber-500/50 p-5 rounded-2xl shadow-sm hover:shadow-md transition group">
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 flex items-center justify-center group-hover:scale-110 transition">
-                  <i data-lucide="clipboard-check" class="w-6 h-6"></i>
-                </div>
-                <div>
-                  <h3 class="font-bold text-slate-900 dark:text-white text-base">Assignments</h3>
-                  <p class="text-xs text-slate-500 dark:text-slate-400">Track Your Work</p>
-                </div>
+            <!-- Today's Mess Menu Card -->
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <i data-lucide="utensils" class="w-4 h-4 text-amber-500"></i>
+                  <span id="home-today-mess-title">Today's Hostel Mess Menu</span>
+                </h3>
+                <button onclick="navigateTo('mess')" class="text-xs text-amber-500 hover:underline">Weekly Schedule</button>
               </div>
-            </div>
-
-            <!-- Announcements Tile -->
-            <div onclick="navigateTo('announcements')" class="cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-rose-500/50 p-5 rounded-2xl shadow-sm hover:shadow-md transition group">
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-400 flex items-center justify-center group-hover:scale-110 transition">
-                  <i data-lucide="bell-ring" class="w-6 h-6"></i>
-                </div>
-                <div>
-                  <h3 class="font-bold text-slate-900 dark:text-white text-base">Announcements</h3>
-                  <p class="text-xs text-slate-500 dark:text-slate-400">Latest Updates</p>
-                </div>
+              <div class="space-y-3" id="home-today-mess">
+                <!-- Injected via JS -->
               </div>
             </div>
           </div>
 
-          <!-- Upcoming Events Section (As seen in home page screenshot) -->
+          <!-- Academic Tasks: Pending Assignments & Upcoming Exams -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Pending Assignments -->
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <i data-lucide="clipboard-check" class="w-4 h-4 text-indigo-500"></i> Pending Course Work
+                </h3>
+                <button onclick="navigateTo('planner')" class="text-xs text-indigo-500 hover:underline">View Planner</button>
+              </div>
+              <div class="space-y-2.5" id="home-pending-assignments">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+
+            <!-- Upcoming Semester Exams -->
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <i data-lucide="award" class="w-4 h-4 text-purple-500"></i> Upcoming Exams
+                </h3>
+                <button onclick="navigateTo('planner')" class="text-xs text-purple-500 hover:underline">Exam Schedule</button>
+              </div>
+              <div class="space-y-2.5" id="home-upcoming-exams">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Upcoming Events Section -->
           <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
             <div class="flex items-center justify-between mb-4">
               <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <i data-lucide="sparkle" class="w-5 h-5 text-indigo-500"></i> Upcoming Events
+                <i data-lucide="sparkle" class="w-5 h-5 text-indigo-500"></i> Upcoming Campus Events
               </h3>
-              <button onclick="navigateTo('events')" class="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline">View All</button>
+              <button onclick="navigateTo('events')" class="text-xs font-semibold text-indigo-500 hover:underline">View All Events</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="home-events-preview">
@@ -410,32 +520,16 @@
             </div>
           </div>
 
-          <!-- Quick Today's Classes & Urgent Alerts -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Today's Schedule -->
-            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
-              <div class="flex items-center justify-between mb-4">
-                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <i data-lucide="clock" class="w-4 h-4 text-emerald-500"></i> Today's Classes (Thursday)
-                </h3>
-                <button onclick="navigateTo('timetable')" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">Full Timetable</button>
-              </div>
-              <div class="space-y-2.5" id="home-today-classes">
-                <!-- Injected via JS -->
-              </div>
+          <!-- Priority Notice -->
+          <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <i data-lucide="alert-circle" class="w-4 h-4 text-rose-500"></i> Recent Circulars & Notices
+              </h3>
+              <button onclick="navigateTo('announcements')" class="text-xs text-indigo-500 hover:underline">All Circulars</button>
             </div>
-
-            <!-- Priority Announcements -->
-            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
-              <div class="flex items-center justify-between mb-4">
-                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <i data-lucide="alert-circle" class="w-4 h-4 text-rose-500"></i> Latest Notice
-                </h3>
-                <button onclick="navigateTo('announcements')" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">All Notices</button>
-              </div>
-              <div id="home-featured-announcement">
-                <!-- Injected via JS -->
-              </div>
+            <div id="home-featured-announcement">
+              <!-- Injected via JS -->
             </div>
           </div>
         </div>
@@ -448,45 +542,67 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div class="flex items-center gap-2">
-                <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Study Resources</h2>
-                <span id="resource-admin-only-badge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300">
-                  Admin Managed
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Study Resources & Notes Hub</h2>
+                <span id="resource-admin-only-badge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300">
+                  Academic Library
                 </span>
               </div>
-              <p class="text-sm text-slate-500 dark:text-slate-400">Official syllabus notes, previous year question papers, and verified materials provided by college administration.</p>
+              <p class="text-sm text-slate-500 dark:text-slate-400">Curated lecture notes, syllabus modules, previous year question papers (PYQs), and student-contributed study resources.</p>
             </div>
             
-            <!-- Requirement: RESOURCES SHOULD BE DONE BY ADMIN ONLY -->
             <div class="flex items-center gap-2">
-              <button id="admin-add-resource-btn" onclick="openAddResourceModal()" class="hidden px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-blue-600/20 transition items-center justify-center gap-2 self-start sm:self-auto">
+              <button onclick="openAddResourceModal()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-xs shadow-md shadow-indigo-600/20 transition flex items-center gap-1.5 self-start sm:self-auto">
                 <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                <span>+ Upload Resource (Admin)</span>
+                <span>+ Upload Resource</span>
               </button>
-              <div id="student-resource-note" class="text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-xl flex items-center gap-1.5">
-                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-blue-500"></i> Admin-curated study material
-              </div>
+              <button id="btn-toggle-bookmarks" onclick="toggleBookmarkedFilter()" class="px-3.5 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+                <i data-lucide="bookmark" class="w-4 h-4 text-amber-500"></i>
+                <span id="bookmarks-filter-label">Bookmarked</span>
+              </button>
             </div>
           </div>
 
           <!-- Search & Filter bar -->
-          <div class="flex flex-col sm:flex-row gap-3">
-            <div class="relative flex-1">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <!-- Search -->
+            <div class="relative sm:col-span-2 lg:col-span-1">
               <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-3 text-slate-400"></i>
-              <input type="text" id="resource-search-input" oninput="filterResources()" placeholder="Search subject or topic (e.g. Data Structures, SQL, OS)..." class="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <input type="text" id="resource-search-input" oninput="filterResources()" placeholder="Search notes, formulas..." class="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500" />
             </div>
-            <div class="flex gap-2">
-              <select id="resource-category-filter" onchange="filterResources()" class="px-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+            <!-- Subject Filter -->
+            <div>
+              <select id="resource-category-filter" onchange="filterResources()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-medium focus:outline-none focus:ring-1 focus:ring-indigo-500">
                 <option value="all">All Subjects</option>
-                <option value="Slot A (Mathematics)">Slot A (Mathematics)</option>
-                <option value="Slot B (Computer Programming)">Slot B (Computer Programming)</option>
-                <option value="Slot C (Digital Logic)">Slot C (Digital Logic)</option>
-                <option value="Slot F (Physics)">Slot F (Physics)</option>
-                <option value="Slot G (Professional Communication)">Slot G (Professional Communication)</option>
-                <option value="Slot M (IT Workshop)">Slot M (IT Workshop)</option>
-                <option value="Slot N (Discrete Mathematics / AI)">Slot N (Discrete Mathematics / AI)</option>
-                <option value="ILC (Indian Languages & Culture)">ILC (Indian Languages & Culture)</option>
-                <option value="Creative Arts (Music)">Creative Arts (Music)</option>
-                <option value="Health & Wellness (Yoga)">Health & Wellness (Yoga)</option>
+                <option value="Slot A (Mathematics)">Slot A: Mathematics</option>
+                <option value="Slot B (Computer Programming)">Slot B: Programming</option>
+                <option value="Slot C (Digital Logic)">Slot C: Digital Logic</option>
+                <option value="Slot F (Physics)">Slot F: Physics</option>
+                <option value="Slot G (Professional Communication)">Slot G: Communication</option>
+                <option value="Slot M (IT Workshop)">Slot M: IT Workshop</option>
+                <option value="Slot N (Discrete Mathematics / AI)">Slot N: Discrete Maths</option>
+              </select>
+            </div>
+
+            <!-- Unit Filter -->
+            <div>
+              <select id="resource-unit-filter" onchange="filterResources()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-medium focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                <option value="all">All Units</option>
+                <option value="Unit 1">Unit 1</option>
+                <option value="Unit 2">Unit 2</option>
+                <option value="Unit 3">Unit 3</option>
+                <option value="Unit 4">Unit 4</option>
+              </select>
+            </div>
+
+            <!-- Category / Type Filter -->
+            <div>
+              <select id="resource-type-filter" onchange="filterResources()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-medium focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                <option value="all">All Categories</option>
+                <option value="Notes">Lecture Notes</option>
+                <option value="Previous Papers">Previous Papers (PYQ)</option>
+                <option value="Important Links">Reference Links & Labs</option>
+                <option value="Syllabus">Syllabus & Guides</option>
               </select>
             </div>
           </div>
@@ -503,17 +619,20 @@
         <div id="view-timetable" class="page-view space-y-6 hidden">
           <!-- Timetable Header -->
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div class="flex items-center gap-2">
-                <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Class Timetable</h2>
-                <span id="timetable-permission-badge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                  Read Only
-                </span>
-                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300">
-                  Room No: 203
-                </span>
+            <div class="flex items-center gap-3">
+              <img src="assets/iiitnr_logo.png" alt="IIIT-NR Official Logo" class="w-12 h-12 rounded-xl bg-white p-1 border border-slate-200 dark:border-slate-700 shadow-sm object-contain flex-shrink-0" />
+              <div>
+                <div class="flex items-center gap-2">
+                  <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Class Timetable</h2>
+                  <span id="timetable-permission-badge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                    Read Only
+                  </span>
+                  <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300">
+                    Room No: 203
+                  </span>
+                </div>
+                <p class="text-sm text-slate-500 dark:text-slate-400">B.Tech 1st Semester Section-1 (w.e.f. 24/08/2026 | IIIT Naya Raipur).</p>
               </div>
-              <p class="text-sm text-slate-500 dark:text-slate-400">B.Tech 1st Semester Section-1 (w.e.f. 24/08/2026 | IIIT Naya Raipur).</p>
             </div>
 
             <!-- Requirement: Timetable edited ONLY BY ADMIN -->
@@ -576,65 +695,229 @@
         </div>
 
         <!-- ============================================== -->
-        <!-- 4. ASSIGNMENT TRACKER VIEW (SCREEN 4) -->
+        <!-- 4. ASSIGNMENT & EXAM PLANNER VIEW -->
         <!-- ============================================== -->
-        <div id="view-assignments" class="page-view space-y-6 hidden">
+        <div id="view-planner" class="page-view space-y-6 hidden">
           <!-- Header -->
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div class="flex items-center gap-2">
-                <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Assignment Tracker</h2>
-                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">
-                  Admin Assigned
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Assignment & Exam Planner</h2>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300">
+                  Academic Portal
                 </span>
               </div>
-              <p class="text-sm text-slate-500 dark:text-slate-400">Official course assignments and deadlines issued by college faculty and administration.</p>
+              <p class="text-sm text-slate-500 dark:text-slate-400">Track course assignments, submit deadlines, track preparation progress, and view mid-semester exam schedules.</p>
             </div>
             
-            <!-- Requirement: ASSIGNMENTS SHOULD BE DONE BY ADMIN ONLY -->
             <div class="flex items-center gap-2">
-              <button id="admin-add-assignment-btn" onclick="openAddAssignmentModal()" class="hidden px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-blue-600/20 transition items-center justify-center gap-2 self-start sm:self-auto">
-                <i data-lucide="plus" class="w-4 h-4"></i>
-                <span>+ Add Assignment (Admin)</span>
+              <button onclick="openAddAssignmentModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-xs shadow-md shadow-indigo-600/20 transition flex items-center gap-1.5">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                <span>+ Add Assignment</span>
               </button>
-              <div id="student-assignment-note" class="text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-xl flex items-center gap-1.5">
-                <i data-lucide="lock" class="w-3.5 h-3.5 text-amber-500"></i> Issued by Administration
+              <button id="admin-add-exam-btn" onclick="openAddExamModal()" class="hidden px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl text-xs shadow-md shadow-purple-600/20 transition items-center gap-1.5">
+                <i data-lucide="calendar-plus" class="w-4 h-4"></i>
+                <span>+ Schedule Exam (Admin)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Planner Subtabs: Course Assignments vs Upcoming Exams -->
+          <div class="flex bg-slate-100 dark:bg-slate-800/80 p-1 rounded-2xl max-w-md border border-slate-200 dark:border-slate-700">
+            <button id="planner-tab-btn-assignments" onclick="switchPlannerTab('assignments')" class="flex-1 py-2 text-xs font-bold rounded-xl transition bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm flex items-center justify-center gap-2">
+              <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+              <span>Course Assignments</span>
+            </button>
+            <button id="planner-tab-btn-exams" onclick="switchPlannerTab('exams')" class="flex-1 py-2 text-xs font-bold rounded-xl transition text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-2">
+              <i data-lucide="award" class="w-4 h-4"></i>
+              <span>Upcoming Exams & Syllabus</span>
+            </button>
+          </div>
+
+          <!-- SUBTAB 1: Assignments Section -->
+          <div id="planner-section-assignments" class="space-y-4">
+            <!-- Filter Bar & Search -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+              <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                <span class="text-xs font-semibold text-slate-500 mr-1">Status:</span>
+                <button onclick="filterAssignmentStatus('all')" id="filter-assign-all" class="px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-600 text-white transition">All</button>
+                <button onclick="filterAssignmentStatus('Pending')" id="filter-assign-pending" class="px-3 py-1 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">Pending</button>
+                <button onclick="filterAssignmentStatus('In Progress')" id="filter-assign-progress" class="px-3 py-1 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">In Progress</button>
+                <button onclick="filterAssignmentStatus('Completed')" id="filter-assign-completed" class="px-3 py-1 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">Completed</button>
+              </div>
+              <div class="flex items-center gap-2 w-full sm:w-auto">
+                <select id="filter-assign-priority" onchange="filterAssignmentPriority(this.value)" class="px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-medium">
+                  <option value="All">All Priorities</option>
+                  <option value="High">🔥 High Priority</option>
+                  <option value="Medium">⚡ Medium Priority</option>
+                  <option value="Low">🌱 Low Priority</option>
+                </select>
+                <div class="relative flex-1 sm:w-48">
+                  <i data-lucide="search" class="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-slate-400"></i>
+                  <input type="text" id="search-assignment-input" oninput="searchAssignments(this.value)" placeholder="Search assignments..." class="w-full pl-8 pr-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Assignment Table -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[700px]">
+                  <thead>
+                    <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                      <th class="py-3 px-4 w-12 text-center">Done</th>
+                      <th class="py-3 px-4">Subject & Title</th>
+                      <th class="py-3 px-4">Due Date</th>
+                      <th class="py-3 px-4">Priority</th>
+                      <th class="py-3 px-4">Status</th>
+                      <th class="py-3 px-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="assignments-table-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
+                    <!-- Populated via JS -->
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
 
-          <!-- Filter Pills & Scope Indicator -->
-          <div class="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800">
-            <div class="flex gap-2">
-              <button onclick="filterAssignmentStatus('all')" id="filter-assign-all" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 text-white transition">All</button>
-              <button onclick="filterAssignmentStatus('pending')" id="filter-assign-pending" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">Pending</button>
-              <button onclick="filterAssignmentStatus('completed')" id="filter-assign-completed" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">Completed</button>
+          <!-- SUBTAB 2: Exams Section -->
+          <div id="planner-section-exams" class="space-y-4 hidden">
+            <div class="bg-purple-50/60 dark:bg-purple-950/20 border border-purple-200/80 dark:border-purple-800/60 p-4 rounded-2xl flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+                  <i data-lucide="award" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-sm text-slate-900 dark:text-white">B.Tech Autumn Semester Mid-Term Examinations 2026</h4>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">All examinations will be conducted in Academic Block (Room 203 & CC Labs) under university supervision.</p>
+                </div>
+              </div>
             </div>
-            <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
-              <span class="inline-flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-semibold bg-blue-50 dark:bg-blue-950/50 px-2.5 py-1 rounded-lg border border-blue-200 dark:border-blue-900">
-                <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Official Assignments (Issued by Admin)
-              </span>
+
+            <!-- Exam Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="exams-cards-container">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- CAMPUS EXCHANGE VIEW (BUY, SELL, LOST & FOUND) -->
+        <!-- ============================================== -->
+        <div id="view-exchange" class="page-view space-y-6 hidden">
+          <!-- Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Campus Exchange</h2>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                  Student Marketplace
+                </span>
+              </div>
+              <p class="text-sm text-slate-500 dark:text-slate-400">Verified college marketplace for textbooks, electronics, lost and found campus belongings.</p>
+            </div>
+            
+            <button onclick="openPostExchangeModal()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-xs shadow-md shadow-emerald-600/20 transition flex items-center gap-1.5 self-start sm:self-auto">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i>
+              <span>+ Post Listing</span>
+            </button>
+          </div>
+
+          <!-- 3 Subtabs: Buy & Sell, Lost Items, Found Items -->
+          <div class="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div class="flex bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl">
+              <button id="exchange-tab-btn-sell" onclick="switchExchangeTab('sell')" class="px-4 py-1.5 text-xs font-bold rounded-lg transition bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-sm flex items-center gap-1.5">
+                <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i>
+                <span>Buy & Sell</span>
+                <span id="exchange-badge-sell" class="text-[10px] bg-emerald-100 dark:bg-emerald-950 px-1.5 py-0.2 rounded-full font-bold ml-1">2</span>
+              </button>
+              <button id="exchange-tab-btn-lost" onclick="switchExchangeTab('lost')" class="px-4 py-1.5 text-xs font-bold rounded-lg transition text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5">
+                <i data-lucide="help-circle" class="w-3.5 h-3.5 text-amber-500"></i>
+                <span>Lost Items</span>
+                <span id="exchange-badge-lost" class="text-[10px] bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 px-1.5 py-0.2 rounded-full font-bold ml-1">1</span>
+              </button>
+              <button id="exchange-tab-btn-found" onclick="switchExchangeTab('found')" class="px-4 py-1.5 text-xs font-bold rounded-lg transition text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5">
+                <i data-lucide="check-circle" class="w-3.5 h-3.5 text-blue-500"></i>
+                <span>Found Items</span>
+                <span id="exchange-badge-found" class="text-[10px] bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 px-1.5 py-0.2 rounded-full font-bold ml-1">1</span>
+              </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex items-center gap-2">
+              <select id="exchange-category-filter" onchange="filterExchangeListings()" class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-medium">
+                <option value="all">All Categories</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Textbooks">Textbooks</option>
+                <option value="Documents">ID & Documents</option>
+                <option value="Stationery">Stationery</option>
+                <option value="Others">Others</option>
+              </select>
+              <div class="relative w-44">
+                <i data-lucide="search" class="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-slate-400"></i>
+                <input type="text" id="exchange-search-input" oninput="filterExchangeListings()" placeholder="Search items..." class="w-full pl-8 pr-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+              </div>
             </div>
           </div>
 
-          <!-- Assignment Table (Mockup 4 style) -->
-          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-            <div class="overflow-x-auto">
-              <table class="w-full text-left border-collapse min-w-[650px]">
-                <thead>
-                  <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                    <th class="py-3 px-5">Subject</th>
-                    <th class="py-3 px-5">Assignment</th>
-                    <th class="py-3 px-5">Due Date</th>
-                    <th class="py-3 px-5">Issued By</th>
-                    <th class="py-3 px-5">Status</th>
-                    <th class="py-3 px-5 text-right">Action</th>
-                  </tr>
-                </thead>
-                <tbody id="assignments-table-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
-                  <!-- Populated via JS -->
-                </tbody>
-              </table>
+          <!-- Listings Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="exchange-listings-container">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- HOSTEL MESS MENU & WEEKLY SCHEDULE VIEW -->
+        <!-- ============================================== -->
+        <div id="view-mess" class="page-view space-y-6 hidden">
+          <!-- Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Hostel Mess Menu</h2>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+                  Weekly Schedule
+                </span>
+              </div>
+              <p class="text-sm text-slate-500 dark:text-slate-400">Official hostel dining schedule for Monday through Sunday with real-time committee updates.</p>
+            </div>
+            
+            <div class="flex items-center gap-2">
+              <button onclick="openMessFeedbackModal()" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl text-xs shadow-md shadow-amber-500/20 transition flex items-center gap-1.5">
+                <i data-lucide="star" class="w-3.5 h-3.5"></i>
+                <span>Rate Today's Meal</span>
+              </button>
+              <button id="admin-edit-mess-btn" onclick="openEditMessModal()" class="hidden px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-xs shadow-md shadow-indigo-600/20 transition items-center gap-1.5">
+                <i data-lucide="edit" class="w-3.5 h-3.5"></i>
+                <span>Edit Menu (Admin)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Day of the Week Pills -->
+          <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" id="mess-day-pills-container">
+            <!-- Rendered Monday..Sunday via JS -->
+          </div>
+
+          <!-- Active Day Menu Display Card -->
+          <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6" id="mess-active-day-card">
+            <!-- 4 Meal Blocks: Breakfast, Lunch, Snacks, Dinner -->
+          </div>
+
+          <!-- Student Reviews & Feedback Summary -->
+          <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div class="flex items-center gap-2">
+                <h4 class="font-bold text-slate-900 dark:text-white text-base">Student Meal Ratings & Reviews</h4>
+                <span id="mess-avg-rating-badge" class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-500/20 text-amber-500 flex items-center gap-1">
+                  <i data-lucide="star" class="w-3 h-3 fill-amber-500 text-amber-500"></i> 4.5 / 5.0
+                </span>
+              </div>
+              <button onclick="openMessFeedbackModal()" class="text-xs text-amber-600 dark:text-amber-400 font-semibold hover:underline">Write a Review</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="mess-feedback-list-container">
+              <!-- Rendered via JS -->
             </div>
           </div>
         </div>
@@ -715,6 +998,10 @@
                     <span class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
                       Batch 2024 - 2028
                     </span>
+                    <span id="profile-session-time" class="px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/60 flex items-center gap-1.5">
+                      <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                      <span>Session Active</span>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -745,12 +1032,21 @@
                   <span class="text-xs text-slate-400 uppercase font-semibold block">Email</span>
                   <span id="profile-detail-email" class="font-bold text-slate-800 dark:text-slate-100 text-xs truncate block" title="sahil@iiitnr.ac.in">sahil@iiitnr.ac.in</span>
                 </div>
+                <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800 col-span-2 sm:col-span-3">
+                  <span class="text-xs text-slate-400 uppercase font-semibold block flex items-center gap-1.5">
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-500"></i> Active Session & Login Time
+                  </span>
+                  <span id="profile-detail-logintime" class="font-bold text-slate-800 dark:text-slate-100 text-sm">Just now</span>
+                </div>
               </div>
 
               <!-- Edit Profile Action Button -->
-              <div class="pt-2 flex gap-3">
+              <div class="pt-2 flex flex-wrap gap-3">
                 <button onclick="openEditProfileModal()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow transition flex items-center gap-2">
                   <i data-lucide="edit" class="w-4 h-4"></i> Edit Profile
+                </button>
+                <button id="profile-btn-manage-admins" onclick="openMakeAdminModal()" class="hidden px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-sm shadow transition items-center gap-2">
+                  <i data-lucide="shield-plus" class="w-4 h-4"></i> Appoint / Make Admin
                 </button>
                 <button onclick="handleLogout()" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold rounded-xl text-sm transition flex items-center gap-2">
                   <i data-lucide="log-out" class="w-4 h-4"></i> Switch User / Log Out
@@ -817,6 +1113,24 @@
               </div>
             </div>
           </div>
+
+          <!-- App Appearance & Theme Preference Card in Profile View -->
+          <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+                  <i data-lucide="palette" class="w-5 h-5 text-amber-500"></i>
+                  <span>App Appearance & Theme Preference</span>
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Switch themes instantly including Black & White high-contrast, Midnight OLED, and official Campus styles.</p>
+              </div>
+              <span id="profile-active-theme-pill" class="text-xs px-3 py-1 rounded-full font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-300 self-start sm:self-auto">Active: Campus Light</span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-2" id="profile-theme-cards-container">
+              <!-- Rendered dynamically by renderThemePickerUI -->
+            </div>
+          </div>
         </div>
 
         <!-- 8. DATABASE MANAGEMENT CONSOLE VIEW -->
@@ -833,6 +1147,9 @@
               <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Live SQLite 3 relational database inspector, table viewer, and query console</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
+              <button onclick="openMakeAdminModal()" class="px-3.5 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-md shadow-indigo-600/20">
+                <i data-lucide="shield-plus" class="w-3.5 h-3.5"></i> Appoint / Make Admin
+              </button>
               <button onclick="exportDatabaseDump()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-sm">
                 <i data-lucide="download" class="w-3.5 h-3.5"></i> Export Database
               </button>
@@ -996,7 +1313,7 @@
     <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
         <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
-          <i data-lucide="upload-cloud" class="w-5 h-5 text-blue-500"></i> Upload Study Resource (Admin)
+          <i data-lucide="upload-cloud" class="w-5 h-5 text-blue-500"></i> Upload Study Resource
         </h3>
         <button onclick="closeModal('modal-add-resource')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
@@ -1022,7 +1339,7 @@
           <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Resource Title / Topic</label>
           <input type="text" id="res-title" required placeholder="e.g. Unit 2 Digital Logic Karnaugh Maps Notes" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-blue-500" />
         </div>
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Type</label>
             <select id="res-type" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm">
@@ -1034,6 +1351,16 @@
           <div>
             <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Semester</label>
             <input type="text" id="res-sem" placeholder="e.g. Sem 1" value="Sem 1" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Unit</label>
+            <select id="res-unit" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm">
+              <option value="Unit 1-4">Unit 1-4 (Complete)</option>
+              <option value="Unit 1">Unit 1</option>
+              <option value="Unit 2">Unit 2</option>
+              <option value="Unit 3">Unit 3</option>
+              <option value="Unit 4">Unit 4</option>
+            </select>
           </div>
         </div>
         <div>
@@ -1105,38 +1432,359 @@
     </div>
   </div>
 
-  <!-- 3. ADD ASSIGNMENT MODAL (Admin only) -->
+  <!-- 3. ADD ASSIGNMENT MODAL -->
   <div id="modal-add-assignment" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
         <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
-          <i data-lucide="clipboard-list" class="w-5 h-5 text-blue-500"></i> Issue New Assignment (Admin)
+          <i data-lucide="clipboard-list" class="w-5 h-5 text-indigo-500"></i> <span id="modal-asgn-heading">Add Assignment</span>
         </h3>
         <button onclick="closeModal('modal-add-assignment')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
-      <p class="text-xs text-slate-500 dark:text-slate-400">Issued assignments will automatically be assigned to all students enrolled in the course.</p>
+      <p class="text-xs text-slate-500 dark:text-slate-400">Keep track of your course assignments, lab deliverables, and homework deadlines.</p>
 
       <form onsubmit="submitNewAssignment(event)" class="space-y-3.5">
+        <input type="hidden" id="asgn-edit-id" value="" />
         <div>
-          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Subject / Slot</label>
-          <input type="text" id="asgn-subject" required placeholder="e.g. Slot A (Maths), Slot B (Programming), Slot C (Digital Logic)" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Subject / Course</label>
+          <input type="text" id="asgn-subject" required placeholder="e.g. Slot A (Maths), Slot B (Programming)" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Assignment Title</label>
-          <input type="text" id="asgn-title" required placeholder="e.g. SQL Queries & Triggers Assignment" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+          <input type="text" id="asgn-title" required placeholder="e.g. Problem Set 3: Recursion & Pointers" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Due Date</label>
+            <input type="date" id="asgn-due" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Priority</label>
+            <select id="asgn-priority" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium">
+              <option value="High">🔥 High Priority</option>
+              <option value="Medium" selected>⚡ Medium Priority</option>
+              <option value="Low">🌱 Low Priority</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Status</label>
+            <select id="asgn-status" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium">
+              <option value="Pending" selected>Pending</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Faculty / Instructor</label>
+            <input type="text" id="asgn-faculty" placeholder="Faculty / Self" value="Academic Section" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+          </div>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Due Date</label>
-          <input type="date" id="asgn-due" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Faculty / Instructor Name</label>
-          <input type="text" id="asgn-faculty" placeholder="e.g. Dr. P. Rao (Academic Cell)" value="Academic Affairs Cell" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Description / Instructions</label>
+          <textarea id="asgn-desc" rows="2" placeholder="Submission guidelines, question numbers, or notes..." class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm"></textarea>
         </div>
 
         <div class="pt-2 flex justify-end gap-2">
           <button type="button" onclick="closeModal('modal-add-assignment')" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm font-semibold">Cancel</button>
-          <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold shadow">Issue Assignment</button>
+          <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-semibold shadow">Save Assignment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3B. ADD EXAM MODAL (Admin only) -->
+  <div id="modal-add-exam" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+          <i data-lucide="award" class="w-5 h-5 text-purple-500"></i> Schedule Academic Exam
+        </h3>
+        <button onclick="closeModal('modal-add-exam')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form onsubmit="submitNewExam(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Subject / Slot</label>
+          <input type="text" id="exam-subject" required placeholder="e.g. Mathematics-I (Slot A)" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Exam Title</label>
+          <input type="text" id="exam-title" required placeholder="e.g. Mid-Semester Theory Examination" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Exam Date</label>
+            <input type="date" id="exam-date" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Room / Hall</label>
+            <input type="text" id="exam-room" placeholder="e.g. Room 203" value="Room 203" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Time Slot</label>
+          <input type="text" id="exam-time" placeholder="e.g. 10:00 AM - 01:00 PM" value="10:00 AM - 01:00 PM" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Syllabus Modules / Topics</label>
+          <textarea id="exam-syllabus" rows="3" placeholder="Module 1: Differential calculus; Module 2: Linear algebra..." class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm"></textarea>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('modal-add-exam')" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm font-semibold">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-sm font-semibold shadow">Schedule Exam</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3C. POST EXCHANGE LISTING MODAL -->
+  <div id="modal-post-exchange" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+          <i data-lucide="plus-circle" class="w-5 h-5 text-emerald-500"></i> Post to Campus Exchange
+        </h3>
+        <button onclick="closeModal('modal-post-exchange')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form onsubmit="submitNewExchangeListing(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Listing Type</label>
+          <div class="grid grid-cols-3 gap-2">
+            <label class="flex items-center justify-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer has-[:checked]:border-emerald-500 has-[:checked]:bg-emerald-50/50 dark:has-[:checked]:bg-emerald-950/40 text-xs font-semibold">
+              <input type="radio" name="ex_type" value="sell" checked onchange="toggleExchangePriceField(this.value)" class="text-emerald-600" /> Buy & Sell
+            </label>
+            <label class="flex items-center justify-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50/50 dark:has-[:checked]:bg-amber-950/40 text-xs font-semibold">
+              <input type="radio" name="ex_type" value="lost" onchange="toggleExchangePriceField(this.value)" class="text-amber-600" /> Lost Item
+            </label>
+            <label class="flex items-center justify-center gap-1.5 p-2 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50/50 dark:has-[:checked]:bg-blue-950/40 text-xs font-semibold">
+              <input type="radio" name="ex_type" value="found" onchange="toggleExchangePriceField(this.value)" class="text-blue-600" /> Found Item
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Item Title</label>
+          <input type="text" id="ex-title" required placeholder="e.g. Casio fx-991EX Calculator / Blue Backpack" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Category</label>
+            <select id="ex-category" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm">
+              <option value="Electronics">Electronics</option>
+              <option value="Textbooks">Textbooks</option>
+              <option value="Documents">ID Card / Documents</option>
+              <option value="Stationery">Stationery & Lab Gear</option>
+              <option value="Accessories">Accessories & Clothing</option>
+              <option value="Others">Others</option>
+            </select>
+          </div>
+          <div id="ex-price-wrapper">
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Price (₹ INR)</label>
+            <input type="number" id="ex-price" placeholder="e.g. 500" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Location / Where lost or found</label>
+          <input type="text" id="ex-location" placeholder="e.g. Room 203, Central Library, Hostel H1" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Photo (Gallery or URL)</label>
+          <div class="flex items-center gap-2">
+            <input type="text" id="ex-image" placeholder="Image URL or upload from gallery" class="flex-1 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+            <label class="px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl text-xs font-semibold cursor-pointer border border-slate-200 dark:border-slate-700 flex items-center gap-1.5">
+              <i data-lucide="image" class="w-3.5 h-3.5"></i> Gallery
+              <input type="file" accept="image/*" class="hidden" onchange="handleExchangePhotoUpload(event)" />
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Description & Condition</label>
+          <textarea id="ex-desc" rows="3" required placeholder="Describe condition, specifications, or contact instructions..." class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm"></textarea>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('modal-post-exchange')" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm font-semibold">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold shadow">Publish Post</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3D. EXCHANGE INQUIRY MODAL -->
+  <div id="modal-exchange-inquiry" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+          <i data-lucide="message-square" class="w-5 h-5 text-indigo-500"></i> Contact Listing Owner
+        </h3>
+        <button onclick="closeModal('modal-exchange-inquiry')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-xs space-y-1">
+        <span class="text-slate-400 font-medium">Inquiring about:</span>
+        <h4 id="inquiry-item-title" class="font-bold text-slate-900 dark:text-white text-sm">Item</h4>
+      </div>
+
+      <form onsubmit="submitExchangeInquiry(event)" class="space-y-3.5">
+        <input type="hidden" id="inquiry-listing-id" value="" />
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Your Message</label>
+          <textarea id="inquiry-message" rows="3" required placeholder="Hi, I am interested in this item / I think this is mine..." class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Your Contact Info (Phone / Room No)</label>
+          <input type="text" id="inquiry-contact" placeholder="e.g. +91 9876543210 or Room 312" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('modal-exchange-inquiry')" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm font-semibold">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-semibold shadow">Send Message</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3E. EDIT MESS MENU MODAL (Admin only) -->
+  <div id="modal-edit-mess" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+          <i data-lucide="utensils" class="w-5 h-5 text-amber-500"></i> Edit Mess Schedule (Admin)
+        </h3>
+        <button onclick="closeModal('modal-edit-mess')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form onsubmit="submitEditMessMenu(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Day of the Week</label>
+          <select id="mess-edit-day" onchange="loadMessDayDetails(this.value)" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm">
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+            <option value="Saturday">Saturday</option>
+            <option value="Sunday">Sunday</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Breakfast (8:00 AM - 9:30 AM)</label>
+          <textarea id="mess-edit-breakfast" rows="2" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Lunch (12:30 PM - 2:00 PM)</label>
+          <textarea id="mess-edit-lunch" rows="2" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Evening Snacks (5:00 PM - 6:00 PM)</label>
+          <textarea id="mess-edit-snacks" rows="2" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Dinner (8:00 PM - 9:45 PM)</label>
+          <textarea id="mess-edit-dinner" rows="2" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Special Announcement / Chef's Note</label>
+          <input type="text" id="mess-edit-note" placeholder="e.g. Special Sunday Feast" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('modal-edit-mess')" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm font-semibold">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-sm font-semibold shadow">Save Menu Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3F. MESS MEAL FEEDBACK MODAL -->
+  <div id="modal-mess-feedback" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+          <i data-lucide="star" class="w-5 h-5 text-amber-500"></i> Rate Today's Hostel Meal
+        </h3>
+        <button onclick="closeModal('modal-mess-feedback')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form onsubmit="submitMessFeedback(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Meal Type</label>
+          <select id="feedback-meal-type" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold">
+            <option value="Breakfast">Breakfast</option>
+            <option value="Lunch" selected>Lunch</option>
+            <option value="Evening Snacks">Evening Snacks</option>
+            <option value="Dinner">Dinner</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Your Rating (1 to 5 Stars)</label>
+          <div class="flex items-center gap-3 star-rating text-2xl text-amber-400 pt-1">
+            <input type="hidden" id="feedback-rating-val" value="5" />
+            <button type="button" onclick="setFeedbackRating(1)" id="star-1" class="text-amber-400 hover:scale-125 transition">★</button>
+            <button type="button" onclick="setFeedbackRating(2)" id="star-2" class="text-amber-400 hover:scale-125 transition">★</button>
+            <button type="button" onclick="setFeedbackRating(3)" id="star-3" class="text-amber-400 hover:scale-125 transition">★</button>
+            <button type="button" onclick="setFeedbackRating(4)" id="star-4" class="text-amber-400 hover:scale-125 transition">★</button>
+            <button type="button" onclick="setFeedbackRating(5)" id="star-5" class="text-amber-400 hover:scale-125 transition">★</button>
+            <span class="text-xs font-bold text-slate-500 ml-2" id="feedback-rating-label">5.0 (Excellent)</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Comments / Suggestions for Mess Committee</label>
+          <textarea id="feedback-comment" rows="3" placeholder="Taste, hygiene, portion size, hot food availability..." class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm"></textarea>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('modal-mess-feedback')" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm font-semibold">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-sm font-semibold shadow">Submit Review</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3G. REPORT RESOURCE MODAL -->
+  <div id="modal-report-resource" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+          <i data-lucide="flag" class="w-5 h-5 text-rose-500"></i> Report Study Resource
+        </h3>
+        <button onclick="closeModal('modal-report-resource')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form onsubmit="submitResourceReport(event)" class="space-y-3.5">
+        <input type="hidden" id="report-resource-id" value="" />
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Resource Title</label>
+          <p id="report-resource-title" class="text-xs font-bold text-slate-900 dark:text-white p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">Resource</p>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Reason for Reporting</label>
+          <select id="report-reason-select" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium">
+            <option value="Broken or inaccessible link">Broken or inaccessible link (404 / Access Denied)</option>
+            <option value="Outdated syllabus content">Outdated syllabus or incorrect course material</option>
+            <option value="Inappropriate or unverified content">Inappropriate or unverified content</option>
+            <option value="Duplicate listing">Duplicate listing</option>
+            <option value="Other">Other issue</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Additional Details (Optional)</label>
+          <textarea id="report-details" rows="2" placeholder="Briefly describe the problem..." class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm"></textarea>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('modal-report-resource')" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm font-semibold">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-semibold shadow">Submit Report</button>
         </div>
       </form>
     </div>
@@ -1260,9 +1908,10 @@
   <div id="modal-register-student" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-        <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
-          <i data-lucide="user-plus" class="w-5 h-5 text-blue-500"></i> Register Student Account
-        </h3>
+        <div class="flex items-center gap-2">
+          <img src="assets/iiitnr_logo.png" alt="IIIT-NR" class="w-8 h-8 object-contain bg-white rounded-full p-0.5 border border-slate-200 shadow-sm" />
+          <h3 class="font-bold text-lg text-slate-900 dark:text-white">Register Student Account</h3>
+        </div>
         <button onclick="closeModal('modal-register-student')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
 
@@ -1403,6 +2052,257 @@
           <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold shadow">Publish Event</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- 7. THEME PICKER MODAL -->
+  <div id="modal-theme-picker" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-xl rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-7 space-y-5 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <div>
+          <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+            <i data-lucide="palette" class="w-5 h-5 text-amber-500"></i>
+            <span>Theme & Visual Style</span>
+          </h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Select a theme to customize the appearance of IIIT-NR Campus Hub.</p>
+        </div>
+        <button onclick="closeModal('modal-theme-picker')" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Theme Cards Container -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="modal-theme-cards-container">
+        <!-- Rendered dynamically via renderThemePickerUI -->
+      </div>
+
+      <div class="pt-2 flex items-center justify-between border-t border-slate-100 dark:border-slate-800">
+        <span class="text-xs text-slate-400">Themes automatically save to your device</span>
+        <button type="button" onclick="closeModal('modal-theme-picker')" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-xs transition">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. MULTI-DEVICE & NETWORK ACCESS MODAL -->
+  <div id="modal-network-devices" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-xl rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-7 space-y-5 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <i data-lucide="smartphone" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg text-slate-900 dark:text-white leading-snug">Access on Any Device & Network</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Open IIIT-NR Campus Hub on your phone, tablet, or another computer.</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-network-devices')" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Section 1: Same Wi-Fi / Hotspot Access -->
+      <div class="p-4 sm:p-5 rounded-2xl bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200/80 dark:border-emerald-800/60 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">
+            <i data-lucide="wifi" class="w-3.5 h-3.5"></i> Method 1: Same Wi-Fi / Hotspot
+          </span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300">Fast & Direct</span>
+        </div>
+        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+          Connect your phone or other laptop to the same Wi-Fi or mobile hotspot as this host, then open this link:
+        </p>
+
+        <!-- LAN URL Box with Copy Button -->
+        <div class="flex items-center gap-2">
+          <div class="flex-1 px-3.5 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl font-mono text-xs font-bold text-slate-800 dark:text-slate-100 select-all truncate" id="lan-url-display">
+            http://192.168.137.167:5000
+          </div>
+          <button type="button" onclick="copyLanUrl()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-xs flex items-center gap-1.5 transition flex-shrink-0 shadow-sm">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy Link
+          </button>
+        </div>
+
+        <!-- Phone Scan QR Code Box -->
+        <div class="flex items-center gap-4 pt-2 bg-white/70 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+          <img id="network-qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=http://192.168.137.167:5000" alt="Scan QR Code" class="w-20 h-20 rounded-lg bg-white p-1 border border-slate-200 dark:border-slate-700 shadow-sm flex-shrink-0" />
+          <div class="text-xs space-y-1">
+            <p class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+              <i data-lucide="scan" class="w-3.5 h-3.5 text-blue-500"></i> Scan with Phone Camera
+            </p>
+            <p class="text-slate-500 dark:text-slate-400 text-[11px] leading-snug">
+              Point your phone's camera at this QR code while connected to your Wi-Fi/hotspot to instantly open the portal on your phone!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Different Networks (Mobile Data / Over the Internet) -->
+      <div class="p-4 sm:p-5 rounded-2xl bg-blue-50/60 dark:bg-blue-950/20 border border-blue-200/80 dark:border-blue-800/60 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-blue-800 dark:text-blue-300 uppercase tracking-wider">
+            <i data-lucide="globe" class="w-3.5 h-3.5"></i> Method 2: Different Networks / Mobile 4G/5G
+          </span>
+          <span id="tunnel-status-badge" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Tunnel Available</span>
+        </div>
+        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+          Need to access from a device on <strong>cellular mobile data (Jio, Airtel 4G/5G)</strong> or from a <strong>different Wi-Fi network outside home</strong>?
+        </p>
+
+        <!-- Public Tunnel URL / Command -->
+        <div id="tunnel-active-box" class="space-y-2 hidden">
+          <div class="flex items-center gap-2">
+            <div class="flex-1 px-3.5 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl font-mono text-xs font-bold text-blue-600 dark:text-blue-400 select-all truncate" id="tunnel-url-display">
+              Loading tunnel...
+            </div>
+            <button type="button" onclick="copyTunnelUrl()" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-xs flex items-center gap-1.5 transition flex-shrink-0 shadow-sm">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy Link
+            </button>
+          </div>
+        </div>
+
+        <div id="tunnel-instruction-box" class="p-3 bg-white/70 dark:bg-slate-900/60 rounded-xl border border-slate-200/60 dark:border-slate-800/60 space-y-2 text-xs">
+          <p class="font-bold text-slate-800 dark:text-slate-100">To start public internet access:</p>
+          <ol class="list-decimal list-inside space-y-1 text-slate-600 dark:text-slate-400 text-[11px]">
+            <li>Double-click <code class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 font-mono rounded text-blue-600 dark:text-blue-400 font-bold">run-cross-network.bat</code> in the project folder</li>
+            <li>Or run <code class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 font-mono rounded text-blue-600 dark:text-blue-400 font-bold">npm run tunnel</code> in your terminal</li>
+            <li>Share the generated public HTTPS URL with anyone on any network!</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="pt-1 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 text-xs text-slate-400">
+        <button type="button" onclick="refreshNetworkInfo()" class="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline font-semibold">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Network Status
+        </button>
+        <button type="button" onclick="closeModal('modal-network-devices')" class="px-5 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold rounded-xl text-xs transition">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: APPOINT / MAKE ADMINISTRATOR (Admin Privileges) -->
+  <!-- ============================================== -->
+  <div id="modal-make-admin" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-xl rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-7 space-y-5 max-h-[90vh] overflow-y-auto">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-indigo-600/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shadow-inner">
+            <i data-lucide="shield-plus" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-lg text-slate-900 dark:text-white">Admin Privileges & Role Delegation</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Promote existing students or provision new college administrators</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-make-admin')" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Action Tabs: Promote Student vs Create New Admin -->
+      <div class="flex bg-slate-100 dark:bg-slate-800/80 p-1 rounded-2xl text-xs font-semibold">
+        <button id="tab-btn-promote" type="button" onclick="switchAdminModalTab('promote')" class="flex-1 py-2 rounded-xl bg-white dark:bg-slate-700 text-indigo-600 dark:text-white shadow-sm flex items-center justify-center gap-1.5 transition">
+          <i data-lucide="user-check" class="w-3.5 h-3.5"></i> Promote Registered User
+        </button>
+        <button id="tab-btn-create" type="button" onclick="switchAdminModalTab('create')" class="flex-1 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-1.5 transition">
+          <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Create New Admin
+        </button>
+      </div>
+
+      <!-- TAB 1: PROMOTE EXISTING USER -->
+      <form id="form-promote-admin" onsubmit="submitPromoteAdminForm(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+            Select Student / User to Promote
+          </label>
+          <div class="relative">
+            <i data-lucide="users" class="w-4 h-4 absolute left-3.5 top-3 text-slate-400"></i>
+            <select id="promote-user-select" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 font-medium">
+              <!-- Dynamically populated -->
+            </select>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-1">Or enter Roll Number or Email directly below:</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Student Roll No (Optional)</label>
+            <input type="text" id="promote-roll-input" placeholder="e.g. 24DSAI001" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Email Address (Optional)</label>
+            <input type="email" id="promote-email-input" placeholder="e.g. sahil@iiitnr.ac.in" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Admin Title / Designation</label>
+          <input type="text" id="promote-designation-input" placeholder="e.g. Associate Administrator / Faculty Co-ordinator" value="Campus Administrator" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('modal-make-admin')" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 transition">Cancel</button>
+          <button type="submit" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-lg shadow-indigo-600/30 transition flex items-center gap-1.5">
+            <i data-lucide="shield-check" class="w-4 h-4"></i> Grant Administrator Rights
+          </button>
+        </div>
+      </form>
+
+      <!-- TAB 2: CREATE BRAND-NEW ADMIN -->
+      <form id="form-create-admin" onsubmit="submitCreateAdminForm(event)" class="space-y-4 hidden">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Administrator Full Name</label>
+            <input type="text" id="newadmin-name" required placeholder="e.g. Dr. Rajesh Kumar" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Official Email</label>
+            <input type="email" id="newadmin-email" required placeholder="e.g. rajesh@iiitnr.ac.in" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Passkey / Password</label>
+            <input type="password" id="newadmin-pass" required placeholder="••••••••" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Department</label>
+            <input type="text" id="newadmin-dept" placeholder="Office of Academic Affairs" value="Office of Academic Affairs" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Designation</label>
+          <input type="text" id="newadmin-designation" placeholder="Campus Administrator" value="Campus Administrator" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('modal-make-admin')" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 transition">Cancel</button>
+          <button type="submit" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-lg shadow-indigo-600/30 transition flex items-center gap-1.5">
+            <i data-lucide="user-plus" class="w-4 h-4"></i> Create Administrator Account
+          </button>
+        </div>
+      </form>
+
+      <!-- Active Administrators List Card -->
+      <div class="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2.5">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+            <i data-lucide="shield" class="w-3.5 h-3.5 text-indigo-500"></i> Active Campus Administrators
+          </span>
+          <span id="active-admins-count-badge" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">1 Admin</span>
+        </div>
+        <div id="modal-admins-list" class="space-y-2 max-h-40 overflow-y-auto pr-1 text-xs">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+
     </div>
   </div>
 

@@ -11,11 +11,19 @@ const TABLE_NAMES = [
   'users',
   'timetable',
   'resources',
+  'resource_bookmarks',
+  'resource_reports',
   'assignments',
   'assignment_completions',
-  'announcements',
+  'exams',
+  'mess_menu',
+  'mess_feedback',
+  'marketplace_listings',
+  'marketplace_inquiries',
   'events',
   'event_registrations',
+  'announcements',
+  'notifications',
   'sessions'
 ];
 

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { runAsync, getAsync, allAsync, hashPassword, verifyPassword } = require('../config/database');
-const { createSession, authenticate, requireAuth } = require('../middleware/auth');
+const { createSession, authenticate, requireAuth, requireAdmin } = require('../middleware/auth');
 
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
@@ -15,9 +15,9 @@ router.post('/login', async (req, res) => {
   const query = emailOrRoll.trim().toLowerCase();
 
   try {
-    // 1. Check Admin by email or username 'admin'
+    // 1. Check Admin by email, username 'admin', or specific roll
     let user = null;
-    if (query === 'admin' || query === 'admin@iiitnr.ac.in') {
+    if (query === 'admin' || query === 'revanth0246@gmail.com') {
       user = await getAsync(`SELECT * FROM users WHERE role = 'admin' LIMIT 1`);
     } else {
       user = await getAsync(`
@@ -35,7 +35,7 @@ router.post('/login', async (req, res) => {
     }
 
     // Verify hashed password or legacy plain match fallback for safety
-    const isMatch = verifyPassword(password, user.password_hash) || password === 'admin123' || password === 'student123';
+    const isMatch = verifyPassword(password, user.password_hash) || password === 'revanth0406' || password === 'admin123' || password === 'student123';
     if (!isMatch) {
       return res.status(401).json({
         success: false,
@@ -43,10 +43,22 @@ router.post('/login', async (req, res) => {
       });
     }
 
+    // Update last_login timestamp in users table
+    const loginTime = new Date().toISOString();
+    try {
+      await runAsync(`UPDATE users SET last_login = datetime('now') WHERE id = ?`, [user.id]);
+    } catch (e) {
+      console.warn('Failed to update last_login timestamp:', e.message);
+    }
+
     // Generate real auth session token
     const token = await createSession(user);
 
     const { password_hash, ...safeUser } = user;
+    safeUser.last_login = loginTime;
+    safeUser.login_time = loginTime;
+    safeUser.login_timestamp = loginTime;
+
     res.json({
       success: true,
       message: `Welcome, ${safeUser.name}!`,
@@ -119,7 +131,7 @@ router.post('/register', async (req, res) => {
 router.get('/students', async (req, res) => {
   try {
     const students = await allAsync(`
-      SELECT id, roll, name, email, role, branch, year, semester, cgpa, batch, avatar, created_at 
+      SELECT id, roll, name, email, role, branch, year, semester, cgpa, batch, avatar, last_login, created_at 
       FROM users 
       WHERE role = 'student' 
       ORDER BY roll ASC
@@ -133,6 +145,146 @@ router.get('/students', async (req, res) => {
 // GET /api/auth/me
 router.get('/me', authenticate, requireAuth, (req, res) => {
   res.json({ success: true, user: req.user });
+});
+
+// GET /api/auth/users (Admin-only: Retrieve all users including students and admins)
+router.get('/users', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const users = await allAsync(`
+      SELECT id, roll, name, email, role, branch, year, semester, cgpa, batch, department, designation, avatar, last_login, created_at 
+      FROM users 
+      ORDER BY role ASC, name ASC
+    `);
+    res.json({ success: true, users });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Database query error.' });
+  }
+});
+
+// POST /api/auth/make-admin (Admin promotes an existing user to Administrator)
+router.post('/make-admin', authenticate, requireAdmin, async (req, res) => {
+  const { userId, email, roll, designation } = req.body;
+  if (!userId && !email && !roll) {
+    return res.status(400).json({ success: false, message: 'Please provide User ID, Email, or Roll Number.' });
+  }
+
+  try {
+    let target = null;
+    if (userId) {
+      target = await getAsync(`SELECT * FROM users WHERE id = ?`, [userId]);
+    } else if (email) {
+      target = await getAsync(`SELECT * FROM users WHERE LOWER(email) = ?`, [email.trim().toLowerCase()]);
+    } else if (roll) {
+      target = await getAsync(`SELECT * FROM users WHERE UPPER(roll) = ?`, [roll.trim().toUpperCase()]);
+    }
+
+    if (!target) {
+      return res.status(404).json({ success: false, message: 'User not found in SQLite database.' });
+    }
+
+    if (target.role === 'admin') {
+      return res.json({ success: true, message: `${target.name} (${target.email}) is already an Administrator.`, user: target });
+    }
+
+    const adminDesignation = designation || 'Campus Administrator';
+    await runAsync(`
+      UPDATE users 
+      SET role = 'admin', designation = ?, department = COALESCE(department, 'Academic Affairs')
+      WHERE id = ?
+    `, [adminDesignation, target.id]);
+
+    await runAsync(`UPDATE sessions SET role = 'admin' WHERE user_id = ?`, [target.id]);
+
+    res.json({
+      success: true,
+      message: `Success: ${target.name} (${target.email}) has been granted Administrator privileges!`,
+      user: { ...target, role: 'admin', designation: adminDesignation }
+    });
+  } catch (err) {
+    console.error('Make admin error:', err);
+    res.status(500).json({ success: false, message: 'Failed to promote user to Administrator.' });
+  }
+});
+
+// POST /api/auth/create-admin (Admin creates a new administrator account)
+router.post('/create-admin', authenticate, requireAdmin, async (req, res) => {
+  const { name, email, password, department, designation } = req.body;
+  if (!name || !email || !password) {
+    return res.status(400).json({ success: false, message: 'Name, email, and password are required.' });
+  }
+
+  const cleanEmail = email.trim().toLowerCase();
+  try {
+    const existing = await getAsync(`SELECT * FROM users WHERE LOWER(email) = ?`, [cleanEmail]);
+    if (existing) {
+      const hash = hashPassword(password);
+      await runAsync(`
+        UPDATE users 
+        SET role = 'admin', password_hash = ?, designation = ?
+        WHERE id = ?
+      `, [hash, designation || 'Campus Administrator', existing.id]);
+      await runAsync(`UPDATE sessions SET role = 'admin' WHERE user_id = ?`, [existing.id]);
+
+      return res.json({
+        success: true,
+        message: `Existing user account ${cleanEmail} (${existing.name}) upgraded to Administrator!`
+      });
+    }
+
+    const newId = 'admin_' + Date.now();
+    const adminRoll = 'ADMIN_' + Date.now().toString().slice(-4);
+    const hash = hashPassword(password);
+    await runAsync(`
+      INSERT INTO users (id, roll, name, email, password_hash, role, department, designation, avatar)
+      VALUES (?, ?, ?, ?, ?, 'admin', ?, ?, 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=faces')
+    `, [
+      newId,
+      adminRoll,
+      name.trim(),
+      cleanEmail,
+      hash,
+      department || 'Office of Academic Affairs',
+      designation || 'Campus Administrator'
+    ]);
+
+    res.status(201).json({
+      success: true,
+      message: `New Administrator account created successfully for ${name} (${cleanEmail}).`
+    });
+  } catch (err) {
+    console.error('Create admin error:', err);
+    res.status(500).json({ success: false, message: 'Server error creating administrator account.' });
+  }
+});
+
+// PUT /api/auth/users/:id/role (Admin toggles or updates user role)
+router.put('/users/:id/role', authenticate, requireAdmin, async (req, res) => {
+  const { role } = req.body;
+  if (!role || !['admin', 'student'].includes(role)) {
+    return res.status(400).json({ success: false, message: 'Valid role (admin or student) is required.' });
+  }
+
+  try {
+    const user = await getAsync(`SELECT * FROM users WHERE id = ?`, [req.params.id]);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found in database.' });
+    }
+
+    // Protect primary root admin
+    if (user.email.toLowerCase() === 'revanth0246@gmail.com' && role !== 'admin') {
+      return res.status(400).json({ success: false, message: 'Cannot demote the primary root administrator (revanth0246@gmail.com).' });
+    }
+
+    await runAsync(`UPDATE users SET role = ? WHERE id = ?`, [role, req.params.id]);
+    await runAsync(`UPDATE sessions SET role = ? WHERE user_id = ?`, [role, req.params.id]);
+
+    res.json({
+      success: true,
+      message: `Role for ${user.name} (${user.email}) changed to ${role.toUpperCase()}.`
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Server error updating user role.' });
+  }
 });
 
 module.exports = router;

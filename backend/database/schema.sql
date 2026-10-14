@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS users (
   batch TEXT,
   department TEXT,
   designation TEXT,
+  last_login DATETIME,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -47,13 +48,14 @@ CREATE TABLE IF NOT EXISTS timetable (
   UNIQUE(day, time_slot)
 );
 
--- 4. Study Resources Table (Notes, PYQs, Links - Admin Only)
+-- 4. Study Resources Table (Notes, PYQs, Links)
 CREATE TABLE IF NOT EXISTS resources (
   id TEXT PRIMARY KEY,
   subject TEXT NOT NULL,
   title TEXT NOT NULL,
   type TEXT NOT NULL,
   semester TEXT DEFAULT 'Sem 1',
+  unit TEXT DEFAULT 'Unit 1-4',
   link TEXT NOT NULL,
   description TEXT,
   contributor TEXT DEFAULT 'Admin / Academic Affairs',
@@ -62,13 +64,17 @@ CREATE TABLE IF NOT EXISTS resources (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- 5. Academic Assignments Table (Admin Only)
+-- 5. Academic Assignments Table
 CREATE TABLE IF NOT EXISTS assignments (
   id TEXT PRIMARY KEY,
   subject TEXT NOT NULL,
   title TEXT NOT NULL,
   due_date TEXT NOT NULL,
+  priority TEXT DEFAULT 'Medium',
+  status TEXT DEFAULT 'Pending',
+  description TEXT,
   faculty TEXT DEFAULT 'Admin / Academic Affairs',
+  student_id TEXT,
   is_broadcast INTEGER DEFAULT 1,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -119,8 +125,109 @@ CREATE TABLE IF NOT EXISTS event_registrations (
   FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
 );
 
+-- 10. Exams Table (Exams & Syllabus Planner)
+CREATE TABLE IF NOT EXISTS exams (
+  id TEXT PRIMARY KEY,
+  subject TEXT NOT NULL,
+  title TEXT NOT NULL,
+  exam_date TEXT NOT NULL,
+  exam_time TEXT DEFAULT '10:00 AM - 01:00 PM',
+  room TEXT DEFAULT 'Room 203',
+  syllabus TEXT,
+  created_by TEXT DEFAULT 'Academic Affairs',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 11. Mess Menu Table (Weekly Hostel Mess Schedule)
+CREATE TABLE IF NOT EXISTS mess_menu (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  day_of_week TEXT NOT NULL UNIQUE,
+  breakfast TEXT NOT NULL,
+  lunch TEXT NOT NULL,
+  snacks TEXT NOT NULL,
+  dinner TEXT NOT NULL,
+  special_note TEXT,
+  updated_by TEXT DEFAULT 'Hostel Mess Committee',
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 12. Mess Meal Feedback Table (Student Meal Ratings & Comments)
+CREATE TABLE IF NOT EXISTS mess_feedback (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  student_roll TEXT NOT NULL,
+  student_name TEXT,
+  meal_type TEXT NOT NULL,
+  rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),
+  comment TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 13. Campus Exchange Listings (Buy & Sell, Lost & Found)
+CREATE TABLE IF NOT EXISTS marketplace_listings (
+  id TEXT PRIMARY KEY,
+  user_id TEXT,
+  user_name TEXT NOT NULL,
+  user_roll TEXT NOT NULL,
+  type TEXT NOT NULL CHECK(type IN ('sell', 'lost', 'found')),
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  category TEXT DEFAULT 'General',
+  price TEXT,
+  location TEXT,
+  image_url TEXT,
+  status TEXT DEFAULT 'active' CHECK(status IN ('active', 'sold', 'resolved')),
+  contact_pref TEXT DEFAULT 'In-App Message',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 14. Campus Exchange Inquiries
+CREATE TABLE IF NOT EXISTS marketplace_inquiries (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  listing_id TEXT NOT NULL,
+  sender_roll TEXT NOT NULL,
+  sender_name TEXT NOT NULL,
+  message TEXT NOT NULL,
+  contact_info TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (listing_id) REFERENCES marketplace_listings(id) ON DELETE CASCADE
+);
+
+-- 15. Resource Bookmarks Table
+CREATE TABLE IF NOT EXISTS resource_bookmarks (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  student_roll TEXT NOT NULL,
+  resource_id TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(student_roll, resource_id)
+);
+
+-- 16. Resource Reports Table (Broken Links & Flagged Content)
+CREATE TABLE IF NOT EXISTS resource_reports (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  resource_id TEXT NOT NULL,
+  student_roll TEXT NOT NULL,
+  reason TEXT NOT NULL,
+  status TEXT DEFAULT 'pending',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 17. Centralized Notifications Table
+CREATE TABLE IF NOT EXISTS notifications (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_roll TEXT,
+  type TEXT NOT NULL,
+  title TEXT NOT NULL,
+  message TEXT NOT NULL,
+  link_view TEXT,
+  is_read INTEGER DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Indexes for high-performance lookup
 CREATE INDEX IF NOT EXISTS idx_users_roll ON users(roll);
 CREATE INDEX IF NOT EXISTS idx_timetable_day ON timetable(day);
 CREATE INDEX IF NOT EXISTS idx_assignment_completions_student ON assignment_completions(student_roll);
 CREATE INDEX IF NOT EXISTS idx_event_registrations_student ON event_registrations(student_roll);
+CREATE INDEX IF NOT EXISTS idx_exchange_type ON marketplace_listings(type);
+CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_roll);
+
