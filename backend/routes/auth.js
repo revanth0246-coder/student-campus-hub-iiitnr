@@ -111,6 +111,13 @@ router.post('/register', async (req, res) => {
       chosenAvatar
     ]);
 
+    // Initialize welcome notification in SQLite for registered student
+    const notifId = 'notif_' + Date.now();
+    await runAsync(`
+      INSERT INTO notifications (id, recipient_role, recipient_roll, title, message, link, type, is_read, created_at)
+      VALUES (?, 'student', ?, 'Welcome to Student Campus Hub!', 'Your account has been officially registered with ' || ? || ' department. Explore your branch timetable, assignments, mess menu, and campus events.', '#home', 'academic', 0, CURRENT_TIMESTAMP)
+    `, [notifId, cleanRoll, branch || 'Data Science & AI']);
+
     const createdStudent = await getAsync(`SELECT * FROM users WHERE id = ?`, [newId]);
     const token = await createSession(createdStudent);
     const { password_hash: _, ...safeUser } = createdStudent;
@@ -284,6 +291,90 @@ router.put('/users/:id/role', authenticate, requireAdmin, async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Server error updating user role.' });
+  }
+});
+
+// DELETE /api/auth/students/:id (Admin-only: Remove student account and associated data)
+router.delete('/students/:id', authenticate, requireAdmin, async (req, res) => {
+  const targetId = req.params.id;
+  if (!targetId) {
+    return res.status(400).json({ success: false, message: 'Student ID or Roll Number is required.' });
+  }
+
+  try {
+    const target = await getAsync(`
+      SELECT * FROM users WHERE id = ? OR UPPER(roll) = ?
+    `, [targetId, targetId.toUpperCase()]);
+
+    if (!target) {
+      return res.status(404).json({ success: false, message: 'Student account not found in database.' });
+    }
+
+    // Protect primary root admin and any admin account from accidental deletion
+    if (target.role === 'admin' || target.email.toLowerCase() === 'revanth0246@gmail.com') {
+      return res.status(403).json({ success: false, message: 'Administrator accounts cannot be deleted here. Revoke administrator role first if necessary.' });
+    }
+
+    const studentRoll = target.roll;
+    const studentDbId = target.id;
+
+    // Remove associated student relational records in SQLite
+    if (studentRoll) {
+      await runAsync(`DELETE FROM assignment_completions WHERE student_roll = ?`, [studentRoll]);
+      await runAsync(`DELETE FROM event_registrations WHERE student_roll = ?`, [studentRoll]);
+      await runAsync(`DELETE FROM notifications WHERE recipient_roll = ?`, [studentRoll]);
+    }
+    await runAsync(`DELETE FROM sessions WHERE user_id = ?`, [studentDbId]);
+    await runAsync(`DELETE FROM users WHERE id = ?`, [studentDbId]);
+
+    res.json({
+      success: true,
+      message: `Student ${target.name} (${target.roll || target.email}) removed permanently from the database.`
+    });
+  } catch (err) {
+    console.error('Error removing student account:', err);
+    res.status(500).json({ success: false, message: 'Database error removing student account.' });
+  }
+});
+
+// DELETE /api/auth/users/:id (Admin-only: Remove user account)
+router.delete('/users/:id', authenticate, requireAdmin, async (req, res) => {
+  const targetId = req.params.id;
+  if (!targetId) {
+    return res.status(400).json({ success: false, message: 'User ID is required.' });
+  }
+
+  try {
+    const target = await getAsync(`
+      SELECT * FROM users WHERE id = ? OR UPPER(roll) = ?
+    `, [targetId, targetId.toUpperCase()]);
+
+    if (!target) {
+      return res.status(404).json({ success: false, message: 'User account not found in database.' });
+    }
+
+    if (target.email.toLowerCase() === 'revanth0246@gmail.com') {
+      return res.status(403).json({ success: false, message: 'Cannot delete the primary root administrator account.' });
+    }
+
+    const studentRoll = target.roll;
+    const studentDbId = target.id;
+
+    if (studentRoll) {
+      await runAsync(`DELETE FROM assignment_completions WHERE student_roll = ?`, [studentRoll]);
+      await runAsync(`DELETE FROM event_registrations WHERE student_roll = ?`, [studentRoll]);
+      await runAsync(`DELETE FROM notifications WHERE recipient_roll = ?`, [studentRoll]);
+    }
+    await runAsync(`DELETE FROM sessions WHERE user_id = ?`, [studentDbId]);
+    await runAsync(`DELETE FROM users WHERE id = ?`, [studentDbId]);
+
+    res.json({
+      success: true,
+      message: `User ${target.name} removed successfully from the system.`
+    });
+  } catch (err) {
+    console.error('Error removing user account:', err);
+    res.status(500).json({ success: false, message: 'Database error removing user account.' });
   }
 });
 

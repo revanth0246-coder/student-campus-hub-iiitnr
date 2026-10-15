@@ -45,6 +45,20 @@ const DEFAULT_STUDENTS = [
     batch: '2024 - 2028',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=faces',
     password: 'student123'
+  },
+  {
+    id: 'student_003',
+    role: 'student',
+    roll: '24ECE042',
+    name: 'Priya Verma',
+    branch: 'Electronics & Communication',
+    year: '1st Year',
+    semester: 'Semester 2',
+    cgpa: '8.8',
+    email: 'priya24@iiitnr.ac.in',
+    batch: '2024 - 2028',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=faces',
+    password: 'student123'
   }
 ];
 
@@ -192,79 +206,227 @@ const DEFAULT_RESOURCES = [
   }
 ];
 
-// Exact timetable structure matching uploaded image (Room No: 203 | w.e.f. 24/08/2026)
-const DEFAULT_TIMETABLE = [
-  {
-    day: 'Monday',
-    periods: {
-      '9:00 - 9:55': { subject: 'Music', room: '203', type: 'music' },
-      '10:00 - 10:55': { subject: 'Music', room: '203', type: 'music' },
-      '11:00 - 11:55': { subject: 'C', room: '203', type: 'c' },
-      '12:00 - 12:55': { subject: 'C', room: '203', type: 'c' },
-      '1:00 - 2:00': { subject: 'L', room: 'Mess', type: 'lunch' },
-      '02:00 - 02:55': { subject: 'ILC', room: '203', type: 'ilc' },
-      '03:00 - 03:55': { subject: 'F', room: '203', type: 'f' },
-      '04:00 - 04:55': { subject: 'ILC/Yoga', room: '203', type: 'yoga' },
-      '05:00 - 05:55': { subject: 'ILC/Yoga', room: '203', type: 'yoga' }
+// Official Timetables for All 3 Branches (w.e.f. 24/08/2026 | IIIT Naya Raipur)
+const DEFAULT_BRANCH_TIMETABLES = {
+  'Data Science & AI': [
+    {
+      day: 'Monday',
+      periods: {
+        '9:00 - 9:55': { subject: 'Music', room: '203', type: 'music' },
+        '10:00 - 10:55': { subject: 'Music', room: '203', type: 'music' },
+        '11:00 - 11:55': { subject: 'C', room: '203', type: 'c' },
+        '12:00 - 12:55': { subject: 'C', room: '203', type: 'c' },
+        '1:00 - 2:00': { subject: 'L', room: 'Mess', type: 'lunch' },
+        '02:00 - 02:55': { subject: 'ILC', room: '203', type: 'ilc' },
+        '03:00 - 03:55': { subject: 'F', room: '203', type: 'f' },
+        '04:00 - 04:55': { subject: 'ILC/Yoga', room: '203', type: 'yoga' },
+        '05:00 - 05:55': { subject: 'ILC/Yoga', room: '203', type: 'yoga' }
+      }
+    },
+    {
+      day: 'Tuesday',
+      periods: {
+        '9:00 - 9:55': { subject: 'M', room: '203', type: 'm' },
+        '10:00 - 10:55': { subject: 'A', room: '203', type: 'a' },
+        '11:00 - 11:55': { subject: 'A', room: '203', type: 'a' },
+        '12:00 - 12:55': { subject: '-', room: '-', type: 'free' },
+        '1:00 - 2:00': { subject: 'U', room: 'Mess', type: 'lunch' },
+        '02:00 - 02:55': { subject: 'F', room: '203', type: 'f' },
+        '03:00 - 03:55': { subject: 'F', room: '203', type: 'f' },
+        '04:00 - 04:55': { subject: 'B', room: '203', type: 'b' },
+        '05:00 - 05:55': { subject: 'B', room: '203', type: 'b' }
+      }
+    },
+    {
+      day: 'Wednesday',
+      periods: {
+        '9:00 - 9:55': { subject: 'ILC', room: '203', type: 'ilc' },
+        '10:00 - 10:55': { subject: 'G', room: '203', type: 'g' },
+        '11:00 - 11:55': { subject: 'B', room: '203', type: 'b' },
+        '12:00 - 12:55': { subject: 'N', room: '203', type: 'n' },
+        '1:00 - 2:00': { subject: 'N', room: 'Mess', type: 'lunch' },
+        '02:00 - 02:55': { subject: 'ILC', room: '203', type: 'ilc' },
+        '03:00 - 03:55': { subject: 'ILC', room: '203', type: 'ilc' },
+        '04:00 - 04:55': { subject: 'Music', room: '203', type: 'music' },
+        '05:00 - 05:55': { subject: 'Music', room: '203', type: 'music' }
+      }
+    },
+    {
+      day: 'Thursday',
+      periods: {
+        '9:00 - 9:55': { subject: 'G', room: '203', type: 'g' },
+        '10:00 - 10:55': { subject: 'G', room: '203', type: 'g' },
+        '11:00 - 11:55': { subject: 'M', room: '203', type: 'm' },
+        '12:00 - 12:55': { subject: 'C', room: '203', type: 'c' },
+        '1:00 - 2:00': { subject: 'C', room: 'Mess', type: 'lunch' },
+        '02:00 - 02:55': { subject: 'M', room: '203', type: 'm' },
+        '03:00 - 03:55': { subject: 'M', room: '203', type: 'm' },
+        '04:00 - 04:55': { subject: 'N', room: '203', type: 'n' },
+        '05:00 - 05:55': { subject: 'B', room: '203', type: 'b' }
+      }
+    },
+    {
+      day: 'Friday',
+      periods: {
+        '9:00 - 9:55': { subject: 'N', room: '203', type: 'n' },
+        '10:00 - 10:55': { subject: 'N', room: '203', type: 'n' },
+        '11:00 - 11:55': { subject: 'C', room: '203', type: 'c' },
+        '12:00 - 12:55': { subject: 'F', room: '203', type: 'f' },
+        '1:00 - 2:00': { subject: 'H', room: 'Mess', type: 'lunch' },
+        '02:00 - 02:55': { subject: '-', room: '-', type: 'free' },
+        '03:00 - 03:55': { subject: '-', room: '-', type: 'free' },
+        '04:00 - 04:55': { subject: 'Yoga', room: 'Ground', type: 'yoga' },
+        '05:00 - 05:55': { subject: 'Yoga', room: 'Ground', type: 'yoga' }
+      }
     }
-  },
-  {
-    day: 'Tuesday',
-    periods: {
-      '9:00 - 9:55': { subject: 'M', room: '203', type: 'm' },
-      '10:00 - 10:55': { subject: 'A', room: '203', type: 'a' },
-      '11:00 - 11:55': { subject: 'A', room: '203', type: 'a' },
-      '12:00 - 12:55': { subject: '-', room: '-', type: 'free' },
-      '1:00 - 2:00': { subject: 'U', room: 'Mess', type: 'lunch' },
-      '02:00 - 02:55': { subject: 'F', room: '203', type: 'f' },
-      '03:00 - 03:55': { subject: 'F', room: '203', type: 'f' },
-      '04:00 - 04:55': { subject: 'B', room: '203', type: 'b' },
-      '05:00 - 05:55': { subject: 'B', room: '203', type: 'b' }
+  ],
+  'Computer Science & Engineering': [
+    {
+      day: 'Monday',
+      periods: {
+        '9:00 - 9:55': { subject: 'Slot A (Data Structures)', room: '201', type: 'a' },
+        '10:00 - 10:55': { subject: 'Slot B (OOP with Java)', room: '201', type: 'b' },
+        '11:00 - 11:55': { subject: 'Slot C (Discrete Maths)', room: '201', type: 'c' },
+        '12:00 - 12:55': { subject: 'Slot M (Comp Org & Arch)', room: '201', type: 'm' },
+        '1:00 - 2:00': { subject: 'L', room: 'Mess', type: 'lunch' },
+        '02:00 - 02:55': { subject: 'Slot F (Operating Systems)', room: '201', type: 'f' },
+        '03:00 - 03:55': { subject: 'Slot G (Theory of Comp)', room: '201', type: 'g' },
+        '04:00 - 04:55': { subject: 'Slot B (Web Tech Lab)', room: 'CC Lab 1', type: 'b' },
+        '05:00 - 05:55': { subject: 'Free / Coding Club', room: 'CC Lab 1', type: 'free' }
+      }
+    },
+    {
+      day: 'Tuesday',
+      periods: {
+        '9:00 - 9:55': { subject: 'Slot B (OOP with Java)', room: '201', type: 'b' },
+        '10:00 - 10:55': { subject: 'Slot C (Discrete Maths)', room: '201', type: 'c' },
+        '11:00 - 11:55': { subject: 'Slot A (Data Structures)', room: '201', type: 'a' },
+        '12:00 - 12:55': { subject: 'Slot F (Operating Systems)', room: '201', type: 'f' },
+        '1:00 - 2:00': { subject: 'U', room: 'Mess', type: 'lunch' },
+        '02:00 - 02:55': { subject: 'Health & Wellness: Yoga', room: 'Sports Complex', type: 'yoga' },
+        '03:00 - 03:55': { subject: 'Slot M (Comp Org & Arch)', room: '201', type: 'm' },
+        '04:00 - 04:55': { subject: 'Slot G (Theory of Comp)', room: '201', type: 'g' },
+        '05:00 - 05:55': { subject: 'Free / Self Study', room: '-', type: 'free' }
+      }
+    },
+    {
+      day: 'Wednesday',
+      periods: {
+        '9:00 - 9:55': { subject: 'Slot C (Discrete Maths)', room: '201', type: 'c' },
+        '10:00 - 10:55': { subject: 'Slot A (Data Structures)', room: '201', type: 'a' },
+        '11:00 - 11:55': { subject: 'Slot B (OOP with Java)', room: '201', type: 'b' },
+        '12:00 - 12:55': { subject: 'Slot G (Technical Comm)', room: '201', type: 'g' },
+        '1:00 - 2:00': { subject: 'N', room: 'Mess', type: 'lunch' },
+        '02:00 - 02:55': { subject: 'Slot N (Database / SQL)', room: 'CC Lab 2', type: 'n' },
+        '03:00 - 03:55': { subject: 'Slot M (Comp Org & Arch)', room: '201', type: 'm' },
+        '04:00 - 04:55': { subject: 'Slot F (Operating Systems)', room: '201', type: 'f' },
+        '05:00 - 05:55': { subject: 'Free Study Hour', room: '-', type: 'free' }
+      }
+    },
+    {
+      day: 'Thursday',
+      periods: {
+        '9:00 - 9:55': { subject: 'Slot F (Operating Systems)', room: '201', type: 'f' },
+        '10:00 - 10:55': { subject: 'Slot G (Technical Comm)', room: '201', type: 'g' },
+        '11:00 - 11:55': { subject: 'Slot M (Comp Org & Arch)', room: '201', type: 'm' },
+        '12:00 - 12:55': { subject: 'Slot N (Database / SQL)', room: 'CC Lab 2', type: 'n' },
+        '1:00 - 2:00': { subject: 'C', room: 'Mess', type: 'lunch' },
+        '02:00 - 02:55': { subject: 'Indian Lang & Culture (ILC)', room: '201', type: 'ilc' },
+        '03:00 - 03:55': { subject: 'Slot A (Data Structures)', room: '201', type: 'a' },
+        '04:00 - 04:55': { subject: 'Slot B (OOP with Java)', room: '201', type: 'b' },
+        '05:00 - 05:55': { subject: 'Slot C (Discrete Maths)', room: '201', type: 'c' }
+      }
+    },
+    {
+      day: 'Friday',
+      periods: {
+        '9:00 - 9:55': { subject: 'Slot G (Theory of Comp)', room: '201', type: 'g' },
+        '10:00 - 10:55': { subject: 'Slot M (Comp Org & Arch)', room: '201', type: 'm' },
+        '11:00 - 11:55': { subject: 'Slot N (Database / SQL)', room: 'CC Lab 2', type: 'n' },
+        '12:00 - 12:55': { subject: 'Slot A (Data Structures)', room: '201', type: 'a' },
+        '1:00 - 2:00': { subject: 'H', room: 'Mess', type: 'lunch' },
+        '02:00 - 02:55': { subject: 'Creative Arts: Music', room: 'Auditorium', type: 'music' },
+        '03:00 - 03:55': { subject: 'Slot B (OOP with Java)', room: '201', type: 'b' },
+        '04:00 - 04:55': { subject: 'Slot C (Discrete Maths)', room: '201', type: 'c' },
+        '05:00 - 05:55': { subject: 'Slot F (OS Project Lab)', room: 'CC Lab 2', type: 'f' }
+      }
     }
-  },
-  {
-    day: 'Wednesday',
-    periods: {
-      '9:00 - 9:55': { subject: 'ILC', room: '203', type: 'ilc' },
-      '10:00 - 10:55': { subject: 'G', room: '203', type: 'g' },
-      '11:00 - 11:55': { subject: 'B', room: '203', type: 'b' },
-      '12:00 - 12:55': { subject: 'N', room: '203', type: 'n' },
-      '1:00 - 2:00': { subject: 'N', room: 'Mess', type: 'lunch' },
-      '02:00 - 02:55': { subject: 'ILC', room: '203', type: 'ilc' },
-      '03:00 - 03:55': { subject: 'ILC', room: '203', type: 'ilc' },
-      '04:00 - 04:55': { subject: 'Music', room: '203', type: 'music' },
-      '05:00 - 05:55': { subject: 'Music', room: '203', type: 'music' }
+  ],
+  'Electronics & Communication': [
+    {
+      day: 'Monday',
+      periods: {
+        '9:00 - 9:55': { subject: 'Slot A (Maths & Transforms)', room: '205', type: 'a' },
+        '10:00 - 10:55': { subject: 'Slot B (Devices & Circuits)', room: '205', type: 'b' },
+        '11:00 - 11:55': { subject: 'Slot C (Digital Circuits & uP)', room: '205', type: 'c' },
+        '12:00 - 12:55': { subject: 'Slot M (Hardware Lab)', room: 'Hardware Lab', type: 'm' },
+        '1:00 - 2:00': { subject: 'L', room: 'Mess', type: 'lunch' },
+        '02:00 - 02:55': { subject: 'Creative Arts: Music', room: 'Auditorium', type: 'music' },
+        '03:00 - 03:55': { subject: 'Slot F (Signals & Systems)', room: '205', type: 'f' },
+        '04:00 - 04:55': { subject: 'Slot G (Electromagnetic Fields)', room: '205', type: 'g' },
+        '05:00 - 05:55': { subject: 'Free / Robotics Lab', room: 'Hardware Lab', type: 'free' }
+      }
+    },
+    {
+      day: 'Tuesday',
+      periods: {
+        '9:00 - 9:55': { subject: 'Slot B (Devices & Circuits)', room: '205', type: 'b' },
+        '10:00 - 10:55': { subject: 'Slot C (Digital Circuits & uP)', room: '205', type: 'c' },
+        '11:00 - 11:55': { subject: 'Slot A (Maths & Transforms)', room: '205', type: 'a' },
+        '12:00 - 12:55': { subject: 'Slot F (Signals & Systems)', room: '205', type: 'f' },
+        '1:00 - 2:00': { subject: 'U', room: 'Mess', type: 'lunch' },
+        '02:00 - 02:55': { subject: 'Health & Wellness: Yoga', room: 'Sports Complex', type: 'yoga' },
+        '03:00 - 03:55': { subject: 'Slot G (Electromagnetic Fields)', room: '205', type: 'g' },
+        '04:00 - 04:55': { subject: 'Slot M (Circuit Sim Lab)', room: 'VLSI Lab', type: 'm' },
+        '05:00 - 05:55': { subject: 'Free / Mentorship', room: '-', type: 'free' }
+      }
+    },
+    {
+      day: 'Wednesday',
+      periods: {
+        '9:00 - 9:55': { subject: 'Slot C (Digital Circuits & uP)', room: '205', type: 'c' },
+        '10:00 - 10:55': { subject: 'Slot A (Maths & Transforms)', room: '205', type: 'a' },
+        '11:00 - 11:55': { subject: 'Slot B (Devices & Circuits)', room: '205', type: 'b' },
+        '12:00 - 12:55': { subject: 'Slot G (Electromagnetic Fields)', room: '205', type: 'g' },
+        '1:00 - 2:00': { subject: 'N', room: 'Mess', type: 'lunch' },
+        '02:00 - 02:55': { subject: 'Slot N (Comm Systems)', room: '205', type: 'n' },
+        '03:00 - 03:55': { subject: 'Slot M (Hardware Lab)', room: 'Hardware Lab', type: 'm' },
+        '04:00 - 04:55': { subject: 'Slot F (Signals & Systems)', room: '205', type: 'f' },
+        '05:00 - 05:55': { subject: 'Free Study Hour', room: '-', type: 'free' }
+      }
+    },
+    {
+      day: 'Thursday',
+      periods: {
+        '9:00 - 9:55': { subject: 'Slot F (Signals & Systems)', room: '205', type: 'f' },
+        '10:00 - 10:55': { subject: 'Slot G (Electromagnetic Fields)', room: '205', type: 'g' },
+        '11:00 - 11:55': { subject: 'Slot M (Hardware Lab)', room: 'Hardware Lab', type: 'm' },
+        '12:00 - 12:55': { subject: 'Slot N (Comm Systems)', room: '205', type: 'n' },
+        '1:00 - 2:00': { subject: 'C', room: 'Mess', type: 'lunch' },
+        '02:00 - 02:55': { subject: 'Indian Lang & Culture (ILC)', room: '205', type: 'ilc' },
+        '03:00 - 03:55': { subject: 'Slot A (Maths & Transforms)', room: '205', type: 'a' },
+        '04:00 - 04:55': { subject: 'Slot B (Devices & Circuits)', room: '205', type: 'b' },
+        '05:00 - 05:55': { subject: 'Slot C (Digital Circuits & uP)', room: '205', type: 'c' }
+      }
+    },
+    {
+      day: 'Friday',
+      periods: {
+        '9:00 - 9:55': { subject: 'Slot G (Electromagnetic Fields)', room: '205', type: 'g' },
+        '10:00 - 10:55': { subject: 'Slot M (Hardware Lab)', room: 'Hardware Lab', type: 'm' },
+        '11:00 - 11:55': { subject: 'Slot N (Comm Systems)', room: '205', type: 'n' },
+        '12:00 - 12:55': { subject: 'Slot A (Maths & Transforms)', room: '205', type: 'a' },
+        '1:00 - 2:00': { subject: 'H', room: 'Mess', type: 'lunch' },
+        '02:00 - 02:55': { subject: 'Creative Arts / Yoga', room: 'Campus Hall', type: 'yoga' },
+        '03:00 - 03:55': { subject: 'Slot B (Devices & Circuits)', room: '205', type: 'b' },
+        '04:00 - 04:55': { subject: 'Slot C (Digital Circuits & uP)', room: '205', type: 'c' },
+        '05:00 - 05:55': { subject: 'Slot F (Signals Lab)', room: 'Hardware Lab', type: 'f' }
+      }
     }
-  },
-  {
-    day: 'Thursday',
-    periods: {
-      '9:00 - 9:55': { subject: 'G', room: '203', type: 'g' },
-      '10:00 - 10:55': { subject: 'G', room: '203', type: 'g' },
-      '11:00 - 11:55': { subject: 'M', room: '203', type: 'm' },
-      '12:00 - 12:55': { subject: 'C', room: '203', type: 'c' },
-      '1:00 - 2:00': { subject: 'C', room: 'Mess', type: 'lunch' },
-      '02:00 - 02:55': { subject: 'M', room: '203', type: 'm' },
-      '03:00 - 03:55': { subject: 'M', room: '203', type: 'm' },
-      '04:00 - 04:55': { subject: 'N', room: '203', type: 'n' },
-      '05:00 - 05:55': { subject: 'B', room: '203', type: 'b' }
-    }
-  },
-  {
-    day: 'Friday',
-    periods: {
-      '9:00 - 9:55': { subject: 'N', room: '203', type: 'n' },
-      '10:00 - 10:55': { subject: 'N', room: '203', type: 'n' },
-      '11:00 - 11:55': { subject: 'C', room: '203', type: 'c' },
-      '12:00 - 12:55': { subject: 'F', room: '203', type: 'f' },
-      '1:00 - 2:00': { subject: 'H', room: 'Mess', type: 'lunch' },
-      '02:00 - 02:55': { subject: '-', room: '-', type: 'free' },
-      '03:00 - 03:55': { subject: '-', room: '-', type: 'free' },
-      '04:00 - 04:55': { subject: 'Yoga', room: 'Ground', type: 'yoga' },
-      '05:00 - 05:55': { subject: 'Yoga', room: 'Ground', type: 'yoga' }
-    }
-  }
-];
+  ]
+};
+
+const DEFAULT_TIMETABLE = DEFAULT_BRANCH_TIMETABLES['Data Science & AI'];
 
 // Initial Global Assignments mapped to official subjects
 const DEFAULT_GLOBAL_ASSIGNMENTS = [
@@ -714,8 +876,13 @@ async function syncAllFromBackend() {
       fetch(`${API_BASE}/notifications${rollQuery}`).then(r => r.json())
     ]);
 
-    if (ttRes.status === 'fulfilled' && ttRes.value?.success && ttRes.value.timetable) {
-      setTimetable(ttRes.value.timetable);
+    if (ttRes.status === 'fulfilled' && ttRes.value?.success) {
+      if (ttRes.value.branches) {
+        localStorage.setItem('iiitnr_branch_timetables', JSON.stringify(ttRes.value.branches));
+      }
+      if (ttRes.value.timetable) {
+        setTimetable(ttRes.value.timetable, ttRes.value.branch || activeTimetableBranch);
+      }
     }
     if (resRes.status === 'fulfilled' && resRes.value?.success && resRes.value.resources) {
       setResources(resRes.value.resources);
@@ -838,6 +1005,9 @@ function initStorage() {
           hour: '2-digit', minute: '2-digit', hour12: true
         });
       }
+      if (currentUser && currentUser.branch) {
+        activeTimetableBranch = currentUser.branch;
+      }
       if (currentUser && currentUser.role === 'student' && (activeView === 'database' || window.location.hash === '#database')) {
         activeView = 'timetable';
         if (window.location.hash === '#database') window.location.hash = '#timetable';
@@ -873,16 +1043,75 @@ function getResources() {
 function setResources(data) {
   localStorage.setItem('iiitnr_study_resources', JSON.stringify(data));
 }
-function getTimetable() {
-  const data = JSON.parse(localStorage.getItem('iiitnr_timetable') || '[]');
-  if (Array.isArray(data) && data.length > 0 && !data[0].day) {
-    localStorage.setItem('iiitnr_timetable', JSON.stringify(DEFAULT_TIMETABLE));
-    return DEFAULT_TIMETABLE;
+let activeTimetableBranch = 'Data Science & AI';
+
+async function switchTimetableBranch(branchName) {
+  if (!branchName) return;
+  activeTimetableBranch = branchName;
+  renderTimetableView();
+  if (window.lucide) lucide.createIcons();
+
+  if (isBackendConnected) {
+    try {
+      const res = await apiCall(`/timetable?branch=${encodeURIComponent(branchName)}`, 'GET');
+      if (res?.success && res.timetable) {
+        setTimetable(res.timetable, branchName);
+        renderTimetableView();
+        if (window.lucide) lucide.createIcons();
+      }
+    } catch (e) {
+      console.warn('Could not refresh branch timetable:', e);
+    }
   }
-  return (Array.isArray(data) && data.length > 0) ? data : DEFAULT_TIMETABLE;
 }
-function setTimetable(data) {
-  localStorage.setItem('iiitnr_timetable', JSON.stringify(data));
+
+function handleTimetableBranchModalChange() {
+  const branch = document.getElementById('tt-branch')?.value || activeTimetableBranch;
+  const roomInput = document.getElementById('tt-room');
+  if (roomInput) {
+    const defaultRoom = branch.includes('Computer') ? '201' : (branch.includes('Electronics') ? '205' : '203');
+    roomInput.value = defaultRoom;
+  }
+}
+
+function getTimetable(branch) {
+  const targetBranch = branch || activeTimetableBranch;
+  let allBranchTables = {};
+  try {
+    allBranchTables = JSON.parse(localStorage.getItem('iiitnr_branch_timetables') || '{}');
+  } catch (e) {
+    allBranchTables = {};
+  }
+
+  if (allBranchTables && allBranchTables[targetBranch] && Array.isArray(allBranchTables[targetBranch]) && allBranchTables[targetBranch].length > 0) {
+    return allBranchTables[targetBranch];
+  }
+
+  if (typeof DEFAULT_BRANCH_TIMETABLES !== 'undefined' && DEFAULT_BRANCH_TIMETABLES[targetBranch]) {
+    return JSON.parse(JSON.stringify(DEFAULT_BRANCH_TIMETABLES[targetBranch]));
+  }
+
+  const data = JSON.parse(localStorage.getItem('iiitnr_timetable') || '[]');
+  if (Array.isArray(data) && data.length > 0 && data[0].day) {
+    return data;
+  }
+  return JSON.parse(JSON.stringify(DEFAULT_TIMETABLE));
+}
+
+function setTimetable(data, branch) {
+  const targetBranch = branch || activeTimetableBranch;
+  let allBranchTables = {};
+  try {
+    allBranchTables = JSON.parse(localStorage.getItem('iiitnr_branch_timetables') || '{}');
+  } catch (e) {
+    allBranchTables = {};
+  }
+  allBranchTables[targetBranch] = data;
+  localStorage.setItem('iiitnr_branch_timetables', JSON.stringify(allBranchTables));
+
+  if (targetBranch === activeTimetableBranch) {
+    localStorage.setItem('iiitnr_timetable', JSON.stringify(data));
+  }
 }
 function getGlobalAssignments() {
   return JSON.parse(localStorage.getItem('iiitnr_global_assignments') || '[]');
@@ -986,8 +1215,10 @@ function quickFill(role) {
     document.getElementById('student-pass').value = 'student123';
   } else {
     switchAuthTab('admin');
-    document.getElementById('admin-email').value = 'revanth0246@gmail.com';
-    document.getElementById('admin-pass').value = 'revanth0406';
+    const emailEl = document.getElementById('admin-email');
+    const passEl = document.getElementById('admin-pass');
+    if (emailEl) emailEl.value = '';
+    if (passEl) passEl.value = '';
   }
 }
 
@@ -1015,6 +1246,9 @@ async function handleAuthLogin(event, role) {
         isBackendConnected = true;
         updateBackendStatusBadge(true);
         currentUser = data.user;
+        if (currentUser.branch) {
+          activeTimetableBranch = currentUser.branch;
+        }
         const now = new Date();
         const formattedLoginTime = now.toLocaleDateString('en-IN', {
           day: '2-digit', month: 'short', year: 'numeric'
@@ -1050,6 +1284,9 @@ async function handleAuthLogin(event, role) {
 
     if (matched) {
       currentUser = matched;
+      if (currentUser.branch) {
+        activeTimetableBranch = currentUser.branch;
+      }
       const now = new Date();
       currentUser.loginTime = now.toLocaleDateString('en-IN', {
         day: '2-digit', month: 'short', year: 'numeric'
@@ -1126,7 +1363,7 @@ async function handleAuthLogin(event, role) {
       showToast('Admin access granted: Academic Control Panel unlocked.', 'info');
       refreshAllViews();
     } else {
-      showToast('Invalid Admin Credentials! Use revanth0246@gmail.com / revanth0406', 'error');
+      showToast('Invalid Admin Credentials! Please verify your official admin email and passkey.', 'error');
     }
   }
 }
@@ -1178,6 +1415,9 @@ async function submitNewStudentRegistration(event) {
       isBackendConnected = true;
       updateBackendStatusBadge(true);
       currentUser = data.user;
+      if (currentUser.branch) {
+        activeTimetableBranch = currentUser.branch;
+      }
       const now = new Date();
       currentUser.loginTime = now.toLocaleDateString('en-IN', {
         day: '2-digit', month: 'short', year: 'numeric'
@@ -1230,6 +1470,9 @@ async function submitNewStudentRegistration(event) {
   closeModal('modal-register-student');
 
   currentUser = newStudent;
+  if (currentUser.branch) {
+    activeTimetableBranch = currentUser.branch;
+  }
   localStorage.setItem('iiitnr_active_session', JSON.stringify(currentUser));
   hideAuthScreen();
   showToast(`Account created! Welcome to IIIT-NR Hub, ${name}.`, 'success');
@@ -1771,11 +2014,14 @@ function renderHomeView() {
   }
 
   // 2. Today's classes preview
-  const timetable = getTimetable();
+  const studentBranch = (currentUser && currentUser.branch) ? currentUser.branch : activeTimetableBranch;
+  const timetable = getTimetable(studentBranch);
   const classesContainer = document.getElementById('home-today-classes');
   const classesTitle = document.getElementById('home-today-classes-title');
+  const branchShort = studentBranch.includes('Data') ? 'DSAI' : (studentBranch.includes('Computer') ? 'CSE' : 'ECE');
+  const defaultRoom = studentBranch.includes('Computer') ? '201' : (studentBranch.includes('Electronics') ? '205' : '203');
   if (classesTitle) {
-    classesTitle.textContent = `Today's Schedule (${todayDayName === 'Saturday' || todayDayName === 'Sunday' ? 'Mon Preview' : todayDayName})`;
+    classesTitle.textContent = `Today's Schedule [${branchShort}] (${todayDayName === 'Saturday' || todayDayName === 'Sunday' ? 'Mon Preview' : todayDayName})`;
   }
   if (classesContainer && timetable.length > 0) {
     const activeDay = (todayDayName === 'Saturday' || todayDayName === 'Sunday') ? 'Monday' : todayDayName;
@@ -1783,7 +2029,7 @@ function renderHomeView() {
     const dayPeriods = dayRow.periods || {};
     const todaySlots = TIMETABLE_PERIODS.filter(p => p !== '1:00 - 2:00').slice(0, 5).map(time => ({
       time: time,
-      slot: dayPeriods[time] || { subject: '-', room: '203', type: 'free' }
+      slot: dayPeriods[time] || { subject: '-', room: defaultRoom, type: 'free' }
     }));
 
     classesContainer.innerHTML = todaySlots.map(s => {
@@ -2204,47 +2450,155 @@ function copyResourceLink(url) {
 
 // --- C. TIMETABLE VIEW (Mockup 3) ---
 // Requirement 2: Timetable which can be edited ONLY by admin
+let isTimetableFitMode = true;
+
+function toggleTimetableFitMode() {
+  const container = document.getElementById('timetable-table-container');
+  const table = document.getElementById('timetable-grid-table');
+  const label = document.getElementById('tt-fit-btn-label');
+  const icon = document.getElementById('icon-timetable-fit');
+  if (!container) return;
+
+  isTimetableFitMode = !isTimetableFitMode;
+  if (isTimetableFitMode) {
+    container.classList.add('timetable-fit-mode');
+    if (table) {
+      table.classList.add('table-fixed');
+      table.classList.remove('min-w-[980px]');
+      table.classList.add('min-w-[700px]', 'md:min-w-0');
+    }
+    if (label) label.textContent = 'Fit to Screen: ON';
+    if (icon) icon.setAttribute('data-lucide', 'minimize-2');
+  } else {
+    container.classList.remove('timetable-fit-mode');
+    if (table) {
+      table.classList.remove('table-fixed', 'md:min-w-0');
+      table.classList.add('min-w-[980px]');
+    }
+    if (label) label.textContent = 'Fit to Screen: OFF';
+    if (icon) icon.setAttribute('data-lucide', 'maximize-2');
+  }
+  if (window.lucide) lucide.createIcons();
+}
+
+function renderTimetableSlotCard(slot, dayName, time, defaultRoom, isAdmin) {
+  const subject = (slot?.subject || '-').trim();
+  const room = (slot?.room && slot?.room !== '-' ? slot.room : (defaultRoom || '')).trim();
+
+  // 1. Precise Lunch Detection (1:00 - 2:00 or explicit lunch type)
+  const sUpper = subject.toUpperCase();
+  const isLunch = time === '1:00 - 2:00' || 
+                  slot?.type === 'lunch' || 
+                  sUpper === 'LUNCH' || 
+                  sUpper.includes('LUNCH BREAK') ||
+                  (slot?.room === 'Mess' && ['L', 'U', 'N', 'C', 'H'].includes(sUpper));
+
+  // 2. Precise Free Slot Detection
+  const isFree = !isLunch && (subject === '-' || slot?.type === 'free' || sUpper === 'FREE' || sUpper.startsWith('FREE /') || sUpper === 'FREE STUDY HOUR');
+
+  // 3. Determine Slot Color & Class
+  const slotType = isLunch ? 'lunch' : (isFree ? 'free' : (slot?.type || getSlotType(subject)));
+  const slotClass = `slot-${slotType}`;
+  const desc = SLOT_DESCRIPTIONS[subject] || subject;
+  const tooltipText = isLunch ? `Lunch Break (1:00 PM - 2:00 PM)` : `${subject}${room ? ` (Room: ${room})` : ''} | ${time}`;
+
+  // 4. Construct Card HTML ensuring subject and room are clearly displayed
+  let contentHtml = '';
+
+  if (isLunch) {
+    let letter = 'Lunch';
+    const m = subject.match(/\(([A-Z])\)/i);
+    if (m) letter = m[1].toUpperCase();
+    else if (['L', 'U', 'N', 'C', 'H'].includes(sUpper)) letter = sUpper;
+
+    contentHtml = `
+      <span class="font-black text-sm sm:text-base leading-none tracking-widest text-rose-600 dark:text-rose-300">${letter}</span>
+      <span class="text-[8px] sm:text-[9px] uppercase font-bold opacity-80 leading-tight mt-0.5">Lunch</span>
+    `;
+  } else if (isFree) {
+    contentHtml = `
+      <span class="text-xs sm:text-sm font-semibold opacity-30 leading-none">-</span>
+      <span class="text-[8px] sm:text-[9px] opacity-40 font-medium leading-tight mt-0.5">Free</span>
+    `;
+  } else {
+    // Subject has structure like "Slot A (Data Structures)" or "C (IOT)" or "Slot B (OOP with Java)"
+    const parenMatch = subject.match(/^([^(]+?)\s*\(([^)]+)\)$/);
+    if (parenMatch) {
+      const mainPart = parenMatch[1].trim();
+      const detailPart = parenMatch[2].trim();
+      contentHtml = `
+        <span class="font-extrabold text-[10px] sm:text-[11px] leading-tight block truncate w-full px-0.5 uppercase tracking-tight">${mainPart}</span>
+        <span class="font-medium text-[8.5px] sm:text-[9.5px] opacity-95 leading-tight block truncate w-full px-0.5 mt-0.5" title="${detailPart}">${detailPart}</span>
+        ${room ? `<span class="text-[7.5px] sm:text-[8px] opacity-75 font-medium leading-none block truncate w-full mt-0.5">(${room})</span>` : ''}
+      `;
+    } else if (subject.length <= 4) {
+      // Short code like "A", "B", "C", "F", "G", "M", "N", "ILC"
+      contentHtml = `
+        <span class="font-black text-xs sm:text-sm leading-none block uppercase">${subject}</span>
+        ${room ? `<span class="text-[8px] sm:text-[9px] opacity-80 font-medium leading-none block truncate w-full mt-0.5">(${room})</span>` : ''}
+      `;
+    } else {
+      // General subject name (e.g. "Operating Systems", "Music", "Creative Arts", "Data Structures")
+      contentHtml = `
+        <span class="font-bold text-[9.5px] sm:text-[10.5px] leading-tight block truncate w-full px-0.5" title="${subject}">${subject}</span>
+        ${room ? `<span class="text-[8px] sm:text-[9px] opacity-80 font-medium leading-none block truncate w-full mt-0.5">(${room})</span>` : ''}
+      `;
+    }
+  }
+
+  const safeSubject = subject.replace(/'/g, "\\'");
+  const safeRoom = (room || defaultRoom).replace(/'/g, "\\'");
+
+  return `
+    <td class="p-0.5 sm:p-1 align-middle text-center">
+      <div onclick="handleTimetableSlotClick('${dayName}', '${time}', '${safeSubject}', '${safeRoom}')" 
+           title="${tooltipText.replace(/"/g, '&quot;')}"
+           class="tt-slot ${slotClass} group relative cursor-pointer select-none">
+        ${contentHtml}
+        ${isAdmin ? `<span class="absolute top-0.5 right-0.5 opacity-0 group-hover:opacity-100 transition text-[7px] bg-black/70 text-white rounded px-0.5 leading-tight">edit</span>` : ''}
+      </div>
+    </td>
+  `;
+}
+
 function renderTimetableView() {
-  const timetable = getTimetable();
+  const timetable = getTimetable(activeTimetableBranch);
   const tbody = document.getElementById('timetable-table-body');
   if (!tbody) return;
 
   const isAdmin = currentUser && currentUser.role === 'admin';
 
+  // 1. Highlight the active branch tab
+  const tabDsai = document.getElementById('tt-tab-dsai');
+  const tabCse = document.getElementById('tt-tab-cse');
+  const tabEce = document.getElementById('tt-tab-ece');
+
+  const activeTabClass = "px-3 py-1.5 text-xs font-bold rounded-xl transition shadow-sm bg-indigo-600 text-white flex items-center gap-1.5";
+  const inactiveTabClass = "px-3 py-1.5 text-xs font-bold rounded-xl transition bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-1.5 border border-slate-200 dark:border-slate-700";
+
+  if (tabDsai) tabDsai.className = activeTimetableBranch === 'Data Science & AI' ? activeTabClass : inactiveTabClass;
+  if (tabCse) tabCse.className = activeTimetableBranch === 'Computer Science & Engineering' ? activeTabClass : inactiveTabClass;
+  if (tabEce) tabEce.className = activeTimetableBranch === 'Electronics & Communication' ? activeTabClass : inactiveTabClass;
+
+  // 2. Update room badge and subtitle
+  const roomBadge = document.getElementById('timetable-room-badge');
+  const subTitle = document.getElementById('timetable-subtitle');
+  const defaultRoom = activeTimetableBranch.includes('Computer') ? '201' : (activeTimetableBranch.includes('Electronics') ? '205' : '203');
+  const branchShort = activeTimetableBranch.includes('Data') ? 'DSAI' : (activeTimetableBranch.includes('Computer') ? 'CSE' : 'ECE');
+
+  if (roomBadge) roomBadge.textContent = `Room No: ${defaultRoom}`;
+  if (subTitle) subTitle.textContent = `B.Tech Official Schedule (${branchShort}) • ${activeTimetableBranch} (w.e.f. 24/08/2026 | IIIT Naya Raipur).`;
+
   tbody.innerHTML = timetable.map((dayRow) => {
     const dayName = dayRow.day;
     const cells = TIMETABLE_PERIODS.map(time => {
-      const slot = dayRow.periods?.[time] || { subject: '-', room: '203', type: 'free' };
-      const isLunch = time === '1:00 - 2:00' || slot.type === 'lunch';
-      const isFree = slot.subject === '-' || slot.type === 'free';
-      const slotType = isLunch ? 'lunch' : (isFree ? 'free' : (slot.type || getSlotType(slot.subject)));
-      const slotClass = `slot-${slotType}`;
-      const desc = SLOT_DESCRIPTIONS[slot.subject] || slot.subject;
-
-      return `
-        <td class="p-1.5 align-middle">
-          <div onclick="handleTimetableSlotClick('${dayName}', '${time}', '${slot.subject}', '${slot.room}')" 
-               title="${desc} (${slot.room})"
-               class="tt-slot ${slotClass} ${isLunch ? 'h-14 font-black text-sm' : 'min-h-[58px]'} group relative rounded-xl transition cursor-pointer flex flex-col justify-center items-center">
-            ${isLunch ? `
-              <span class="font-extrabold text-base tracking-widest text-rose-600 dark:text-rose-300">${slot.subject}</span>
-              <span class="text-[9px] uppercase font-bold opacity-80">Lunch</span>
-            ` : isFree ? `
-              <span class="text-sm font-semibold opacity-40">-</span>
-              <span class="text-[9px] opacity-40 font-medium">Free</span>
-            ` : `
-              <span class="font-bold text-xs uppercase tracking-tight">${slot.subject}</span>
-              <span class="text-[10px] opacity-80 font-medium">(${slot.room})</span>
-            `}
-            ${isAdmin ? `<span class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition text-[8px] bg-black/60 text-white rounded px-1">edit</span>` : ''}
-          </div>
-        </td>
-      `;
+      const slot = dayRow.periods?.[time] || { subject: '-', room: defaultRoom, type: 'free' };
+      return renderTimetableSlotCard(slot, dayName, time, defaultRoom, isAdmin);
     }).join('');
 
     return `
       <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition">
-        <td class="py-3 px-3 font-bold text-xs text-slate-800 dark:text-slate-200 text-left bg-slate-50/70 dark:bg-slate-800/50 border-r border-slate-100 dark:border-slate-800 whitespace-nowrap">
+        <td class="py-2 px-1.5 font-bold text-[10px] sm:text-xs text-slate-800 dark:text-slate-200 text-left bg-slate-50/70 dark:bg-slate-800/50 border-r border-slate-100 dark:border-slate-800 whitespace-nowrap">
           ${dayName}
         </td>
         ${cells}
@@ -2252,7 +2606,7 @@ function renderTimetableView() {
     `;
   }).join('');
 
-  lucide.createIcons();
+  if (window.lucide) lucide.createIcons();
 }
 
 function handleTimetableSlotClick(day, time, subject, room) {
@@ -2270,22 +2624,28 @@ function openAddTimetableSlotModal(day, time, subject, room) {
     return;
   }
 
+  const branchEl = document.getElementById('tt-branch');
+  if (branchEl) branchEl.value = activeTimetableBranch;
+
+  const defaultRoom = activeTimetableBranch.includes('Computer') ? '201' : (activeTimetableBranch.includes('Electronics') ? '205' : '203');
+
   if (day) document.getElementById('tt-day').value = day;
   if (time) document.getElementById('tt-time').value = time;
   if (subject) document.getElementById('tt-subject').value = subject;
-  if (room) document.getElementById('tt-room').value = room;
+  document.getElementById('tt-room').value = room || defaultRoom;
 
   document.getElementById('modal-edit-timetable').classList.remove('hidden');
   document.getElementById('modal-edit-timetable').classList.add('flex');
 }
 
-function submitTimetableSlot(event) {
+async function submitTimetableSlot(event) {
   event.preventDefault();
   if (!currentUser || currentUser.role !== 'admin') {
     showToast('Permission Denied: Only Admin can modify schedule.', 'error');
     return;
   }
 
+  const branch = document.getElementById('tt-branch')?.value || activeTimetableBranch;
   const day = document.getElementById('tt-day').value;
   const time = document.getElementById('tt-time').value;
   const subject = document.getElementById('tt-subject').value.trim();
@@ -2294,7 +2654,8 @@ function submitTimetableSlot(event) {
   const isLunch = time === '1:00 - 2:00' || subject.toUpperCase() === 'LUNCH';
   const type = isLunch ? 'lunch' : (subject === '-' ? 'free' : getSlotType(subject));
 
-  const timetable = getTimetable();
+  // 1. Update in-memory / local storage immediately
+  const timetable = getTimetable(branch);
   let dayRow = timetable.find(r => r.day === day);
   if (!dayRow) {
     dayRow = { day: day, periods: {} };
@@ -2310,27 +2671,59 @@ function submitTimetableSlot(event) {
     type: type
   };
 
-  setTimetable(timetable);
-  apiCall('/timetable/slot', 'POST', {
-    day, time, subject, room, type
-  });
+  setTimetable(timetable, branch);
+
+  // 2. Ensure activeTimetableBranch matches the edited branch so user immediately sees the change
+  activeTimetableBranch = branch;
+
   closeModal('modal-edit-timetable');
-  showToast(`Updated timetable: ${day} at ${time} -> ${subject} (${room})`, 'success');
+  showToast(`Updated [${branch}] ${day} at ${time} -> ${subject} (${room})`, 'success');
+
+  // 3. Render immediately
   renderTimetableView();
   renderHomeView();
+
+  // 4. Persist to SQLite backend & re-fetch to confirm
+  try {
+    const res = await apiCall('/timetable/slot', 'POST', {
+      branch, day, time, subject, room, type
+    });
+    if (res?.success) {
+      const refetch = await apiCall(`/timetable?branch=${encodeURIComponent(branch)}`, 'GET');
+      if (refetch?.success && refetch.timetable) {
+        setTimetable(refetch.timetable, branch);
+        renderTimetableView();
+        renderHomeView();
+      }
+    }
+  } catch (err) {
+    console.error('Timetable sync error:', err);
+  }
 }
 
-function resetDefaultTimetable() {
+async function resetDefaultTimetable() {
   if (!currentUser || currentUser.role !== 'admin') {
     showToast('Permission Denied.', 'error');
     return;
   }
-  if (confirm('Reset timetable to official IIIT-NR default schedule?')) {
-    setTimetable(DEFAULT_TIMETABLE);
-    apiCall('/timetable/reset', 'POST');
+  if (confirm(`Reset timetable for ${activeTimetableBranch} to official IIIT-NR default schedule?`)) {
+    const defaultData = (DEFAULT_BRANCH_TIMETABLES && DEFAULT_BRANCH_TIMETABLES[activeTimetableBranch]) || DEFAULT_TIMETABLE;
+    setTimetable(JSON.parse(JSON.stringify(defaultData)), activeTimetableBranch);
     renderTimetableView();
     renderHomeView();
-    showToast('Timetable reset to official IIIT-NR schedule.', 'info');
+    showToast(`Timetable for ${activeTimetableBranch} reset to official schedule.`, 'info');
+
+    try {
+      await apiCall('/timetable/reset', 'POST', { branch: activeTimetableBranch });
+      const refetch = await apiCall(`/timetable?branch=${encodeURIComponent(activeTimetableBranch)}`, 'GET');
+      if (refetch?.success && refetch.timetable) {
+        setTimetable(refetch.timetable, activeTimetableBranch);
+        renderTimetableView();
+        renderHomeView();
+      }
+    } catch (e) {
+      console.error('Reset error:', e);
+    }
   }
 }
 
@@ -4804,9 +5197,14 @@ function renderDbTableGrid(rows) {
       ${isUsersTable ? `
         <td class="px-4 py-3 text-center whitespace-nowrap">
           ${r.role === 'student' ? `
-            <button onclick="promoteUserToAdmin('${r.id}', '${escapeHtml(r.name || '')}', '${escapeHtml(r.email || '')}')" class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/70 dark:hover:bg-indigo-900 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 rounded-lg text-[10px] font-bold inline-flex items-center gap-1 transition shadow-sm">
-              <i data-lucide="shield-plus" class="w-3 h-3"></i> Make Admin
-            </button>
+            <div class="inline-flex items-center gap-1.5">
+              <button onclick="promoteUserToAdmin('${r.id}', '${escapeHtml(r.name || '')}', '${escapeHtml(r.email || '')}')" class="px-2 py-1 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/70 dark:hover:bg-indigo-900 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 rounded-lg text-[10px] font-bold inline-flex items-center gap-1 transition shadow-sm">
+                <i data-lucide="shield-plus" class="w-3 h-3"></i> Make Admin
+              </button>
+              <button onclick="removeStudentAccount('${r.id}', '${escapeHtml(r.name || '')}', '${escapeHtml(r.roll || '')}')" class="px-2 py-1 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/70 dark:hover:bg-rose-900 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-800 rounded-lg text-[10px] font-bold inline-flex items-center gap-1 transition shadow-sm" title="Remove student account">
+                <i data-lucide="trash-2" class="w-3 h-3"></i> Remove
+              </button>
+            </div>
           ` : (r.email === 'revanth0246@gmail.com' ? `
             <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">Root Admin</span>
           ` : `

@@ -63,18 +63,42 @@ async function runTests() {
     studentToken = data.token;
   });
 
-  // 4. Timetable Fetch from SQLite
-  await test('GET /api/timetable (B.Tech 1st Sem Room 203 Schedule)', async () => {
+  // 4. Timetable Fetch from SQLite (DSAI, CSE, and ECE branches)
+  await test('GET /api/timetable (All 3 Branch Schedules: DSAI, CSE, ECE)', async () => {
     const res = await fetch(`${BASE_URL}/timetable`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     if (!data.success || !Array.isArray(data.timetable) || data.timetable.length !== 5) {
-      throw new Error('Timetable structure invalid');
+      throw new Error('Default timetable structure invalid');
+    }
+    if (!data.branches || !data.branches['Data Science & AI'] || !data.branches['Computer Science & Engineering'] || !data.branches['Electronics & Communication']) {
+      throw new Error('Branch timetables missing from API response');
+    }
+    if (data.branches['Computer Science & Engineering'].length !== 5 || data.branches['Electronics & Communication'].length !== 5) {
+      throw new Error('CSE or ECE 5-day schedules invalid');
     }
   });
 
-  // 5. Admin-Only Timetable Slot Update
-  await test('POST /api/timetable/slot (Admin Authorization Guard)', async () => {
+  await test('GET /api/timetable?branch=Computer Science & Engineering (Branch Filter)', async () => {
+    const res = await fetch(`${BASE_URL}/timetable?branch=Computer%20Science%20%26%20Engineering`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (!data.success || data.branch !== 'Computer Science & Engineering' || data.timetable.length !== 5) {
+      throw new Error('Filtered CSE timetable invalid');
+    }
+  });
+
+  await test('GET /api/timetable?branch=Electronics & Communication (Branch Filter)', async () => {
+    const res = await fetch(`${BASE_URL}/timetable?branch=Electronics%20%26%20Communication`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (!data.success || data.branch !== 'Electronics & Communication' || data.timetable.length !== 5) {
+      throw new Error('Filtered ECE timetable invalid');
+    }
+  });
+
+  // 5. Admin-Only Timetable Slot Update (Branch-Aware)
+  await test('POST /api/timetable/slot (Admin Branch-Specific Slot Update)', async () => {
     const res = await fetch(`${BASE_URL}/timetable/slot`, {
       method: 'POST',
       headers: { 
@@ -82,16 +106,31 @@ async function runTests() {
         'Authorization': `Bearer ${adminToken}`
       },
       body: JSON.stringify({
+        branch: 'Computer Science & Engineering',
         day: 'Monday',
         time: '9:00 - 9:55',
-        subject: 'Slot A (Maths - Calculus)',
-        room: '203',
+        subject: 'Slot A (Advanced Data Structures)',
+        room: '201',
         type: 'a'
       })
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    if (!data.success) throw new Error('Slot update failed');
+    if (!data.success) throw new Error('Branch slot update failed');
+  });
+
+  // 5b. ECE Student Authentication
+  await test('POST /api/auth/login (ECE Student Roll No & Branch Verification)', async () => {
+    const res = await fetch(`${BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ emailOrRoll: '24ECE042', password: 'student123' })
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (!data.success || data.user.roll !== '24ECE042' || data.user.branch !== 'Electronics & Communication') {
+      throw new Error('ECE Student auth failed');
+    }
   });
 
   // 6. Resources CRUD in SQLite

@@ -48,6 +48,268 @@ function verifyPassword(password, hash) {
   return hashPassword(password) === hash;
 }
 
+// Official Weekly Timetables for All 3 Branches (w.e.f. 24/08/2026 | IIIT Naya Raipur)
+const defaultTimetablesByBranch = {
+  'Data Science & AI': [
+    {
+      day: 'Monday',
+      slots: {
+        '9:00 - 9:55': { s: 'Slot A (Maths)', r: '203', t: 'a' },
+        '10:00 - 10:55': { s: 'Slot B (Prog)', r: '203', t: 'b' },
+        '11:00 - 11:55': { s: 'Slot C (Digital)', r: '203', t: 'c' },
+        '12:00 - 12:55': { s: 'Slot M (IT Work)', r: '203', t: 'm' },
+        '1:00 - 2:00': { s: 'Lunch Break (L)', r: '-', t: 'lunch' },
+        '02:00 - 02:55': { s: 'Creative Arts: Music', r: 'Auditorium', t: 'music' },
+        '03:00 - 03:55': { s: 'Slot F (Physics)', r: '203', t: 'f' },
+        '04:00 - 04:55': { s: 'Slot G (Comm)', r: '203', t: 'g' },
+        '05:00 - 05:55': { s: 'Free / Library', r: '-', t: 'free' }
+      }
+    },
+    {
+      day: 'Tuesday',
+      slots: {
+        '9:00 - 9:55': { s: 'Slot B (Prog)', r: '203', t: 'b' },
+        '10:00 - 10:55': { s: 'Slot C (Digital)', r: '203', t: 'c' },
+        '11:00 - 11:55': { s: 'Slot A (Maths)', r: '203', t: 'a' },
+        '12:00 - 12:55': { s: 'Slot F (Physics)', r: '203', t: 'f' },
+        '1:00 - 2:00': { s: 'Lunch Break (U)', r: '-', t: 'lunch' },
+        '02:00 - 02:55': { s: 'Health & Wellness: Yoga', r: 'Sports Complex', t: 'yoga' },
+        '03:00 - 03:55': { s: 'Slot G (Comm)', r: '203', t: 'g' },
+        '04:00 - 04:55': { s: 'Slot M (IT Work)', r: '203', t: 'm' },
+        '05:00 - 05:55': { s: 'Free / Mentorship', r: '-', t: 'free' }
+      }
+    },
+    {
+      day: 'Wednesday',
+      slots: {
+        '9:00 - 9:55': { s: 'Slot C (Digital)', r: '203', t: 'c' },
+        '10:00 - 10:55': { s: 'Slot A (Maths)', r: '203', t: 'a' },
+        '11:00 - 11:55': { s: 'Slot B (Prog)', r: '203', t: 'b' },
+        '12:00 - 12:55': { s: 'Slot G (Comm)', r: '203', t: 'g' },
+        '1:00 - 2:00': { s: 'Lunch Break (N)', r: '-', t: 'lunch' },
+        '02:00 - 02:55': { s: 'Slot N (Discrete)', r: '203', t: 'n' },
+        '03:00 - 03:55': { s: 'Slot M (IT Work)', r: '203', t: 'm' },
+        '04:00 - 04:55': { s: 'Slot F (Physics)', r: '203', t: 'f' },
+        '05:00 - 05:55': { s: 'Free Study Hour', r: '-', t: 'free' }
+      }
+    },
+    {
+      day: 'Thursday',
+      slots: {
+        '9:00 - 9:55': { s: 'Slot F (Physics)', r: '203', t: 'f' },
+        '10:00 - 10:55': { s: 'Slot G (Comm)', r: '203', t: 'g' },
+        '11:00 - 11:55': { s: 'Slot M (IT Work)', r: '203', t: 'm' },
+        '12:00 - 12:55': { s: 'Slot N (Discrete)', r: '203', t: 'n' },
+        '1:00 - 2:00': { s: 'Lunch Break (C)', r: '-', t: 'lunch' },
+        '02:00 - 02:55': { s: 'Indian Lang & Culture (ILC)', r: '203', t: 'ilc' },
+        '03:00 - 03:55': { s: 'Slot A (Maths)', r: '203', t: 'a' },
+        '04:00 - 04:55': { s: 'Slot B (Prog)', r: '203', t: 'b' },
+        '05:00 - 05:55': { s: 'Slot C (Digital)', r: '203', t: 'c' }
+      }
+    },
+    {
+      day: 'Friday',
+      slots: {
+        '9:00 - 9:55': { s: 'Slot G (Comm)', r: '203', t: 'g' },
+        '10:00 - 10:55': { s: 'Slot M (IT Work)', r: '203', t: 'm' },
+        '11:00 - 11:55': { s: 'Slot N (Discrete)', r: '203', t: 'n' },
+        '12:00 - 12:55': { s: 'Slot A (Maths)', r: '203', t: 'a' },
+        '1:00 - 2:00': { s: 'Lunch Break (H)', r: '-', t: 'lunch' },
+        '02:00 - 02:55': { s: 'Creative Arts / Yoga', r: 'Campus Hall', t: 'yoga' },
+        '03:00 - 03:55': { s: 'Slot B (Prog)', r: '203', t: 'b' },
+        '04:00 - 04:55': { s: 'Slot C (Digital)', r: '203', t: 'c' },
+        '05:00 - 05:55': { s: 'Slot F (Physics)', r: '203', t: 'f' }
+      }
+    }
+  ],
+  'Computer Science & Engineering': [
+    {
+      day: 'Monday',
+      slots: {
+        '9:00 - 9:55': { s: 'Slot A (Data Structures)', r: '201', t: 'a' },
+        '10:00 - 10:55': { s: 'Slot B (OOP with Java)', r: '201', t: 'b' },
+        '11:00 - 11:55': { s: 'Slot C (Discrete Maths)', r: '201', t: 'c' },
+        '12:00 - 12:55': { s: 'Slot M (Comp Org & Arch)', r: '201', t: 'm' },
+        '1:00 - 2:00': { s: 'Lunch Break (L)', r: '-', t: 'lunch' },
+        '02:00 - 02:55': { s: 'Slot F (Operating Systems)', r: '201', t: 'f' },
+        '03:00 - 03:55': { s: 'Slot G (Theory of Comp)', r: '201', t: 'g' },
+        '04:00 - 04:55': { s: 'Slot B (Web Tech Lab)', r: 'CC Lab 1', t: 'b' },
+        '05:00 - 05:55': { s: 'Free / Coding Club', r: 'CC Lab 1', t: 'free' }
+      }
+    },
+    {
+      day: 'Tuesday',
+      slots: {
+        '9:00 - 9:55': { s: 'Slot B (OOP with Java)', r: '201', t: 'b' },
+        '10:00 - 10:55': { s: 'Slot C (Discrete Maths)', r: '201', t: 'c' },
+        '11:00 - 11:55': { s: 'Slot A (Data Structures)', r: '201', t: 'a' },
+        '12:00 - 12:55': { s: 'Slot F (Operating Systems)', r: '201', t: 'f' },
+        '1:00 - 2:00': { s: 'Lunch Break (U)', r: '-', t: 'lunch' },
+        '02:00 - 02:55': { s: 'Health & Wellness: Yoga', r: 'Sports Complex', t: 'yoga' },
+        '03:00 - 03:55': { s: 'Slot M (Comp Org & Arch)', r: '201', t: 'm' },
+        '04:00 - 04:55': { s: 'Slot G (Theory of Comp)', r: '201', t: 'g' },
+        '05:00 - 05:55': { s: 'Free / Self Study', r: '-', t: 'free' }
+      }
+    },
+    {
+      day: 'Wednesday',
+      slots: {
+        '9:00 - 9:55': { s: 'Slot C (Discrete Maths)', r: '201', t: 'c' },
+        '10:00 - 10:55': { s: 'Slot A (Data Structures)', r: '201', t: 'a' },
+        '11:00 - 11:55': { s: 'Slot B (OOP with Java)', r: '201', t: 'b' },
+        '12:00 - 12:55': { s: 'Slot G (Technical Comm)', r: '201', t: 'g' },
+        '1:00 - 2:00': { s: 'Lunch Break (N)', r: '-', t: 'lunch' },
+        '02:00 - 02:55': { s: 'Slot N (Database / SQL)', r: 'CC Lab 2', t: 'n' },
+        '03:00 - 03:55': { s: 'Slot M (Comp Org & Arch)', r: '201', t: 'm' },
+        '04:00 - 04:55': { s: 'Slot F (Operating Systems)', r: '201', t: 'f' },
+        '05:00 - 05:55': { s: 'Free Study Hour', r: '-', t: 'free' }
+      }
+    },
+    {
+      day: 'Thursday',
+      slots: {
+        '9:00 - 9:55': { s: 'Slot F (Operating Systems)', r: '201', t: 'f' },
+        '10:00 - 10:55': { s: 'Slot G (Technical Comm)', r: '201', t: 'g' },
+        '11:00 - 11:55': { s: 'Slot M (Comp Org & Arch)', r: '201', t: 'm' },
+        '12:00 - 12:55': { s: 'Slot N (Database / SQL)', r: 'CC Lab 2', t: 'n' },
+        '1:00 - 2:00': { s: 'Lunch Break (C)', r: '-', t: 'lunch' },
+        '02:00 - 02:55': { s: 'Indian Lang & Culture (ILC)', r: '201', t: 'ilc' },
+        '03:00 - 03:55': { s: 'Slot A (Data Structures)', r: '201', t: 'a' },
+        '04:00 - 04:55': { s: 'Slot B (OOP with Java)', r: '201', t: 'b' },
+        '05:00 - 05:55': { s: 'Slot C (Discrete Maths)', r: '201', t: 'c' }
+      }
+    },
+    {
+      day: 'Friday',
+      slots: {
+        '9:00 - 9:55': { s: 'Slot G (Theory of Comp)', r: '201', t: 'g' },
+        '10:00 - 10:55': { s: 'Slot M (Comp Org & Arch)', r: '201', t: 'm' },
+        '11:00 - 11:55': { s: 'Slot N (Database / SQL)', r: 'CC Lab 2', t: 'n' },
+        '12:00 - 12:55': { s: 'Slot A (Data Structures)', r: '201', t: 'a' },
+        '1:00 - 2:00': { s: 'Lunch Break (H)', r: '-', t: 'lunch' },
+        '02:00 - 02:55': { s: 'Creative Arts: Music', r: 'Auditorium', t: 'music' },
+        '03:00 - 03:55': { s: 'Slot B (OOP with Java)', r: '201', t: 'b' },
+        '04:00 - 04:55': { s: 'Slot C (Discrete Maths)', r: '201', t: 'c' },
+        '05:00 - 05:55': { s: 'Slot F (OS Project Lab)', r: 'CC Lab 2', t: 'f' }
+      }
+    }
+  ],
+  'Electronics & Communication': [
+    {
+      day: 'Monday',
+      slots: {
+        '9:00 - 9:55': { s: 'Slot A (Maths & Transforms)', r: '205', t: 'a' },
+        '10:00 - 10:55': { s: 'Slot B (Devices & Circuits)', r: '205', t: 'b' },
+        '11:00 - 11:55': { s: 'Slot C (Digital Circuits & uP)', r: '205', t: 'c' },
+        '12:00 - 12:55': { s: 'Slot M (Hardware Lab)', r: 'Hardware Lab', t: 'm' },
+        '1:00 - 2:00': { s: 'Lunch Break (L)', r: '-', t: 'lunch' },
+        '02:00 - 02:55': { s: 'Creative Arts: Music', r: 'Auditorium', t: 'music' },
+        '03:00 - 03:55': { s: 'Slot F (Signals & Systems)', r: '205', t: 'f' },
+        '04:00 - 04:55': { s: 'Slot G (Electromagnetic Fields)', r: '205', t: 'g' },
+        '05:00 - 05:55': { s: 'Free / Robotics Lab', r: 'Hardware Lab', t: 'free' }
+      }
+    },
+    {
+      day: 'Tuesday',
+      slots: {
+        '9:00 - 9:55': { s: 'Slot B (Devices & Circuits)', r: '205', t: 'b' },
+        '10:00 - 10:55': { s: 'Slot C (Digital Circuits & uP)', r: '205', t: 'c' },
+        '11:00 - 11:55': { s: 'Slot A (Maths & Transforms)', r: '205', t: 'a' },
+        '12:00 - 12:55': { s: 'Slot F (Signals & Systems)', r: '205', t: 'f' },
+        '1:00 - 2:00': { s: 'Lunch Break (U)', r: '-', t: 'lunch' },
+        '02:00 - 02:55': { s: 'Health & Wellness: Yoga', r: 'Sports Complex', t: 'yoga' },
+        '03:00 - 03:55': { s: 'Slot G (Electromagnetic Fields)', r: '205', t: 'g' },
+        '04:00 - 04:55': { s: 'Slot M (Circuit Sim Lab)', r: 'VLSI Lab', t: 'm' },
+        '05:00 - 05:55': { s: 'Free / Mentorship', r: '-', t: 'free' }
+      }
+    },
+    {
+      day: 'Wednesday',
+      slots: {
+        '9:00 - 9:55': { s: 'Slot C (Digital Circuits & uP)', r: '205', t: 'c' },
+        '10:00 - 10:55': { s: 'Slot A (Maths & Transforms)', r: '205', t: 'a' },
+        '11:00 - 11:55': { s: 'Slot B (Devices & Circuits)', r: '205', t: 'b' },
+        '12:00 - 12:55': { s: 'Slot G (Electromagnetic Fields)', r: '205', t: 'g' },
+        '1:00 - 2:00': { s: 'Lunch Break (N)', r: '-', t: 'lunch' },
+        '02:00 - 02:55': { s: 'Slot N (Comm Systems)', r: '205', t: 'n' },
+        '03:00 - 03:55': { s: 'Slot M (Hardware Lab)', r: 'Hardware Lab', t: 'm' },
+        '04:00 - 04:55': { s: 'Slot F (Signals & Systems)', r: '205', t: 'f' },
+        '05:00 - 05:55': { s: 'Free Study Hour', r: '-', t: 'free' }
+      }
+    },
+    {
+      day: 'Thursday',
+      slots: {
+        '9:00 - 9:55': { s: 'Slot F (Signals & Systems)', r: '205', t: 'f' },
+        '10:00 - 10:55': { s: 'Slot G (Electromagnetic Fields)', r: '205', t: 'g' },
+        '11:00 - 11:55': { s: 'Slot M (Hardware Lab)', r: 'Hardware Lab', t: 'm' },
+        '12:00 - 12:55': { s: 'Slot N (Comm Systems)', r: '205', t: 'n' },
+        '1:00 - 2:00': { s: 'Lunch Break (C)', r: '-', t: 'lunch' },
+        '02:00 - 02:55': { s: 'Indian Lang & Culture (ILC)', r: '205', t: 'ilc' },
+        '03:00 - 03:55': { s: 'Slot A (Maths & Transforms)', r: '205', t: 'a' },
+        '04:00 - 04:55': { s: 'Slot B (Devices & Circuits)', r: '205', t: 'b' },
+        '05:00 - 05:55': { s: 'Slot C (Digital Circuits & uP)', r: '205', t: 'c' }
+      }
+    },
+    {
+      day: 'Friday',
+      slots: {
+        '9:00 - 9:55': { s: 'Slot G (Electromagnetic Fields)', r: '205', t: 'g' },
+        '10:00 - 10:55': { s: 'Slot M (Hardware Lab)', r: 'Hardware Lab', t: 'm' },
+        '11:00 - 11:55': { s: 'Slot N (Comm Systems)', r: '205', t: 'n' },
+        '12:00 - 12:55': { s: 'Slot A (Maths & Transforms)', r: '205', t: 'a' },
+        '1:00 - 2:00': { s: 'Lunch Break (H)', r: '-', t: 'lunch' },
+        '02:00 - 02:55': { s: 'Creative Arts / Yoga', r: 'Campus Hall', t: 'yoga' },
+        '03:00 - 03:55': { s: 'Slot B (Devices & Circuits)', r: '205', t: 'b' },
+        '04:00 - 04:55': { s: 'Slot C (Digital Circuits & uP)', r: '205', t: 'c' },
+        '05:00 - 05:55': { s: 'Slot F (Signals Lab)', r: 'Hardware Lab', t: 'f' }
+      }
+    }
+  ]
+};
+
+async function seedBranchTimetables() {
+  try {
+    const priyaUser = await getAsync(`SELECT id FROM users WHERE roll = '24ECE042'`);
+    if (!priyaUser) {
+      await runAsync(`
+        INSERT INTO users (id, roll, name, email, password_hash, role, branch, year, semester, cgpa, batch, avatar)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `, [
+        'student_003',
+        '24ECE042',
+        'Priya Verma',
+        'priya24@iiitnr.ac.in',
+        hashPassword('student123'),
+        'student',
+        'Electronics & Communication',
+        '1st Year',
+        'Semester 2',
+        '8.8',
+        '2024 - 2028',
+        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=faces'
+      ]);
+    }
+
+    const branchRows = await allAsync(`SELECT DISTINCT branch FROM timetable`);
+    const seededBranches = branchRows.map(r => r.branch);
+    for (const [branchName, branchDays] of Object.entries(defaultTimetablesByBranch)) {
+      if (!seededBranches.includes(branchName)) {
+        for (const dayItem of branchDays) {
+          for (const [timeSlot, slotInfo] of Object.entries(dayItem.slots)) {
+            await runAsync(`
+              INSERT OR REPLACE INTO timetable (branch, day, time_slot, subject, room, slot_type)
+              VALUES (?, ?, ?, ?, ?, ?)
+            `, [branchName, dayItem.day, timeSlot, slotInfo.s, slotInfo.r, slotInfo.t]);
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.error('seedBranchTimetables error:', err.message);
+  }
+}
+
 // Initialize tables and seed default data
 async function initDatabase() {
   await runAsync(`PRAGMA foreign_keys = ON;`);
@@ -93,17 +355,46 @@ async function initDatabase() {
     )
   `);
 
-  // 3. Timetable Table
+  // 3. Timetable Table (Branch-Aware Weekly Schedule)
+  try {
+    const ttCols = await allAsync(`PRAGMA table_info(timetable)`);
+    const hasBranchCol = ttCols.some(c => c.name === 'branch');
+    if (ttCols.length > 0 && !hasBranchCol) {
+      await runAsync(`
+        CREATE TABLE IF NOT EXISTS timetable_v2 (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          branch TEXT NOT NULL DEFAULT 'Data Science & AI',
+          day TEXT NOT NULL,
+          time_slot TEXT NOT NULL,
+          subject TEXT NOT NULL,
+          room TEXT DEFAULT '203',
+          slot_type TEXT DEFAULT 'm',
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          UNIQUE(branch, day, time_slot)
+        )
+      `);
+      await runAsync(`
+        INSERT OR IGNORE INTO timetable_v2 (id, branch, day, time_slot, subject, room, slot_type, updated_at)
+        SELECT id, 'Data Science & AI', day, time_slot, subject, room, slot_type, updated_at FROM timetable
+      `);
+      await runAsync(`DROP TABLE timetable`);
+      await runAsync(`ALTER TABLE timetable_v2 RENAME TO timetable`);
+    }
+  } catch (err) {
+    console.error('Timetable schema migration warning:', err.message);
+  }
+
   await runAsync(`
     CREATE TABLE IF NOT EXISTS timetable (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      branch TEXT NOT NULL DEFAULT 'Data Science & AI',
       day TEXT NOT NULL,
       time_slot TEXT NOT NULL,
       subject TEXT NOT NULL,
       room TEXT DEFAULT '203',
       slot_type TEXT DEFAULT 'm',
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      UNIQUE(day, time_slot)
+      UNIQUE(branch, day, time_slot)
     )
   `);
 
@@ -343,6 +634,9 @@ async function initDatabase() {
   if (!messCount || messCount.count === 0) {
     await seedAdditionalModules();
   }
+
+  // Ensure all 3 branch timetables are seeded in SQLite
+  await seedBranchTimetables();
 }
 
 // Seed the official database
@@ -384,7 +678,7 @@ async function seedInitialData() {
     'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=250&h=250&fit=crop&crop=faces'
   ]);
 
-  // 3. Seed Second Student
+  // 3. Seed Second Student (CSE)
   await runAsync(`
     INSERT INTO users (id, roll, name, email, password_hash, role, branch, year, semester, cgpa, batch, avatar)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -403,88 +697,27 @@ async function seedInitialData() {
     'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=faces'
   ]);
 
-  // 4. Seed Official Timetable (Section 1 - Room 203 w.e.f. 24/08/2026)
-  const defaultTimetableData = [
-    {
-      day: 'Monday',
-      slots: {
-        '9:00 - 9:55': { s: 'Slot A (Maths)', r: '203', t: 'a' },
-        '10:00 - 10:55': { s: 'Slot B (Prog)', r: '203', t: 'b' },
-        '11:00 - 11:55': { s: 'Slot C (Digital)', r: '203', t: 'c' },
-        '12:00 - 12:55': { s: 'Slot M (IT Work)', r: '203', t: 'm' },
-        '1:00 - 2:00': { s: 'Lunch Break (L)', r: '-', t: 'lunch' },
-        '02:00 - 02:55': { s: 'Creative Arts: Music', r: 'Auditorium', t: 'music' },
-        '03:00 - 03:55': { s: 'Slot F (Physics)', r: '203', t: 'f' },
-        '04:00 - 04:55': { s: 'Slot G (Comm)', r: '203', t: 'g' },
-        '05:00 - 05:55': { s: 'Free / Library', r: '-', t: 'free' }
-      }
-    },
-    {
-      day: 'Tuesday',
-      slots: {
-        '9:00 - 9:55': { s: 'Slot B (Prog)', r: '203', t: 'b' },
-        '10:00 - 10:55': { s: 'Slot C (Digital)', r: '203', t: 'c' },
-        '11:00 - 11:55': { s: 'Slot A (Maths)', r: '203', t: 'a' },
-        '12:00 - 12:55': { s: 'Slot F (Physics)', r: '203', t: 'f' },
-        '1:00 - 2:00': { s: 'Lunch Break (U)', r: '-', t: 'lunch' },
-        '02:00 - 02:55': { s: 'Health & Wellness: Yoga', r: 'Sports Complex', t: 'yoga' },
-        '03:00 - 03:55': { s: 'Slot G (Comm)', r: '203', t: 'g' },
-        '04:00 - 04:55': { s: 'Slot M (IT Work)', r: '203', t: 'm' },
-        '05:00 - 05:55': { s: 'Free / Mentorship', r: '-', t: 'free' }
-      }
-    },
-    {
-      day: 'Wednesday',
-      slots: {
-        '9:00 - 9:55': { s: 'Slot C (Digital)', r: '203', t: 'c' },
-        '10:00 - 10:55': { s: 'Slot A (Maths)', r: '203', t: 'a' },
-        '11:00 - 11:55': { s: 'Slot B (Prog)', r: '203', t: 'b' },
-        '12:00 - 12:55': { s: 'Slot G (Comm)', r: '203', t: 'g' },
-        '1:00 - 2:00': { s: 'Lunch Break (N)', r: '-', t: 'lunch' },
-        '02:00 - 02:55': { s: 'Slot N (Discrete)', r: '203', t: 'n' },
-        '03:00 - 03:55': { s: 'Slot M (IT Work)', r: '203', t: 'm' },
-        '04:00 - 04:55': { s: 'Slot F (Physics)', r: '203', t: 'f' },
-        '05:00 - 05:55': { s: 'Free Study Hour', r: '-', t: 'free' }
-      }
-    },
-    {
-      day: 'Thursday',
-      slots: {
-        '9:00 - 9:55': { s: 'Slot F (Physics)', r: '203', t: 'f' },
-        '10:00 - 10:55': { s: 'Slot G (Comm)', r: '203', t: 'g' },
-        '11:00 - 11:55': { s: 'Slot M (IT Work)', r: '203', t: 'm' },
-        '12:00 - 12:55': { s: 'Slot N (Discrete)', r: '203', t: 'n' },
-        '1:00 - 2:00': { s: 'Lunch Break (C)', r: '-', t: 'lunch' },
-        '02:00 - 02:55': { s: 'Indian Lang & Culture (ILC)', r: '203', t: 'ilc' },
-        '03:00 - 03:55': { s: 'Slot A (Maths)', r: '203', t: 'a' },
-        '04:00 - 04:55': { s: 'Slot B (Prog)', r: '203', t: 'b' },
-        '05:00 - 05:55': { s: 'Slot C (Digital)', r: '203', t: 'c' }
-      }
-    },
-    {
-      day: 'Friday',
-      slots: {
-        '9:00 - 9:55': { s: 'Slot G (Comm)', r: '203', t: 'g' },
-        '10:00 - 10:55': { s: 'Slot M (IT Work)', r: '203', t: 'm' },
-        '11:00 - 11:55': { s: 'Slot N (Discrete)', r: '203', t: 'n' },
-        '12:00 - 12:55': { s: 'Slot A (Maths)', r: '203', t: 'a' },
-        '1:00 - 2:00': { s: 'Lunch Break (H)', r: '-', t: 'lunch' },
-        '02:00 - 02:55': { s: 'Creative Arts / Yoga', r: 'Campus Hall', t: 'yoga' },
-        '03:00 - 03:55': { s: 'Slot B (Prog)', r: '203', t: 'b' },
-        '04:00 - 04:55': { s: 'Slot C (Digital)', r: '203', t: 'c' },
-        '05:00 - 05:55': { s: 'Slot F (Physics)', r: '203', t: 'f' }
-      }
-    }
-  ];
+  // 3b. Seed Third Student (ECE)
+  await runAsync(`
+    INSERT INTO users (id, roll, name, email, password_hash, role, branch, year, semester, cgpa, batch, avatar)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `, [
+    'student_003',
+    '24ECE042',
+    'Priya Verma',
+    'priya24@iiitnr.ac.in',
+    hashPassword('student123'),
+    'student',
+    'Electronics & Communication',
+    '1st Year',
+    'Semester 2',
+    '8.8',
+    '2024 - 2028',
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=faces'
+  ]);
 
-  for (const dayItem of defaultTimetableData) {
-    for (const [timeSlot, slotInfo] of Object.entries(dayItem.slots)) {
-      await runAsync(`
-        INSERT OR REPLACE INTO timetable (day, time_slot, subject, room, slot_type)
-        VALUES (?, ?, ?, ?, ?)
-      `, [dayItem.day, timeSlot, slotInfo.s, slotInfo.r, slotInfo.t]);
-    }
-  }
+  // 4. Seed Official Timetables for All 3 Branches (w.e.f. 24/08/2026)
+  await seedBranchTimetables();
 
   // 5. Seed Resources
   const initialResources = [
