@@ -1378,6 +1378,11 @@ function handleLogout() {
     navDbItem.classList.add('hidden');
     navDbItem.classList.remove('flex');
   }
+  const adminEmail = document.getElementById('admin-email');
+  const adminPass = document.getElementById('admin-pass');
+  if (adminEmail) adminEmail.value = '';
+  if (adminPass) adminPass.value = '';
+
   showAuthScreen();
   showToast('Logged out successfully.', 'info');
 }
@@ -1430,6 +1435,17 @@ async function submitNewStudentRegistration(event) {
         localStorage.setItem('iiitnr_auth_token', data.token);
       }
       localStorage.setItem('iiitnr_active_session', JSON.stringify(currentUser));
+
+      // Immediately cache registered student into local client array
+      const students = getStudents();
+      const existingIdx = students.findIndex(s => s.id === currentUser.id || (currentUser.roll && s.roll && s.roll.toUpperCase() === currentUser.roll.toUpperCase()));
+      if (existingIdx !== -1) {
+        students[existingIdx] = currentUser;
+      } else {
+        students.push(currentUser);
+      }
+      setStudents(students);
+
       closeModal('modal-register-student');
       hideAuthScreen();
       showToast(`Account registered in SQLite! Welcome, ${name}.`, 'success');
@@ -5385,6 +5401,9 @@ async function resetDatabaseFromUI() {
 // 14. ADMIN ROLE DELEGATION & MANAGEMENT
 // ==========================================
 
+let currentAdminModalTab = 'students';
+let cachedAdminModalStudents = [];
+
 async function openMakeAdminModal() {
   if (!currentUser || currentUser.role !== 'admin') {
     showToast('Access Denied: Only Administrators can appoint or manage administrators.', 'error');
@@ -5395,36 +5414,41 @@ async function openMakeAdminModal() {
   if (modal) {
     modal.classList.remove('hidden');
     modal.classList.add('flex');
-    switchAdminModalTab('promote');
+    switchAdminModalTab('students');
     await loadAdminModalData();
-    lucide.createIcons();
+    if (window.lucide) lucide.createIcons();
   }
 }
 
 function switchAdminModalTab(tab) {
+  currentAdminModalTab = tab;
+  const studentsTabBtn = document.getElementById('tab-btn-students');
   const promoteTabBtn = document.getElementById('tab-btn-promote');
   const createTabBtn = document.getElementById('tab-btn-create');
+
+  const studentsSection = document.getElementById('section-admin-students');
   const promoteForm = document.getElementById('form-promote-admin');
   const createForm = document.getElementById('form-create-admin');
 
-  if (tab === 'promote') {
-    if (promoteTabBtn) promoteTabBtn.className = "flex-1 py-2 rounded-xl bg-white dark:bg-slate-700 text-indigo-600 dark:text-white shadow-sm flex items-center justify-center gap-1.5 transition";
-    if (createTabBtn) createTabBtn.className = "flex-1 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-1.5 transition";
-    if (promoteForm) promoteForm.classList.remove('hidden');
-    if (createForm) createForm.classList.add('hidden');
-  } else {
-    if (createTabBtn) createTabBtn.className = "flex-1 py-2 rounded-xl bg-white dark:bg-slate-700 text-indigo-600 dark:text-white shadow-sm flex items-center justify-center gap-1.5 transition";
-    if (promoteTabBtn) promoteTabBtn.className = "flex-1 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-1.5 transition";
-    if (createForm) createForm.classList.remove('hidden');
-    if (promoteForm) promoteForm.classList.add('hidden');
-  }
-  lucide.createIcons();
+  const activeClasses = "flex-1 py-2 rounded-xl bg-white dark:bg-slate-700 text-indigo-600 dark:text-white shadow-sm flex items-center justify-center gap-1.5 transition";
+  const inactiveClasses = "flex-1 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-1.5 transition";
+
+  if (studentsTabBtn) studentsTabBtn.className = tab === 'students' ? activeClasses : inactiveClasses;
+  if (promoteTabBtn) promoteTabBtn.className = tab === 'promote' ? activeClasses : inactiveClasses;
+  if (createTabBtn) createTabBtn.className = tab === 'create' ? activeClasses : inactiveClasses;
+
+  if (studentsSection) studentsSection.classList.toggle('hidden', tab !== 'students');
+  if (promoteForm) promoteForm.classList.toggle('hidden', tab !== 'promote');
+  if (createForm) createForm.classList.toggle('hidden', tab !== 'create');
+
+  if (window.lucide) lucide.createIcons();
 }
 
 async function loadAdminModalData() {
   const selectEl = document.getElementById('promote-user-select');
   const adminsListEl = document.getElementById('modal-admins-list');
   const adminBadgeEl = document.getElementById('active-admins-count-badge');
+  const studentBadgeEl = document.getElementById('active-students-count-badge');
 
   let allUsers = [];
   if (isBackendConnected) {
@@ -5444,19 +5468,27 @@ async function loadAdminModalData() {
     allUsers = [DEFAULT_ADMIN, ...getStudents()];
   }
 
-  // Populate student select dropdown
+  const students = allUsers.filter(u => u.role === 'student');
+  cachedAdminModalStudents = students;
+
+  // 1. Update students directory count and render student list
+  if (studentBadgeEl) {
+    studentBadgeEl.textContent = `${students.length} Student${students.length !== 1 ? 's' : ''}`;
+  }
+  renderAdminModalStudentsList(students);
+
+  // 2. Populate student select dropdown for Promote tab
   if (selectEl) {
-    const students = allUsers.filter(u => u.role === 'student');
     if (students.length === 0) {
       selectEl.innerHTML = `<option value="">No registered students found</option>`;
     } else {
       selectEl.innerHTML = students.map(s => `
-        <option value="${s.id}">${s.name} (${s.roll || 'N/A'} - ${s.email})</option>
+        <option value="${s.id}">${escapeHtml(s.name)} (${escapeHtml(s.roll || 'N/A')} - ${escapeHtml(s.email)})</option>
       `).join('');
     }
   }
 
-  // Populate active admins list
+  // 3. Populate active admins list
   if (adminsListEl) {
     const admins = allUsers.filter(u => u.role === 'admin');
     if (adminBadgeEl) adminBadgeEl.textContent = `${admins.length} Admin${admins.length > 1 ? 's' : ''}`;
@@ -5482,7 +5514,7 @@ async function loadAdminModalData() {
             ${a.email === 'revanth0246@gmail.com' ? `
               <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60">Active Root</span>
             ` : `
-              <button onclick="demoteUserToStudent('${a.id}', '${escapeHtml(a.name)}')" class="px-2 py-1 text-[10px] font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition">
+              <button type="button" onclick="demoteUserToStudent('${a.id}', '${escapeHtml(a.name)}')" class="px-2 py-1 text-[10px] font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition">
                 Revoke Admin
               </button>
             `}
@@ -5491,6 +5523,145 @@ async function loadAdminModalData() {
       `).join('');
     }
   }
+
+  if (window.lucide) lucide.createIcons();
+}
+
+function renderAdminModalStudentsList(list) {
+  const container = document.getElementById('modal-students-list');
+  if (!container) return;
+
+  if (!list || list.length === 0) {
+    container.innerHTML = `
+      <div class="p-6 text-center text-slate-400">
+        <i data-lucide="user-x" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+        <p class="font-medium text-xs">No registered students found.</p>
+      </div>
+    `;
+    if (window.lucide) lucide.createIcons();
+    return;
+  }
+
+  container.innerHTML = list.map(s => {
+    const avatar = s.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=faces';
+    const name = escapeHtml(s.name || 'Unnamed Student');
+    const roll = escapeHtml(s.roll || 'N/A');
+    const branch = escapeHtml(s.branch || 'Data Science & AI');
+    const email = escapeHtml(s.email || '');
+    const id = s.id;
+
+    return `
+      <div class="p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between gap-3 hover:border-slate-300 dark:hover:border-slate-600 transition">
+        <div class="flex items-center gap-3 truncate">
+          <img src="${avatar}" alt="${name}" class="w-9 h-9 rounded-xl object-cover ring-1 ring-slate-200 dark:ring-slate-700 flex-shrink-0" onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=faces'" />
+          <div class="truncate">
+            <div class="font-bold text-slate-900 dark:text-slate-100 truncate flex items-center gap-1.5">
+              <span>${name}</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 font-bold">${roll}</span>
+            </div>
+            <p class="text-[11px] text-slate-400 truncate">${branch} • ${email}</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5 flex-shrink-0">
+          <button type="button" onclick="promoteUserToAdmin('${id}', '${name}', '${email}')" class="px-2 py-1 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/70 dark:hover:bg-indigo-900 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 rounded-lg text-[10px] font-bold inline-flex items-center gap-1 transition" title="Promote to Administrator">
+            <i data-lucide="shield-plus" class="w-3 h-3"></i> Make Admin
+          </button>
+          <button type="button" onclick="removeStudentAccount('${id}', '${name}', '${roll}')" class="px-2 py-1 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/70 dark:hover:bg-rose-900 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-800 rounded-lg text-[10px] font-bold inline-flex items-center gap-1 transition shadow-sm" title="Remove student permanently">
+            <i data-lucide="trash-2" class="w-3 h-3"></i> Remove
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  if (window.lucide) lucide.createIcons();
+}
+
+function filterAdminStudentsList() {
+  const q = (document.getElementById('admin-student-search-input')?.value || '').toLowerCase().trim();
+  if (!q) {
+    renderAdminModalStudentsList(cachedAdminModalStudents);
+    return;
+  }
+  const filtered = cachedAdminModalStudents.filter(s => {
+    return (s.name && s.name.toLowerCase().includes(q)) ||
+           (s.roll && s.roll.toLowerCase().includes(q)) ||
+           (s.branch && s.branch.toLowerCase().includes(q)) ||
+           (s.email && s.email.toLowerCase().includes(q));
+  });
+  renderAdminModalStudentsList(filtered);
+}
+
+async function removeStudentAccount(userId, name, roll) {
+  if (!currentUser || currentUser.role !== 'admin') {
+    showToast('Permission Denied: Only Administrators can remove student accounts.', 'error');
+    return;
+  }
+
+  const studentDisplay = name ? `${name} (${roll || userId})` : (roll || userId);
+  if (!confirm(`Are you sure you want to permanently remove student ${studentDisplay}?\n\nThis will delete their account and all associated records (event registrations, assignment completions, notifications).`)) {
+    return;
+  }
+
+  let success = false;
+  let message = '';
+
+  if (isBackendConnected) {
+    try {
+      let res = await apiCall(`/auth/students/${encodeURIComponent(userId || roll)}`, 'DELETE');
+      if (!res?.success && (userId && roll && userId !== roll)) {
+        res = await apiCall(`/auth/students/${encodeURIComponent(roll)}`, 'DELETE');
+      }
+      if (!res?.success) {
+        res = await apiCall(`/auth/users/${encodeURIComponent(userId)}`, 'DELETE');
+      }
+
+      if (res?.success) {
+        success = true;
+        message = res.message || `Student ${studentDisplay} removed successfully!`;
+      } else {
+        showToast(res?.message || 'Failed to remove student from database.', 'error');
+        return;
+      }
+    } catch (e) {
+      console.warn('API error deleting student, falling back to local cache:', e);
+    }
+  }
+
+  // Always update local cache & localStorage
+  const students = getStudents();
+  const cleanRoll = roll ? String(roll).trim().toUpperCase() : null;
+  const filtered = students.filter(s => {
+    if (userId && (s.id === userId || String(s.id) === String(userId))) return false;
+    if (cleanRoll && s.roll && String(s.roll).trim().toUpperCase() === cleanRoll) return false;
+    return true;
+  });
+  setStudents(filtered);
+
+  // Clean local completions & notifications
+  try {
+    if (cleanRoll) {
+      let completions = JSON.parse(localStorage.getItem('iiitnr_assignment_completions') || '[]');
+      completions = completions.filter(c => String(c.student_roll || c.studentRoll).toUpperCase() !== cleanRoll);
+      localStorage.setItem('iiitnr_assignment_completions', JSON.stringify(completions));
+
+      let notifs = JSON.parse(localStorage.getItem('iiitnr_notifications') || '[]');
+      notifs = notifs.filter(n => !n.recipient_roll || String(n.recipient_roll).toUpperCase() !== cleanRoll);
+      localStorage.setItem('iiitnr_notifications', JSON.stringify(notifs));
+    }
+  } catch (err) {}
+
+  showToast(message || `Student ${studentDisplay} removed successfully!`, 'success');
+
+  if (isBackendConnected) {
+    await syncAllFromBackend();
+  }
+
+  if (activeView === 'database') {
+    renderDatabaseView();
+  }
+
+  await loadAdminModalData();
 }
 
 async function submitPromoteAdminForm(event) {

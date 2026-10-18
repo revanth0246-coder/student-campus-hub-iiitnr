@@ -112,11 +112,14 @@ router.post('/register', async (req, res) => {
     ]);
 
     // Initialize welcome notification in SQLite for registered student
-    const notifId = 'notif_' + Date.now();
-    await runAsync(`
-      INSERT INTO notifications (id, recipient_role, recipient_roll, title, message, link, type, is_read, created_at)
-      VALUES (?, 'student', ?, 'Welcome to Student Campus Hub!', 'Your account has been officially registered with ' || ? || ' department. Explore your branch timetable, assignments, mess menu, and campus events.', '#home', 'academic', 0, CURRENT_TIMESTAMP)
-    `, [notifId, cleanRoll, branch || 'Data Science & AI']);
+    try {
+      await runAsync(`
+        INSERT INTO notifications (user_roll, type, title, message, link_view, is_read)
+        VALUES (?, 'academic', 'Welcome to Student Campus Hub!', 'Your account has been officially registered with ' || ? || ' department. Explore your branch timetable, assignments, mess menu, and campus events.', 'dashboard', 0)
+      `, [cleanRoll, branch || 'Data Science & AI']);
+    } catch (notifErr) {
+      console.warn('Welcome notification non-critical note:', notifErr.message);
+    }
 
     const createdStudent = await getAsync(`SELECT * FROM users WHERE id = ?`, [newId]);
     const token = await createSession(createdStudent);
@@ -303,8 +306,8 @@ router.delete('/students/:id', authenticate, requireAdmin, async (req, res) => {
 
   try {
     const target = await getAsync(`
-      SELECT * FROM users WHERE id = ? OR UPPER(roll) = ?
-    `, [targetId, targetId.toUpperCase()]);
+      SELECT * FROM users WHERE id = ? OR UPPER(roll) = ? OR LOWER(email) = ?
+    `, [targetId, targetId.toUpperCase(), targetId.toLowerCase()]);
 
     if (!target) {
       return res.status(404).json({ success: false, message: 'Student account not found in database.' });
@@ -320,9 +323,15 @@ router.delete('/students/:id', authenticate, requireAdmin, async (req, res) => {
 
     // Remove associated student relational records in SQLite
     if (studentRoll) {
-      await runAsync(`DELETE FROM assignment_completions WHERE student_roll = ?`, [studentRoll]);
-      await runAsync(`DELETE FROM event_registrations WHERE student_roll = ?`, [studentRoll]);
-      await runAsync(`DELETE FROM notifications WHERE recipient_roll = ?`, [studentRoll]);
+      const upperRoll = studentRoll.toUpperCase();
+      try { await runAsync(`DELETE FROM assignment_completions WHERE UPPER(student_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM event_registrations WHERE UPPER(student_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM notifications WHERE UPPER(user_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM resource_bookmarks WHERE UPPER(student_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM resource_reports WHERE UPPER(student_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM mess_feedback WHERE UPPER(student_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM marketplace_inquiries WHERE UPPER(sender_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM marketplace_listings WHERE UPPER(user_roll) = ? OR user_id = ?`, [upperRoll, studentDbId]); } catch (e) {}
     }
     await runAsync(`DELETE FROM sessions WHERE user_id = ?`, [studentDbId]);
     await runAsync(`DELETE FROM users WHERE id = ?`, [studentDbId]);
@@ -333,7 +342,7 @@ router.delete('/students/:id', authenticate, requireAdmin, async (req, res) => {
     });
   } catch (err) {
     console.error('Error removing student account:', err);
-    res.status(500).json({ success: false, message: 'Database error removing student account.' });
+    res.status(500).json({ success: false, message: 'Database error removing student account: ' + err.message });
   }
 });
 
@@ -346,8 +355,8 @@ router.delete('/users/:id', authenticate, requireAdmin, async (req, res) => {
 
   try {
     const target = await getAsync(`
-      SELECT * FROM users WHERE id = ? OR UPPER(roll) = ?
-    `, [targetId, targetId.toUpperCase()]);
+      SELECT * FROM users WHERE id = ? OR UPPER(roll) = ? OR LOWER(email) = ?
+    `, [targetId, targetId.toUpperCase(), targetId.toLowerCase()]);
 
     if (!target) {
       return res.status(404).json({ success: false, message: 'User account not found in database.' });
@@ -361,9 +370,15 @@ router.delete('/users/:id', authenticate, requireAdmin, async (req, res) => {
     const studentDbId = target.id;
 
     if (studentRoll) {
-      await runAsync(`DELETE FROM assignment_completions WHERE student_roll = ?`, [studentRoll]);
-      await runAsync(`DELETE FROM event_registrations WHERE student_roll = ?`, [studentRoll]);
-      await runAsync(`DELETE FROM notifications WHERE recipient_roll = ?`, [studentRoll]);
+      const upperRoll = studentRoll.toUpperCase();
+      try { await runAsync(`DELETE FROM assignment_completions WHERE UPPER(student_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM event_registrations WHERE UPPER(student_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM notifications WHERE UPPER(user_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM resource_bookmarks WHERE UPPER(student_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM resource_reports WHERE UPPER(student_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM mess_feedback WHERE UPPER(student_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM marketplace_inquiries WHERE UPPER(sender_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM marketplace_listings WHERE UPPER(user_roll) = ? OR user_id = ?`, [upperRoll, studentDbId]); } catch (e) {}
     }
     await runAsync(`DELETE FROM sessions WHERE user_id = ?`, [studentDbId]);
     await runAsync(`DELETE FROM users WHERE id = ?`, [studentDbId]);
@@ -374,7 +389,7 @@ router.delete('/users/:id', authenticate, requireAdmin, async (req, res) => {
     });
   } catch (err) {
     console.error('Error removing user account:', err);
-    res.status(500).json({ success: false, message: 'Database error removing user account.' });
+    res.status(500).json({ success: false, message: 'Database error removing user account: ' + err.message });
   }
 });
 

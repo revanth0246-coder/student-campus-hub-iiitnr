@@ -424,6 +424,82 @@ async function runTests() {
     if (!hasNewAdmin) throw new Error('New admin not found in users table');
   });
 
+  // 22. Student Registration Data Persistence & Admin Student Deletion
+  await test('POST /api/auth/register & DELETE /api/auth/students/:id (Student Lifecycle & Admin Removal)', async () => {
+    const testRoll = '24TEST999';
+    const testEmail = 'teststudent999@iiitnr.ac.in';
+
+    // 22a. Register student with full data
+    const regRes = await fetch(`${BASE_URL}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'Test Candidate',
+        roll: testRoll,
+        email: testEmail,
+        password: 'password123',
+        branch: 'Computer Science & Engineering',
+        year: '2nd Year',
+        semester: 'Semester 3',
+        cgpa: '9.1'
+      })
+    });
+    if (!regRes.ok) throw new Error(`Registration failed with HTTP ${regRes.status}`);
+    const regData = await regRes.json();
+    if (!regData.success || !regData.user || regData.user.roll !== testRoll) {
+      throw new Error('Registration did not return valid student data');
+    }
+
+    // 22b. Verify student exists in students directory & can log in
+    const loginRes = await fetch(`${BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ emailOrRoll: testRoll, password: 'password123' })
+    });
+    if (!loginRes.ok) throw new Error(`Newly registered student login failed with HTTP ${loginRes.status}`);
+    const loginData = await loginRes.json();
+    if (!loginData.success || loginData.user.cgpa !== '9.1' || loginData.user.branch !== 'Computer Science & Engineering') {
+      throw new Error('Stored student data fields do not match registration values');
+    }
+
+    // 22c. Unauthorized user cannot delete student (403)
+    const unauthDelRes = await fetch(`${BASE_URL}/auth/students/${testRoll}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${studentToken}` }
+    });
+    if (unauthDelRes.status !== 403) {
+      throw new Error(`Expected 403 for unauthorized student deletion, got ${unauthDelRes.status}`);
+    }
+
+    // 22d. Root Admin cannot be deleted (403)
+    const adminDelRes = await fetch(`${BASE_URL}/auth/students/revanth0246@gmail.com`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    });
+    if (adminDelRes.status !== 403) {
+      throw new Error(`Expected 403 when trying to delete admin account, got ${adminDelRes.status}`);
+    }
+
+    // 22e. Admin successfully removes student account
+    const delRes = await fetch(`${BASE_URL}/auth/students/${testRoll}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    });
+    if (!delRes.ok) throw new Error(`Admin removal of student failed with HTTP ${delRes.status}`);
+    const delData = await delRes.json();
+    if (!delData.success) throw new Error('Deletion response indicated failure');
+
+    // 22f. Verify student account no longer exists
+    const checkLoginRes = await fetch(`${BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ emailOrRoll: testRoll, password: 'password123' })
+    });
+    if (checkLoginRes.status !== 401) {
+      throw new Error(`Expected 401 for deleted student login, got ${checkLoginRes.status}`);
+    }
+  });
+
   console.log('\n======================================================');
   console.log(`📊 Test Results: ${passed} Passed, ${failed} Failed`);
   if (failed === 0) {
