@@ -1051,9 +1051,9 @@ function selectMobileTimetableDay(day) {
   document.querySelectorAll('.tt-day-btn').forEach(btn => {
     const btnDay = btn.getAttribute('data-day');
     if (btnDay === day) {
-      btn.className = 'tt-day-btn px-2.5 py-1 text-xs font-bold rounded-lg bg-indigo-600 text-white whitespace-nowrap shadow-sm';
+      btn.className = 'tt-day-btn flex-1 py-1.5 px-2 rounded-xl bg-indigo-600 text-white shadow-xs text-center transition flex-shrink-0 font-bold';
     } else {
-      btn.className = 'tt-day-btn px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 whitespace-nowrap';
+      btn.className = 'tt-day-btn flex-1 py-1.5 px-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-center transition flex-shrink-0 font-medium';
     }
   });
 
@@ -1202,6 +1202,8 @@ function showAuthScreen() {
     screen.classList.remove('hidden');
     screen.classList.add('flex');
   }
+  const bottomNav = document.getElementById('mobile-bottom-nav');
+  if (bottomNav) bottomNav.classList.add('hidden');
 }
 
 function hideAuthScreen() {
@@ -1210,6 +1212,8 @@ function hideAuthScreen() {
     screen.classList.add('hidden');
     screen.classList.remove('flex');
   }
+  const bottomNav = document.getElementById('mobile-bottom-nav');
+  if (bottomNav) bottomNav.classList.remove('hidden');
 }
 
 function switchAuthTab(type) {
@@ -1393,6 +1397,7 @@ async function handleAuthLogin(event, role) {
 }
 
 function handleLogout() {
+  closeMobileSidebar();
   localStorage.removeItem('iiitnr_active_session');
   localStorage.removeItem('iiitnr_auth_token');
   authToken = null;
@@ -1413,6 +1418,7 @@ function handleLogout() {
 
 // Student Registration handler
 function openStudentRegistrationModal() {
+  closeMobileSidebar();
   document.getElementById('modal-register-student').classList.remove('hidden');
   document.getElementById('modal-register-student').classList.add('flex');
 }
@@ -1846,6 +1852,7 @@ function applyTheme(themeId) {
 }
 
 function openThemePickerModal() {
+  closeMobileSidebar();
   renderThemePickerUI();
   const modal = document.getElementById('modal-theme-picker');
   if (modal) {
@@ -1933,6 +1940,7 @@ let activeLanUrl = `http://${window.location.hostname || 'localhost'}:5000`;
 let activeTunnelUrl = null;
 
 async function openNetworkModal() {
+  closeMobileSidebar();
   const modal = document.getElementById('modal-network-devices');
   if (modal) {
     modal.classList.remove('hidden');
@@ -2672,6 +2680,16 @@ function renderTimetableView() {
       </tr>
     `;
   }).join('');
+
+  // Sync mobile day filter buttons
+  document.querySelectorAll('.tt-day-btn').forEach(btn => {
+    const btnDay = btn.getAttribute('data-day');
+    if (btnDay === currentMobileTimetableDay) {
+      btn.className = 'tt-day-btn flex-1 py-1.5 px-2 rounded-xl bg-indigo-600 text-white shadow-xs text-center transition flex-shrink-0 font-bold';
+    } else {
+      btn.className = 'tt-day-btn flex-1 py-1.5 px-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-center transition flex-shrink-0 font-medium';
+    }
+  });
 
   if (window.lucide) lucide.createIcons();
 }

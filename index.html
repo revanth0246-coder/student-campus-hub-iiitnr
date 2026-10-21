@@ -144,10 +144,10 @@
   <div id="app-container" class="flex min-h-screen overflow-x-hidden">
 
     <!-- Mobile Sidebar Overlay Backdrop -->
-    <div id="sidebar-overlay" onclick="closeMobileSidebar()" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-25 hidden md:hidden transition-opacity"></div>
+    <div id="sidebar-overlay" onclick="closeMobileSidebar()" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-40 hidden md:hidden transition-opacity"></div>
 
     <!-- DESKTOP / TABLET SIDEBAR (Styled exactly matching the screenshots) -->
-    <aside id="main-sidebar" class="w-64 bg-slate-900 text-slate-300 flex flex-col fixed inset-y-0 left-0 z-30 transition-transform duration-300 -translate-x-full md:translate-x-0 shadow-2xl md:shadow-none">
+    <aside id="main-sidebar" class="w-64 bg-slate-900 text-slate-300 flex flex-col fixed inset-y-0 left-0 z-50 md:z-30 transition-transform duration-300 -translate-x-full md:translate-x-0 shadow-2xl md:shadow-none">
       <!-- Sidebar Header / Logo -->
       <div class="p-4 flex items-center justify-between border-b border-slate-800">
         <div class="flex items-center gap-3 truncate">
@@ -627,7 +627,7 @@
             <div class="flex items-center gap-3">
               <img src="assets/iiitnr_logo.png" alt="IIIT-NR Official Logo" class="w-12 h-12 rounded-xl bg-white p-1 border border-slate-200 dark:border-slate-700 shadow-sm object-contain flex-shrink-0" />
               <div>
-                <div class="flex items-center gap-2">
+                <div class="flex flex-wrap items-center gap-2">
                   <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Class Timetable</h2>
                   <span id="timetable-permission-badge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
                     Read Only
@@ -641,7 +641,7 @@
             </div>
 
             <!-- Requirement: Timetable edited ONLY BY ADMIN -->
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2">
               <div id="admin-timetable-controls" class="hidden flex items-center gap-2">
                 <button onclick="openAddTimetableSlotModal()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-xs shadow-md transition flex items-center gap-1.5">
                   <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> + Edit Schedule (Admin)
@@ -690,12 +690,12 @@
 
           <!-- Mobile Day-by-Day Selector (Ultra-Responsive Mobile Schedule) -->
           <div class="md:hidden flex items-center justify-between gap-1 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl overflow-x-auto no-scrollbar text-xs font-bold" id="mobile-timetable-day-selector">
-            <button type="button" onclick="selectMobileTimetableDay('all')" id="mtt-day-all" class="flex-1 py-1.5 px-2.5 rounded-xl bg-white dark:bg-slate-700 text-indigo-600 dark:text-white shadow-xs text-center transition flex-shrink-0">All Week</button>
-            <button type="button" onclick="selectMobileTimetableDay('Monday')" id="mtt-day-mon" class="flex-1 py-1.5 px-2.5 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0">Mon</button>
-            <button type="button" onclick="selectMobileTimetableDay('Tuesday')" id="mtt-day-tue" class="flex-1 py-1.5 px-2.5 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0">Tue</button>
-            <button type="button" onclick="selectMobileTimetableDay('Wednesday')" id="mtt-day-wed" class="flex-1 py-1.5 px-2.5 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0">Wed</button>
-            <button type="button" onclick="selectMobileTimetableDay('Thursday')" id="mtt-day-thu" class="flex-1 py-1.5 px-2.5 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0">Thu</button>
-            <button type="button" onclick="selectMobileTimetableDay('Friday')" id="mtt-day-fri" class="flex-1 py-1.5 px-2.5 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0">Fri</button>
+            <button type="button" onclick="selectMobileTimetableDay('all')" id="mtt-day-all" data-day="all" class="tt-day-btn flex-1 py-1.5 px-2 rounded-xl bg-indigo-600 text-white shadow-xs text-center transition flex-shrink-0 font-bold">All Week</button>
+            <button type="button" onclick="selectMobileTimetableDay('Monday')" id="mtt-day-mon" data-day="Monday" class="tt-day-btn flex-1 py-1.5 px-2 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0 font-medium">Mon</button>
+            <button type="button" onclick="selectMobileTimetableDay('Tuesday')" id="mtt-day-tue" data-day="Tuesday" class="tt-day-btn flex-1 py-1.5 px-2 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0 font-medium">Tue</button>
+            <button type="button" onclick="selectMobileTimetableDay('Wednesday')" id="mtt-day-wed" data-day="Wednesday" class="tt-day-btn flex-1 py-1.5 px-2 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0 font-medium">Wed</button>
+            <button type="button" onclick="selectMobileTimetableDay('Thursday')" id="mtt-day-thu" data-day="Thursday" class="tt-day-btn flex-1 py-1.5 px-2 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0 font-medium">Thu</button>
+            <button type="button" onclick="selectMobileTimetableDay('Friday')" id="mtt-day-fri" data-day="Friday" class="tt-day-btn flex-1 py-1.5 px-2 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0 font-medium">Fri</button>
           </div>
 
           <!-- Mobile Swipe Indicator Pill -->
@@ -757,7 +757,7 @@
           <!-- Header -->
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <div class="flex items-center gap-2">
+              <div class="flex flex-wrap items-center gap-2">
                 <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Assignment & Exam Planner</h2>
                 <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300">
                   Academic Portal
@@ -766,7 +766,7 @@
               <p class="text-sm text-slate-500 dark:text-slate-400">Track course assignments, submit deadlines, track preparation progress, and view mid-semester exam schedules.</p>
             </div>
             
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2">
               <button onclick="openAddAssignmentModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-xs shadow-md shadow-indigo-600/20 transition flex items-center gap-1.5">
                 <i data-lucide="plus-circle" class="w-4 h-4"></i>
                 <span>+ Add Assignment</span>
@@ -865,7 +865,7 @@
           <!-- Header -->
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <div class="flex items-center gap-2">
+              <div class="flex flex-wrap items-center gap-2">
                 <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Campus Exchange</h2>
                 <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
                   Student Marketplace
@@ -930,7 +930,7 @@
           <!-- Header -->
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <div class="flex items-center gap-2">
+              <div class="flex flex-wrap items-center gap-2">
                 <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Hostel Mess Menu</h2>
                 <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">
                   Weekly Schedule
@@ -939,7 +939,7 @@
               <p class="text-sm text-slate-500 dark:text-slate-400">Official hostel dining schedule for Monday through Sunday with real-time committee updates.</p>
             </div>
             
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2">
               <button onclick="openMessFeedbackModal()" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl text-xs shadow-md shadow-amber-500/20 transition flex items-center gap-1.5">
                 <i data-lucide="star" class="w-3.5 h-3.5"></i>
                 <span>Rate Today's Meal</span>
@@ -2416,7 +2416,7 @@
   </nav>
 
   <!-- TOAST NOTIFICATION CONTAINER -->
-  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+  <div id="toast-container" class="fixed bottom-20 md:bottom-5 right-3 sm:right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
   <!-- Core Application Scripts -->
   <script src="app.js"></script>
