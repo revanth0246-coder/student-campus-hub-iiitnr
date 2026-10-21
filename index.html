@@ -681,25 +681,42 @@
               </button>
             </div>
             <div class="flex items-center gap-2">
-              <button type="button" onclick="toggleTimetableFitMode()" id="btn-toggle-timetable-fit" class="px-2.5 py-1.5 text-xs font-semibold rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 flex items-center gap-1.5 transition shadow-xs" title="Toggle Fit to Screen / Scrollable View">
+              <button type="button" onclick="toggleTimetableFitMode()" id="btn-toggle-timetable-fit" class="hidden md:flex px-2.5 py-1.5 text-xs font-semibold rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 items-center gap-1.5 transition shadow-xs" title="Toggle Fit to Screen / Scrollable View">
                 <i data-lucide="minimize-2" id="icon-timetable-fit" class="w-3.5 h-3.5 text-indigo-500"></i>
                 <span id="tt-fit-btn-label">Fit to Screen: ON</span>
               </button>
             </div>
           </div>
 
-          <!-- Mobile Day-by-Day Selector (Ultra-Responsive Mobile Schedule) -->
-          <div class="md:hidden flex items-center justify-between gap-1 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl overflow-x-auto no-scrollbar text-xs font-bold" id="mobile-timetable-day-selector">
-            <button type="button" onclick="selectMobileTimetableDay('all')" id="mtt-day-all" class="flex-1 py-1.5 px-2.5 rounded-xl bg-white dark:bg-slate-700 text-indigo-600 dark:text-white shadow-xs text-center transition flex-shrink-0">All Week</button>
-            <button type="button" onclick="selectMobileTimetableDay('Monday')" id="mtt-day-mon" class="flex-1 py-1.5 px-2.5 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0">Mon</button>
-            <button type="button" onclick="selectMobileTimetableDay('Tuesday')" id="mtt-day-tue" class="flex-1 py-1.5 px-2.5 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0">Tue</button>
-            <button type="button" onclick="selectMobileTimetableDay('Wednesday')" id="mtt-day-wed" class="flex-1 py-1.5 px-2.5 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0">Wed</button>
-            <button type="button" onclick="selectMobileTimetableDay('Thursday')" id="mtt-day-thu" class="flex-1 py-1.5 px-2.5 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0">Thu</button>
-            <button type="button" onclick="selectMobileTimetableDay('Friday')" id="mtt-day-fri" class="flex-1 py-1.5 px-2.5 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0">Fri</button>
+          <!-- Mobile View Toggle (Cards View vs Full Grid Table) -->
+          <div class="md:hidden flex items-center justify-between gap-2 p-1.5 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700" id="mobile-timetable-view-toggle">
+            <button type="button" onclick="setMobileTimetableMode('cards')" id="btn-tt-mode-cards" class="flex-1 py-2 px-3 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-xs flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
+              <span>Mobile Cards</span>
+            </button>
+            <button type="button" onclick="setMobileTimetableMode('grid')" id="btn-tt-mode-grid" class="flex-1 py-2 px-3 rounded-xl bg-white dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 font-semibold text-xs flex items-center justify-center gap-1.5 transition hover:bg-slate-200 dark:hover:bg-slate-700">
+              <i data-lucide="table" class="w-3.5 h-3.5"></i>
+              <span>Full Grid Table</span>
+            </button>
           </div>
 
-          <!-- Mobile Swipe Indicator Pill -->
-          <div class="md:hidden flex items-center justify-between px-3 py-1.5 bg-indigo-50/80 dark:bg-indigo-950/40 text-[11px] text-indigo-700 dark:text-indigo-300 rounded-xl border border-indigo-100 dark:border-indigo-900/60 shadow-xs">
+          <!-- Mobile Day-by-Day Selector (Ultra-Responsive Mobile Schedule) -->
+          <div class="md:hidden flex items-center justify-between gap-1 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl overflow-x-auto no-scrollbar text-xs font-bold" id="mobile-timetable-day-selector">
+            <button type="button" onclick="selectMobileTimetableDay('all')" id="mtt-day-all" class="tt-mobile-day-pill flex-1 py-2 px-2.5 rounded-xl bg-indigo-600 text-white shadow-xs text-center transition flex-shrink-0">All Week</button>
+            <button type="button" onclick="selectMobileTimetableDay('Monday')" id="mtt-day-mon" class="tt-mobile-day-pill flex-1 py-2 px-2.5 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0">Mon</button>
+            <button type="button" onclick="selectMobileTimetableDay('Tuesday')" id="mtt-day-tue" class="tt-mobile-day-pill flex-1 py-2 px-2.5 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0">Tue</button>
+            <button type="button" onclick="selectMobileTimetableDay('Wednesday')" id="mtt-day-wed" class="tt-mobile-day-pill flex-1 py-2 px-2.5 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0">Wed</button>
+            <button type="button" onclick="selectMobileTimetableDay('Thursday')" id="mtt-day-thu" class="tt-mobile-day-pill flex-1 py-2 px-2.5 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0">Thu</button>
+            <button type="button" onclick="selectMobileTimetableDay('Friday')" id="mtt-day-fri" class="tt-mobile-day-pill flex-1 py-2 px-2.5 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0">Fri</button>
+          </div>
+
+          <!-- Mobile Timetable Period Cards Container (Dynamic Touch-Operated Dimensions) -->
+          <div id="mobile-timetable-cards-container" class="md:hidden flex flex-col gap-3">
+            <!-- Rendered dynamically by renderMobileTimetableCards() -->
+          </div>
+
+          <!-- Mobile Swipe Indicator Pill (Shown in Grid mode) -->
+          <div id="mobile-timetable-swipe-hint" class="hidden md:hidden flex items-center justify-between px-3 py-1.5 bg-indigo-50/80 dark:bg-indigo-950/40 text-[11px] text-indigo-700 dark:text-indigo-300 rounded-xl border border-indigo-100 dark:border-indigo-900/60 shadow-xs">
             <span class="flex items-center gap-1.5">
               <i data-lucide="arrow-left-right" class="w-3.5 h-3.5 text-indigo-500 swipe-hint-icon"></i>
               <span>Swipe schedule left/right to view all 9 periods</span>
@@ -708,7 +725,7 @@
           </div>
 
           <!-- Weekly Schedule Grid Table (Compact Fit Mode) -->
-          <div id="timetable-table-container" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden timetable-fit-mode">
+          <div id="timetable-table-container" class="hidden md:block bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden timetable-fit-mode">
             <div class="overflow-x-auto">
               <table id="timetable-grid-table" class="w-full text-center border-collapse table-fixed min-w-[700px] md:min-w-0">
                 <thead>

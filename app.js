@@ -1048,15 +1048,66 @@ function setResources(data) {
 }
 let activeTimetableBranch = 'Data Science & AI';
 let currentMobileTimetableDay = 'all';
+let mobileTimetableMode = 'cards'; // 'cards' | 'grid'
+
+function setMobileTimetableMode(mode) {
+  mobileTimetableMode = mode;
+  updateMobileTimetableView();
+}
+
+function updateMobileTimetableView() {
+  const cardsContainer = document.getElementById('mobile-timetable-cards-container');
+  const tableContainer = document.getElementById('timetable-table-container');
+  const swipeHint = document.getElementById('mobile-timetable-swipe-hint');
+  const btnCards = document.getElementById('btn-tt-mode-cards');
+  const btnGrid = document.getElementById('btn-tt-mode-grid');
+
+  if (mobileTimetableMode === 'cards') {
+    if (cardsContainer) cardsContainer.classList.remove('hidden');
+    if (tableContainer) {
+      tableContainer.classList.add('hidden');
+      tableContainer.classList.add('md:block');
+    }
+    if (swipeHint) swipeHint.classList.add('hidden');
+    if (btnCards) {
+      btnCards.className = 'flex-1 py-2 px-3 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-xs flex items-center justify-center gap-1.5 transition';
+    }
+    if (btnGrid) {
+      btnGrid.className = 'flex-1 py-2 px-3 rounded-xl bg-white dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 font-semibold text-xs flex items-center justify-center gap-1.5 transition hover:bg-slate-200 dark:hover:bg-slate-700';
+    }
+  } else {
+    if (cardsContainer) cardsContainer.classList.add('hidden');
+    if (tableContainer) {
+      tableContainer.classList.remove('hidden');
+    }
+    if (swipeHint) swipeHint.classList.remove('hidden');
+    if (btnCards) {
+      btnCards.className = 'flex-1 py-2 px-3 rounded-xl bg-white dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 font-semibold text-xs flex items-center justify-center gap-1.5 transition hover:bg-slate-200 dark:hover:bg-slate-700';
+    }
+    if (btnGrid) {
+      btnGrid.className = 'flex-1 py-2 px-3 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-xs flex items-center justify-center gap-1.5 transition';
+    }
+  }
+}
 
 function selectMobileTimetableDay(day) {
   currentMobileTimetableDay = day;
-  document.querySelectorAll('.tt-day-btn').forEach(btn => {
-    const btnDay = btn.getAttribute('data-day');
-    if (btnDay === day) {
-      btn.className = 'tt-day-btn px-2.5 py-1 text-xs font-bold rounded-lg bg-indigo-600 text-white whitespace-nowrap shadow-sm';
+  const dayIds = {
+    'all': 'mtt-day-all',
+    'Monday': 'mtt-day-mon',
+    'Tuesday': 'mtt-day-tue',
+    'Wednesday': 'mtt-day-wed',
+    'Thursday': 'mtt-day-thu',
+    'Friday': 'mtt-day-fri'
+  };
+
+  Object.entries(dayIds).forEach(([d, id]) => {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    if (d === day) {
+      btn.className = 'tt-mobile-day-pill flex-1 py-2 px-2.5 rounded-xl bg-indigo-600 text-white shadow-xs text-center transition flex-shrink-0 font-bold';
     } else {
-      btn.className = 'tt-day-btn px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 whitespace-nowrap';
+      btn.className = 'tt-mobile-day-pill flex-1 py-2 px-2.5 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0 font-semibold hover:text-slate-900 dark:hover:text-slate-200';
     }
   });
 
@@ -1070,6 +1121,8 @@ function selectMobileTimetableDay(day) {
       row.classList.add('md:table-row');
     }
   });
+
+  renderMobileTimetableCards();
 }
 
 async function switchTimetableBranch(branchName) {
@@ -2676,7 +2729,216 @@ function renderTimetableView() {
     `;
   }).join('');
 
+  // Render touch-operable mobile timetable cards
+  renderMobileTimetableCards();
+  updateMobileTimetableView();
+
   if (window.lucide) lucide.createIcons();
+}
+
+function renderMobileTimetableCards() {
+  const container = document.getElementById('mobile-timetable-cards-container');
+  if (!container) return;
+
+  const timetable = getTimetable(activeTimetableBranch);
+  const isAdmin = currentUser && currentUser.role === 'admin';
+  const defaultRoom = activeTimetableBranch.includes('Computer') ? '201' : (activeTimetableBranch.includes('Electronics') ? '205' : '203');
+  const branchShort = activeTimetableBranch.includes('Data') ? 'DSAI' : (activeTimetableBranch.includes('Computer') ? 'CSE' : 'ECE');
+
+  const daysToShow = currentMobileTimetableDay === 'all' 
+    ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+    : [currentMobileTimetableDay];
+
+  const now = new Date();
+  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const todayDayName = dayNames[now.getDay()];
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+  function isLiveNow(day, timeStr) {
+    if (day !== todayDayName) return false;
+    const parts = timeStr.split('-');
+    if (parts.length !== 2) return false;
+    function parseMinutes(str) {
+      const match = str.trim().match(/(\d+):(\d+)/);
+      if (!match) return -1;
+      let h = parseInt(match[1], 10);
+      const m = parseInt(match[2], 10);
+      if (h >= 1 && h <= 6) h += 12; // 1:00 PM to 6:00 PM
+      return h * 60 + m;
+    }
+    const startM = parseMinutes(parts[0]);
+    const endM = parseMinutes(parts[1]);
+    if (startM < 0 || endM < 0) return false;
+    return currentMinutes >= startM && currentMinutes <= endM;
+  }
+
+  let html = '';
+
+  daysToShow.forEach(day => {
+    const dayRow = timetable.find(r => r.day === day) || { day: day, periods: {} };
+    const isToday = (day === todayDayName);
+
+    html += `
+      <div class="tt-mobile-day-section space-y-2 mb-3">
+        <!-- Day Section Header with Mobile Badging -->
+        <div class="flex items-center justify-between px-3 py-2 bg-slate-100/90 dark:bg-slate-800/80 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 shadow-2xs">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full ${isToday ? 'bg-emerald-500 animate-pulse' : 'bg-indigo-500'}"></span>
+            <span class="text-xs font-black text-slate-800 dark:text-slate-100 uppercase tracking-wide">${day}</span>
+            ${isToday ? `<span class="px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">TODAY</span>` : ''}
+          </div>
+          <span class="text-[11px] font-bold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-700/70 px-2.5 py-0.5 rounded-lg border border-slate-200 dark:border-slate-600 shadow-2xs">
+            ${branchShort} • Room ${defaultRoom}
+          </span>
+        </div>
+
+        <div class="space-y-2.5">
+    `;
+
+    TIMETABLE_PERIODS.forEach((time, periodIndex) => {
+      const slot = dayRow.periods?.[time] || { subject: '-', room: defaultRoom, type: 'free' };
+      const subject = (slot?.subject || '-').trim();
+      const room = (slot?.room && slot?.room !== '-' ? slot.room : (defaultRoom || '')).trim();
+
+      const sUpper = subject.toUpperCase();
+      const isLunch = time === '1:00 - 2:00' || 
+                      slot?.type === 'lunch' || 
+                      sUpper === 'LUNCH' || 
+                      sUpper.includes('LUNCH BREAK') ||
+                      (slot?.room === 'Mess' && ['L', 'U', 'N', 'C', 'H'].includes(sUpper));
+      const isFree = !isLunch && (subject === '-' || slot?.type === 'free' || sUpper === 'FREE' || sUpper.startsWith('FREE /') || sUpper === 'FREE STUDY HOUR');
+      const slotType = isLunch ? 'lunch' : (isFree ? 'free' : (slot?.type || getSlotType(subject)));
+      const live = isLiveNow(day, time);
+
+      let periodNumber = `P${periodIndex + 1}`;
+      let slotLetter = isLunch ? 'L' : (isFree ? '-' : slotType.toUpperCase());
+      if (time === '1:00 - 2:00') {
+        periodNumber = 'LUNCH';
+      } else if (periodIndex > 4) {
+        periodNumber = `P${periodIndex}`;
+      }
+
+      let displayTitle = subject;
+      let subDesc = '';
+      let slotCodeBadge = '';
+
+      if (isLunch) {
+        displayTitle = 'Lunch Break';
+        subDesc = 'Hostel Dining Hall / Mess / Cafeteria';
+        slotCodeBadge = '<span class="tt-mobile-badge bg-rose-100 text-rose-700 dark:bg-rose-950/80 dark:text-rose-300 border border-rose-300 dark:border-rose-800">Lunch</span>';
+      } else if (isFree) {
+        displayTitle = 'Free Study Slot';
+        subDesc = 'Self Study / Library / Project Preparation';
+        slotCodeBadge = '<span class="tt-mobile-badge bg-slate-100 text-slate-600 dark:bg-slate-700/80 dark:text-slate-300 border border-slate-300 dark:border-slate-600">Free</span>';
+      } else {
+        const parenMatch = subject.match(/^([^(]+?)\s*\(([^)]+)\)$/);
+        if (parenMatch) {
+          displayTitle = parenMatch[1].trim();
+          subDesc = parenMatch[2].trim();
+        } else if (SLOT_DESCRIPTIONS[subject]) {
+          const fullDesc = SLOT_DESCRIPTIONS[subject];
+          const colonSplit = fullDesc.split(':');
+          if (colonSplit.length > 1) {
+            displayTitle = colonSplit[1].trim();
+            subDesc = colonSplit[0].trim();
+          } else {
+            displayTitle = fullDesc;
+          }
+        }
+
+        const badgeColors = {
+          'a': 'bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 border-red-300 dark:border-red-800',
+          'b': 'bg-purple-100 text-purple-700 dark:bg-purple-950/80 dark:text-purple-300 border-purple-300 dark:border-purple-800',
+          'c': 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800',
+          'f': 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600',
+          'g': 'bg-blue-100 text-blue-700 dark:bg-blue-950/80 dark:text-blue-300 border-blue-300 dark:border-blue-800',
+          'm': 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300 border-indigo-300 dark:border-indigo-800',
+          'n': 'bg-cyan-100 text-cyan-800 dark:bg-cyan-950/80 dark:text-cyan-300 border-cyan-300 dark:border-cyan-800',
+          'music': 'bg-pink-100 text-pink-700 dark:bg-pink-950/80 dark:text-pink-300 border-pink-300 dark:border-pink-800',
+          'yoga': 'bg-pink-100 text-pink-700 dark:bg-pink-950/80 dark:text-pink-300 border-pink-300 dark:border-pink-800',
+          'ilc': 'bg-pink-100 text-pink-700 dark:bg-pink-950/80 dark:text-pink-300 border-pink-300 dark:border-pink-800'
+        };
+        const badgeClass = badgeColors[slotType] || 'bg-slate-100 text-slate-700 border-slate-300';
+        slotCodeBadge = `<span class="tt-mobile-badge border ${badgeClass}">Slot ${slotType.toUpperCase()}</span>`;
+      }
+
+      const safeSubject = subject.replace(/'/g, "\\'");
+      const safeRoom = (room || defaultRoom).replace(/'/g, "\\'");
+
+      html += `
+        <div class="tt-mobile-slot-card bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-3.5 relative flex items-center justify-between gap-3 shadow-xs transition hover:border-indigo-400 dark:hover:border-indigo-600 cursor-pointer ${live ? 'ring-2 ring-emerald-500/80 dark:ring-emerald-400 bg-emerald-50/30 dark:bg-emerald-950/30' : ''}"
+             onclick="handleTimetableMobileCardClick(event, '${day}', '${time}', '${safeSubject}', '${safeRoom}')">
+          <!-- Left color accent strip -->
+          <div class="tt-mobile-accent-strip tt-mobile-accent-${slotType}"></div>
+
+          <!-- Content block -->
+          <div class="flex items-center gap-3 pl-2 flex-1 min-w-0">
+            <!-- Period indicator square -->
+            <div class="flex flex-col items-center justify-center w-11 h-11 rounded-xl bg-slate-100 dark:bg-slate-700/80 border border-slate-200 dark:border-slate-600 flex-shrink-0">
+              <span class="text-[9px] font-extrabold uppercase text-slate-500 dark:text-slate-400 leading-tight">${periodNumber}</span>
+              <span class="text-xs font-black ${isLunch ? 'text-rose-600 dark:text-rose-400' : (isFree ? 'text-slate-400' : 'text-indigo-600 dark:text-indigo-400')} uppercase">${slotLetter}</span>
+            </div>
+
+            <!-- Subject & Room Details -->
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-xs font-bold text-slate-900 dark:text-slate-100 truncate max-w-[190px] sm:max-w-xs">${displayTitle}</span>
+                ${slotCodeBadge}
+                ${live ? `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 animate-pulse"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> LIVE</span>` : ''}
+              </div>
+              <div class="flex items-center gap-2 mt-1 text-[11px] text-slate-500 dark:text-slate-400 flex-wrap">
+                <span class="flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-300">
+                  <i data-lucide="clock" class="w-3.5 h-3.5 text-slate-400"></i> ${time}
+                </span>
+                ${room ? `
+                <span class="flex items-center gap-1 font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-100 dark:border-indigo-900/60 px-2 py-0.5 rounded-lg text-[10px]">
+                  <i data-lucide="map-pin" class="w-3 h-3 text-indigo-500"></i> Room ${room}
+                </span>` : ''}
+              </div>
+              ${subDesc ? `<div class="text-[10.5px] text-slate-500 dark:text-slate-400 truncate mt-0.5">${subDesc}</div>` : ''}
+            </div>
+          </div>
+
+          <!-- Right Action button -->
+          <div class="flex items-center gap-1 flex-shrink-0">
+            ${isAdmin ? `
+              <button type="button" 
+                      onclick="event.stopPropagation(); openAddTimetableSlotModal('${day}', '${time}', '${safeSubject}', '${safeRoom}')"
+                      class="tt-mobile-admin-btn p-2 rounded-xl bg-slate-100 hover:bg-indigo-50 dark:bg-slate-700/80 dark:hover:bg-indigo-950/80 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-600 transition"
+                      title="Admin Edit Slot">
+                <i data-lucide="edit-3" class="w-4 h-4 text-indigo-600 dark:text-indigo-400"></i>
+              </button>
+            ` : `
+              <span class="text-slate-400 dark:text-slate-500 p-1">
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+              </span>
+            `}
+          </div>
+        </div>
+      `;
+    });
+
+    html += `
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+  if (window.lucide) lucide.createIcons();
+}
+
+function handleTimetableMobileCardClick(event, day, time, subject, room) {
+  if (currentUser && currentUser.role === 'admin') {
+    openAddTimetableSlotModal(day, time, subject, room);
+  } else {
+    const fullDesc = SLOT_DESCRIPTIONS[subject] || subject;
+    const isLunch = time === '1:00 - 2:00' || subject.toUpperCase() === 'LUNCH';
+    const msg = isLunch 
+      ? `🍽️ Lunch Break: 1:00 PM - 2:00 PM (Hostel Dining Hall / Mess)`
+      : `📅 ${day} • ${time} • ${fullDesc} (Room ${room || 'Campus'})`;
+    showToast(msg, 'info');
+  }
 }
 
 function handleTimetableSlotClick(day, time, subject, room) {
