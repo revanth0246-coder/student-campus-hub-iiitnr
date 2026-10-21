@@ -229,10 +229,64 @@ body {
   animation: fadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Mobile backdrop */
+/* Mobile backdrop and drawer */
+#sidebar-overlay,
 #sidebar-backdrop {
   background-color: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Mobile Bottom Navigation Bar */
+.mobile-bottom-nav {
+  padding-bottom: calc(0.35rem + env(safe-area-inset-bottom, 0px));
+}
+
+.mobile-nav-btn {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-nav-btn:active {
+  transform: scale(0.92);
+}
+
+/* Scrollbar utilities */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Smooth Touch Scrolling */
+.overflow-x-auto,
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent auto-zooming on mobile inputs (iOS Safari requirement) */
+@media (max-width: 640px) {
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  input[type="url"],
+  input[type="number"],
+  input[type="search"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Mobile table touch indicator pulse */
+@keyframes swipeHint {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(4px); }
+}
+.swipe-hint-icon {
+  animation: swipeHint 1.6s ease-in-out infinite;
 }
 
 /* Mess schedule badges */

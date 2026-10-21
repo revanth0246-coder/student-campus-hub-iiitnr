@@ -1044,6 +1044,30 @@ function setResources(data) {
   localStorage.setItem('iiitnr_study_resources', JSON.stringify(data));
 }
 let activeTimetableBranch = 'Data Science & AI';
+let currentMobileTimetableDay = 'all';
+
+function selectMobileTimetableDay(day) {
+  currentMobileTimetableDay = day;
+  document.querySelectorAll('.tt-day-btn').forEach(btn => {
+    const btnDay = btn.getAttribute('data-day');
+    if (btnDay === day) {
+      btn.className = 'tt-day-btn px-2.5 py-1 text-xs font-bold rounded-lg bg-indigo-600 text-white whitespace-nowrap shadow-sm';
+    } else {
+      btn.className = 'tt-day-btn px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 whitespace-nowrap';
+    }
+  });
+
+  const rows = document.querySelectorAll('#timetable-table-body tr[data-day]');
+  rows.forEach(row => {
+    const rowDay = row.getAttribute('data-day');
+    if (day === 'all' || rowDay === day) {
+      row.classList.remove('hidden');
+    } else {
+      row.classList.add('hidden');
+      row.classList.add('md:table-row');
+    }
+  });
+}
 
 async function switchTimetableBranch(branchName) {
   if (!branchName) return;
@@ -1531,6 +1555,18 @@ function navigateTo(viewId) {
     }
   });
 
+  // Update mobile bottom nav active buttons
+  document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+    const btnView = btn.getAttribute('data-view');
+    if (btnView === viewId || (viewId === 'planner' && btnView === 'assignments')) {
+      btn.classList.add('active', 'text-indigo-600', 'dark:text-indigo-400', 'font-semibold');
+      btn.classList.remove('text-slate-500', 'dark:text-slate-400', 'font-medium');
+    } else if (btnView !== 'menu') {
+      btn.classList.remove('active', 'text-indigo-600', 'dark:text-indigo-400', 'font-semibold');
+      btn.classList.add('text-slate-500', 'dark:text-slate-400', 'font-medium');
+    }
+  });
+
   // Update top bar title
   const titleMap = {
     home: 'Student Dashboard',
@@ -1982,14 +2018,28 @@ function copyTunnelUrl() {
 
 function toggleMobileSidebar() {
   const sidebar = document.getElementById('main-sidebar');
-  sidebar.classList.toggle('-translate-x-full');
+  const overlay = document.getElementById('sidebar-overlay');
+  if (!sidebar) return;
+  const isHidden = sidebar.classList.contains('-translate-x-full');
+  if (isHidden) {
+    sidebar.classList.remove('-translate-x-full');
+    if (overlay) overlay.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+  } else {
+    sidebar.classList.add('-translate-x-full');
+    if (overlay) overlay.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+  }
 }
 
 function closeMobileSidebar() {
   const sidebar = document.getElementById('main-sidebar');
-  if (!sidebar.classList.contains('-translate-x-full')) {
+  const overlay = document.getElementById('sidebar-overlay');
+  if (sidebar && !sidebar.classList.contains('-translate-x-full')) {
     sidebar.classList.add('-translate-x-full');
   }
+  if (overlay) overlay.classList.add('hidden');
+  document.body.classList.remove('overflow-hidden');
 }
 
 // ==========================================
@@ -2607,13 +2657,14 @@ function renderTimetableView() {
 
   tbody.innerHTML = timetable.map((dayRow) => {
     const dayName = dayRow.day;
+    const isHidden = (currentMobileTimetableDay !== 'all' && currentMobileTimetableDay !== dayName);
     const cells = TIMETABLE_PERIODS.map(time => {
       const slot = dayRow.periods?.[time] || { subject: '-', room: defaultRoom, type: 'free' };
       return renderTimetableSlotCard(slot, dayName, time, defaultRoom, isAdmin);
     }).join('');
 
     return `
-      <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition">
+      <tr data-day="${dayName}" class="${isHidden ? 'hidden md:table-row ' : ''}hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition">
         <td class="py-2 px-1.5 font-bold text-[10px] sm:text-xs text-slate-800 dark:text-slate-200 text-left bg-slate-50/70 dark:bg-slate-800/50 border-r border-slate-100 dark:border-slate-800 whitespace-nowrap">
           ${dayName}
         </td>
