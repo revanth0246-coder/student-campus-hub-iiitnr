@@ -850,11 +850,11 @@ function updateBackendStatusBadge(connected) {
   if (connected) {
     pill.className = "hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 rounded-full text-[11px] font-semibold border border-emerald-200 dark:border-emerald-800";
     if (dot) dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
-    if (label) label.textContent = "SQLite Backend Connected";
+    if (label) label.textContent = "SQLite Backend Sync";
   } else {
-    pill.className = "hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-full text-[11px] font-semibold border border-slate-200 dark:border-slate-700";
-    if (dot) dot.className = "w-2 h-2 rounded-full bg-slate-400";
-    if (label) label.textContent = "Local Mode (Offline)";
+    pill.className = "hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 rounded-full text-[11px] font-semibold border border-indigo-200 dark:border-indigo-800";
+    if (dot) dot.className = "w-2 h-2 rounded-full bg-indigo-500 animate-pulse";
+    if (label) label.textContent = "Standalone Frontend Mode";
   }
 }
 
@@ -950,6 +950,9 @@ async function apiCall(endpoint, method = 'GET', data = null) {
 function initStorage() {
   if (!localStorage.getItem('iiitnr_students')) {
     localStorage.setItem('iiitnr_students', JSON.stringify(DEFAULT_STUDENTS));
+  }
+  if (!localStorage.getItem('iiitnr_branch_timetables')) {
+    localStorage.setItem('iiitnr_branch_timetables', JSON.stringify(DEFAULT_BRANCH_TIMETABLES));
   }
   
   // Force sync new official timetable & subjects from uploaded document
@@ -1051,9 +1054,9 @@ function selectMobileTimetableDay(day) {
   document.querySelectorAll('.tt-day-btn').forEach(btn => {
     const btnDay = btn.getAttribute('data-day');
     if (btnDay === day) {
-      btn.className = 'tt-day-btn flex-1 py-1.5 px-2 rounded-xl bg-indigo-600 text-white shadow-xs text-center transition flex-shrink-0 font-bold';
+      btn.className = 'tt-day-btn px-2.5 py-1 text-xs font-bold rounded-lg bg-indigo-600 text-white whitespace-nowrap shadow-sm';
     } else {
-      btn.className = 'tt-day-btn flex-1 py-1.5 px-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-center transition flex-shrink-0 font-medium';
+      btn.className = 'tt-day-btn px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 whitespace-nowrap';
     }
   });
 
@@ -1202,8 +1205,6 @@ function showAuthScreen() {
     screen.classList.remove('hidden');
     screen.classList.add('flex');
   }
-  const bottomNav = document.getElementById('mobile-bottom-nav');
-  if (bottomNav) bottomNav.classList.add('hidden');
 }
 
 function hideAuthScreen() {
@@ -1212,8 +1213,6 @@ function hideAuthScreen() {
     screen.classList.add('hidden');
     screen.classList.remove('flex');
   }
-  const bottomNav = document.getElementById('mobile-bottom-nav');
-  if (bottomNav) bottomNav.classList.remove('hidden');
 }
 
 function switchAuthTab(type) {
@@ -1397,7 +1396,6 @@ async function handleAuthLogin(event, role) {
 }
 
 function handleLogout() {
-  closeMobileSidebar();
   localStorage.removeItem('iiitnr_active_session');
   localStorage.removeItem('iiitnr_auth_token');
   authToken = null;
@@ -1418,7 +1416,6 @@ function handleLogout() {
 
 // Student Registration handler
 function openStudentRegistrationModal() {
-  closeMobileSidebar();
   document.getElementById('modal-register-student').classList.remove('hidden');
   document.getElementById('modal-register-student').classList.add('flex');
 }
@@ -1852,7 +1849,6 @@ function applyTheme(themeId) {
 }
 
 function openThemePickerModal() {
-  closeMobileSidebar();
   renderThemePickerUI();
   const modal = document.getElementById('modal-theme-picker');
   if (modal) {
@@ -1940,7 +1936,6 @@ let activeLanUrl = `http://${window.location.hostname || 'localhost'}:5000`;
 let activeTunnelUrl = null;
 
 async function openNetworkModal() {
-  closeMobileSidebar();
   const modal = document.getElementById('modal-network-devices');
   if (modal) {
     modal.classList.remove('hidden');
@@ -2680,16 +2675,6 @@ function renderTimetableView() {
       </tr>
     `;
   }).join('');
-
-  // Sync mobile day filter buttons
-  document.querySelectorAll('.tt-day-btn').forEach(btn => {
-    const btnDay = btn.getAttribute('data-day');
-    if (btnDay === currentMobileTimetableDay) {
-      btn.className = 'tt-day-btn flex-1 py-1.5 px-2 rounded-xl bg-indigo-600 text-white shadow-xs text-center transition flex-shrink-0 font-bold';
-    } else {
-      btn.className = 'tt-day-btn flex-1 py-1.5 px-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-center transition flex-shrink-0 font-medium';
-    }
-  });
 
   if (window.lucide) lucide.createIcons();
 }
@@ -5157,26 +5142,63 @@ async function renderDatabaseView() {
       console.warn('DB stats fetch error:', e);
     }
   } else {
-    // Local fallback counts
+    // Standalone Client-Side fallback metrics
+    let totalStorageBytes = 0;
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        totalStorageBytes += (key.length + (localStorage.getItem(key) || '').length) * 2;
+      }
+    } catch (e) {}
+    const sizeKB = (totalStorageBytes / 1024).toFixed(1);
+
+    const sizeEl = document.getElementById('db-file-size-label');
+    if (sizeEl) sizeEl.textContent = `Client Storage: ~${sizeKB} KB`;
+
+    const engineLabel = document.getElementById('db-engine-label');
+    if (engineLabel) engineLabel.textContent = 'Client Storage Engine';
+
+    const pathLabel = document.getElementById('db-storage-path-label');
+    if (pathLabel) pathLabel.textContent = 'localStorage (Client)';
+
+    const descLabel = document.getElementById('db-storage-desc-label');
+    if (descLabel) descLabel.textContent = 'Persistent browser storage';
+
+    const statusTextEl = document.getElementById('db-connection-status-text');
+    if (statusTextEl) {
+      statusTextEl.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> Standalone Active`;
+    }
+
+    const statusSubEl = document.getElementById('db-connection-status-sub');
+    if (statusSubEl) statusSubEl.textContent = '100% Client-Side Engine';
+
     const students = getStudents();
     const resources = getResources();
-    const timetable = getTimetable();
+    const timetableRows = getLocalTableRows('timetable');
     const assignments = getGlobalAssignments();
     const announcements = getAnnouncements();
     const events = getEvents();
+    const completions = JSON.parse(localStorage.getItem('iiitnr_assignment_completions') || '[]');
+    const eventRegs = JSON.parse(localStorage.getItem('iiitnr_event_registrations') || '[]');
 
     const uBadge = document.getElementById('pill-count-users');
     if (uBadge) uBadge.textContent = `(${students.length + 1})`;
     const rBadge = document.getElementById('pill-count-resources');
     if (rBadge) rBadge.textContent = `(${resources.length})`;
     const tBadge = document.getElementById('pill-count-timetable');
-    if (tBadge) tBadge.textContent = `(45)`;
+    if (tBadge) tBadge.textContent = `(${timetableRows.length || 135})`;
     const aBadge = document.getElementById('pill-count-assignments');
     if (aBadge) aBadge.textContent = `(${assignments.length})`;
+    const acBadge = document.getElementById('pill-count-assignment_completions');
+    if (acBadge) acBadge.textContent = `(${completions.length})`;
     const anBadge = document.getElementById('pill-count-announcements');
     if (anBadge) anBadge.textContent = `(${announcements.length})`;
     const evBadge = document.getElementById('pill-count-events');
     if (evBadge) evBadge.textContent = `(${events.length})`;
+    const erBadge = document.getElementById('pill-count-event_registrations');
+    if (erBadge) erBadge.textContent = `(${eventRegs.length})`;
+    const sBadge = document.getElementById('pill-count-sessions');
+    if (sBadge) sBadge.textContent = `(1)`;
   }
 
   // 2. Load current selected table
@@ -5227,18 +5249,59 @@ function getLocalTableRows(tableName) {
   }
   if (tableName === 'resources') return getResources();
   if (tableName === 'timetable') {
-    const tt = getTimetable();
+    let branchTables = {};
+    try {
+      branchTables = JSON.parse(localStorage.getItem('iiitnr_branch_timetables') || '{}');
+    } catch (e) {}
+    const branches = Object.keys(branchTables).length > 0 
+      ? branchTables 
+      : (typeof DEFAULT_BRANCH_TIMETABLES !== 'undefined' ? DEFAULT_BRANCH_TIMETABLES : { [activeTimetableBranch]: getTimetable() });
+    
     const rows = [];
-    tt.forEach(dayRow => {
-      Object.entries(dayRow.periods || {}).forEach(([time, info]) => {
-        rows.push({ day: dayRow.day, time_slot: time, subject: info.subject, room: info.room, slot_type: info.type });
-      });
+    Object.entries(branches).forEach(([bName, days]) => {
+      if (Array.isArray(days)) {
+        days.forEach(dayRow => {
+          Object.entries(dayRow.periods || {}).forEach(([time, info]) => {
+            rows.push({
+              branch: bName,
+              day: dayRow.day,
+              time_slot: time,
+              subject: info.subject,
+              room: info.room,
+              slot_type: info.type
+            });
+          });
+        });
+      }
     });
     return rows;
   }
   if (tableName === 'assignments') return getGlobalAssignments();
+  if (tableName === 'assignment_completions') {
+    return JSON.parse(localStorage.getItem('iiitnr_assignment_completions') || '[]');
+  }
   if (tableName === 'announcements') return getAnnouncements();
   if (tableName === 'events') return getEvents();
+  if (tableName === 'event_registrations') {
+    return JSON.parse(localStorage.getItem('iiitnr_event_registrations') || '[]');
+  }
+  if (tableName === 'sessions') {
+    const now = new Date();
+    return [
+      {
+        id: 'sess_1',
+        user_id: currentUser?.id || 'admin_001',
+        user_name: currentUser?.name || 'Revanth',
+        role: currentUser?.role || 'admin',
+        email: currentUser?.email || 'revanth0246@gmail.com',
+        login_time: currentUser?.loginTime || (now.toLocaleDateString('en-IN') + ' ' + now.toLocaleTimeString('en-IN')),
+        client_mode: 'Standalone Frontend (100% Client-Side Engine)',
+        status: 'Active'
+      }
+    ];
+  }
+  if (tableName === 'mess' || tableName === 'mess_menu') return getMessMenu();
+  if (tableName === 'exchange') return getExchangeListings();
   return [];
 }
 
@@ -5326,6 +5389,68 @@ function setSqlQuery(sql) {
   }
 }
 
+
+function executeClientSqlQuery(sql) {
+  const cleanSql = sql.trim().replace(/;$/, '');
+
+  // 1. SELECT COUNT(*) query
+  const countMatch = cleanSql.match(/^SELECT\s+COUNT\(\*\)\s+(?:as\s+[a-zA-Z0-9_]+\s+)?FROM\s+([a-zA-Z0-9_]+)/i);
+  if (countMatch) {
+    const tableName = countMatch[1].trim().toLowerCase();
+    const rows = getLocalTableRows(tableName);
+    return { success: true, type: 'SELECT', rows: [{ 'COUNT(*)': rows.length }], rowCount: 1 };
+  }
+
+  // 2. SELECT [cols] FROM [table] [WHERE condition]
+  const selectMatch = cleanSql.match(/^SELECT\s+(.*?)\s+FROM\s+([a-zA-Z0-9_]+)(?:\s+WHERE\s+(.*))?$/i);
+  if (selectMatch) {
+    const fieldsStr = selectMatch[1].trim();
+    const tableName = selectMatch[2].trim().toLowerCase();
+    const whereClause = selectMatch[3] ? selectMatch[3].trim() : null;
+
+    let rows = getLocalTableRows(tableName);
+    if (!rows || rows.length === 0) {
+      return { success: true, type: 'SELECT', rows: [], rowCount: 0 };
+    }
+
+    if (whereClause) {
+      rows = rows.filter(row => {
+        const eqMatch = whereClause.match(/([a-zA-Z0-9_]+)\s*=\s*['"]?([^'"]+)['"]?/i);
+        if (eqMatch) {
+          const col = eqMatch[1];
+          const val = eqMatch[2];
+          return String(row[col] || '').toLowerCase() === String(val).toLowerCase();
+        }
+        const likeMatch = whereClause.match(/([a-zA-Z0-9_]+)\s+LIKE\s+['"]%?([^'%"]+)%?['"]/i);
+        if (likeMatch) {
+          const col = likeMatch[1];
+          const val = likeMatch[2];
+          return String(row[col] || '').toLowerCase().includes(String(val).toLowerCase());
+        }
+        return true;
+      });
+    }
+
+    if (fieldsStr !== '*' && !fieldsStr.toLowerCase().includes('count(')) {
+      const fields = fieldsStr.split(',').map(f => f.trim());
+      rows = rows.map(row => {
+        const proj = {};
+        fields.forEach(f => {
+          if (f in row) proj[f] = row[f];
+        });
+        return proj;
+      });
+    }
+
+    return { success: true, type: 'SELECT', rows, rowCount: rows.length };
+  }
+
+  return {
+    success: false,
+    message: 'Client SQL runner supports SELECT queries (e.g. SELECT * FROM users, SELECT * FROM timetable WHERE day = "Monday", SELECT * FROM resources). Full SQL mutations supported with backend.'
+  };
+}
+
 async function runCustomSqlQuery() {
   if (!currentUser || currentUser.role !== 'admin') {
     showToast('Access Denied: SQL Terminal is restricted to Administration.', 'error');
@@ -5346,8 +5471,32 @@ async function runCustomSqlQuery() {
   if (outputBox) outputBox.classList.remove('hidden');
 
   if (!isBackendConnected) {
-    showToast('SQL Query Runner requires active SQLite backend.', 'info');
-    if (rowsEl) rowsEl.innerHTML = `<tr><td class="p-4 text-amber-500">Notice: Connect to SQLite backend at http://localhost:5000 to execute live SQL queries.</td></tr>`;
+    const clientRes = executeClientSqlQuery(sql);
+    if (clientRes.success) {
+      if (badgeEl) badgeEl.textContent = `${clientRes.rowCount} row(s) returned (Client Engine)`;
+      if (clientRes.rows.length === 0) {
+        if (headersEl) headersEl.innerHTML = '<tr><th class="p-3">Status</th></tr>';
+        if (rowsEl) rowsEl.innerHTML = '<tr><td class="p-4 text-slate-400">Query executed. 0 rows returned.</td></tr>';
+        return;
+      }
+      const keys = Object.keys(clientRes.rows[0]);
+      if (headersEl) {
+        headersEl.innerHTML = `<tr>${keys.map(k => `<th class="px-4 py-2 font-bold">${k}</th>`).join('')}</tr>`;
+      }
+      if (rowsEl) {
+        rowsEl.innerHTML = clientRes.rows.map(r => `
+          <tr class="hover:bg-slate-800/40 font-mono text-[11px]">
+            ${keys.map(k => `<td class="px-4 py-2.5 max-w-[200px] truncate">${String(r[k] !== null && r[k] !== undefined ? r[k] : 'NULL')}</td>`).join('')}
+          </tr>
+        `).join('');
+      }
+      showToast(`Client query executed: ${clientRes.rowCount} row(s) returned.`, 'success');
+    } else {
+      if (badgeEl) badgeEl.textContent = 'Query Notice';
+      if (headersEl) headersEl.innerHTML = '<tr><th class="p-3">Status</th></tr>';
+      if (rowsEl) rowsEl.innerHTML = `<tr><td class="p-4 text-amber-500 font-mono text-xs">${clientRes.message}</td></tr>`;
+      showToast(clientRes.message, 'info');
+    }
     return;
   }
 
