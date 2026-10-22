@@ -832,6 +832,13 @@ async function checkBackendConnection() {
         } catch (e) {}
       }
       await syncAllFromBackend();
+      refreshAllViews();
+      if (currentUser?.role === 'admin') {
+        if (activeView === 'home') renderHomeView();
+        if (activeView === 'students') renderStudentsDirectoryView();
+        if (activeView === 'database') renderDatabaseView();
+        loadAdminModalData();
+      }
       return true;
     }
   } catch (err) {
@@ -904,11 +911,47 @@ async function syncAllFromBackend() {
     if (evRes.status === 'fulfilled' && evRes.value?.success && evRes.value.events) {
       setEvents(evRes.value.events);
     }
-    if (stuRes.status === 'fulfilled' && stuRes.value?.success && stuRes.value.students) {
-      setStudents(stuRes.value.students);
+    if (stuRes.status === 'fulfilled' && stuRes.value?.success && Array.isArray(stuRes.value.students)) {
+      const localStudents = getStudents();
+      const remoteStudents = stuRes.value.students;
+      let removedList = [];
+      try { removedList = JSON.parse(localStorage.getItem('iiitnr_removed_students') || '[]'); } catch (e) {}
+
+      // Detect any students created locally (offline) that haven't been saved to SQLite yet
+      const missingInRemote = localStudents.filter(l => {
+        const rollKey = l.roll ? String(l.roll).trim().toUpperCase() : '';
+        return rollKey && !removedList.includes(rollKey) && !remoteStudents.some(r => String(r.roll || '').trim().toUpperCase() === rollKey);
+      });
+
+      // Synchronize missing offline students into SQLite backend
+      for (const missingStu of missingInRemote) {
+        try {
+          await fetch(API_BASE + '/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: missingStu.name,
+              roll: missingStu.roll,
+              branch: missingStu.branch,
+              year: missingStu.year,
+              semester: missingStu.semester,
+              cgpa: missingStu.cgpa,
+              email: missingStu.email,
+              password: missingStu.password || 'student123',
+              avatar: missingStu.avatar
+            })
+          });
+        } catch (syncErr) {
+          console.warn('Auto-reconciliation of offline student to SQLite:', syncErr);
+        }
+      }
+
+      const merged = mergeStudentLists(localStudents, remoteStudents);
+      setStudents(merged);
+
       // Synchronize latest student profile and branch across all devices
       if (currentUser && currentUser.role === 'student' && cleanRoll) {
-        const freshSelf = stuRes.value.students.find(s => s.roll && s.roll.trim().toUpperCase() === cleanRoll);
+        const freshSelf = merged.find(s => s.roll && s.roll.trim().toUpperCase() === cleanRoll);
         if (freshSelf) {
           currentUser = { ...currentUser, ...freshSelf };
           if (freshSelf.branch) activeTimetableBranch = freshSelf.branch;
@@ -932,13 +975,15 @@ async function syncAllFromBackend() {
 
     refreshAllViews();
 
-    // If Admin is inspecting Database view or Directory modal is open, refresh them
-    if (currentUser?.role === 'admin' && activeView === 'database') {
-      renderDatabaseView();
-    }
-    const adminModal = document.getElementById('modal-make-admin');
-    if (adminModal && !adminModal.classList.contains('hidden')) {
-      loadAdminModalData();
+    // If Admin is active, immediately update home enrolled widget, students directory, and modal
+    if (currentUser?.role === 'admin') {
+      if (activeView === 'home') renderHomeView();
+      if (activeView === 'students') renderStudentsDirectoryView();
+      if (activeView === 'database') renderDatabaseView();
+      const adminModal = document.getElementById('modal-make-admin');
+      if (adminModal && !adminModal.classList.contains('hidden')) {
+        loadAdminModalData();
+      }
     }
   } catch (err) {
     console.warn('Backend sync notice:', err);
@@ -1043,6 +1088,10 @@ function initStorage() {
       }
       hideAuthScreen();
       refreshAllViews();
+      if (currentUser && currentUser.role === 'admin') {
+        renderHomeView();
+        loadAdminModalData();
+      }
     } catch (e) {
       currentUser = null;
     }
@@ -1060,12 +1109,82 @@ function initStorage() {
   initRealtimeSync();
 }
 
-// Getters and Setters helper
-function getStudents() {
-  return JSON.parse(localStorage.getItem('iiitnr_students') || '[]');
+// Reconciliation & Persistence Engine for Enrolled Students
+function mergeStudentLists(localList, remoteList) {
+  const map = new Map();
+  let removedList = [];
+  try {
+    removedList = JSON.parse(localStorage.getItem('iiitnr_removed_students') || '[]');
+  } catch (e) {}
+
+  // 1. Authoritative remote students from SQLite
+  if (Array.isArray(remoteList)) {
+    for (const r of remoteList) {
+      if (!r) continue;
+      const key = (r.roll ? String(r.roll).trim().toUpperCase() : '') || String(r.id || '');
+      if (key) map.set(key, r);
+    }
+  }
+
+  // 2. Merge local students that aren't marked as deleted
+  if (Array.isArray(localList)) {
+    for (const l of localList) {
+      if (!l) continue;
+      const key = (l.roll ? String(l.roll).trim().toUpperCase() : '') || String(l.id || '');
+      if (key && !map.has(key)) {
+        if (!removedList.includes(key)) {
+          map.set(key, l);
+        }
+      }
+    }
+  }
+
+  return Array.from(map.values());
 }
+
+// Getters and Setters helper with Safe Archival & Multi-Source Recovery
+function getStudents() {
+  try {
+    let list = JSON.parse(localStorage.getItem('iiitnr_students') || '[]');
+    if (!Array.isArray(list) || list.length === 0) {
+      const backup = JSON.parse(localStorage.getItem('iiitnr_students_backup') || '[]');
+      if (Array.isArray(backup) && backup.length > 0) {
+        list = backup;
+        localStorage.setItem('iiitnr_students', JSON.stringify(list));
+      } else {
+        list = [...DEFAULT_STUDENTS];
+        localStorage.setItem('iiitnr_students', JSON.stringify(list));
+      }
+    }
+    return list;
+  } catch (e) {
+    return [...DEFAULT_STUDENTS];
+  }
+}
+
 function setStudents(data) {
-  localStorage.setItem('iiitnr_students', JSON.stringify(data));
+  if (!Array.isArray(data)) return;
+  const map = new Map();
+  for (const s of data) {
+    if (!s) continue;
+    const key = (s.roll ? String(s.roll).trim().toUpperCase() : '') || String(s.id || '');
+    if (key) {
+      if (!map.has(key) || (s.created_at && !map.get(key).created_at)) {
+        map.set(key, s);
+      }
+    }
+  }
+  const cleanList = Array.from(map.values());
+  localStorage.setItem('iiitnr_students', JSON.stringify(cleanList));
+  localStorage.setItem('iiitnr_students_backup', JSON.stringify(cleanList));
+
+  // Update badge UI everywhere
+  const navBadge = document.getElementById('nav-student-count-badge');
+  if (navBadge) navBadge.textContent = cleanList.length;
+  const homeBadge = document.getElementById('home-admin-student-badge');
+  if (homeBadge) homeBadge.textContent = cleanList.length + ' Student' + (cleanList.length !== 1 ? 's' : '');
+  const stuCountAll = document.getElementById('stu-count-all');
+  if (stuCountAll) stuCountAll.textContent = cleanList.length;
 }
 function getResources() {
   return JSON.parse(localStorage.getItem('iiitnr_study_resources') || '[]');
@@ -1457,6 +1576,10 @@ async function handleAuthLogin(event, role) {
         showToast('Admin access granted: Academic Control Panel unlocked.', 'info');
         await syncAllFromBackend();
         refreshAllViews();
+        renderHomeView();
+        if (activeView === 'students') renderStudentsDirectoryView();
+        if (activeView === 'database') renderDatabaseView();
+        loadAdminModalData();
         return;
       } else if (res.status === 401 || res.status === 400 || res.status === 403) {
         showToast(data.message || 'Invalid Admin Credentials!', 'error');
@@ -1529,9 +1652,11 @@ async function submitNewStudentRegistration(event) {
   const chosenAvatar = tempRegAvatar;
   tempRegAvatar = null;
 
+  const isAdmin = currentUser && currentUser.role === 'admin';
+
   // 1. ALWAYS attempt SQLite backend registration first
   try {
-    const res = await fetch(`${API_BASE}/auth/register`, {
+    const res = await fetch(API_BASE + '/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1542,7 +1667,49 @@ async function submitNewStudentRegistration(event) {
     if (data.success && data.user) {
       isBackendConnected = true;
       updateBackendStatusBadge(true);
-      currentUser = data.user;
+      const newStudent = data.user;
+
+      // Un-remove if this roll was previously in removed list
+      try {
+        let removedList = JSON.parse(localStorage.getItem('iiitnr_removed_students') || '[]');
+        removedList = removedList.filter(r => r !== roll);
+        localStorage.setItem('iiitnr_removed_students', JSON.stringify(removedList));
+      } catch (e) {}
+
+      // Immediately cache registered student into local client array
+      const students = getStudents();
+      const existingIdx = students.findIndex(s => s.id === newStudent.id || (newStudent.roll && s.roll && s.roll.toUpperCase() === newStudent.roll.toUpperCase()));
+      if (existingIdx !== -1) {
+        students[existingIdx] = newStudent;
+      } else {
+        students.push(newStudent);
+      }
+      setStudents(students);
+
+      closeModal('modal-register-student');
+      const regNameEl = document.getElementById('reg-name');
+      const regRollEl = document.getElementById('reg-roll');
+      const regEmailEl = document.getElementById('reg-email');
+      const regPassEl = document.getElementById('reg-pass');
+      if (regNameEl) regNameEl.value = '';
+      if (regRollEl) regRollEl.value = '';
+      if (regEmailEl) regEmailEl.value = '';
+      if (regPassEl) regPassEl.value = '';
+
+      if (isAdmin) {
+        // Admin registered a student: Admin MUST stay logged in as Admin!
+        showToast('Student ' + name + ' (' + roll + ') registered successfully in SQLite database!', 'success');
+        await syncAllFromBackend();
+        renderStudentsDirectoryView();
+        renderHomeView();
+        if (activeView === 'database') switchDbTable('users');
+        loadAdminModalData();
+        updateUserUIElements();
+        return;
+      }
+
+      // Self-registration from Auth screen:
+      currentUser = newStudent;
       if (currentUser.branch) {
         activeTimetableBranch = currentUser.branch;
       }
@@ -1559,19 +1726,8 @@ async function submitNewStudentRegistration(event) {
       }
       localStorage.setItem('iiitnr_active_session', JSON.stringify(currentUser));
 
-      // Immediately cache registered student into local client array
-      const students = getStudents();
-      const existingIdx = students.findIndex(s => s.id === currentUser.id || (currentUser.roll && s.roll && s.roll.toUpperCase() === currentUser.roll.toUpperCase()));
-      if (existingIdx !== -1) {
-        students[existingIdx] = currentUser;
-      } else {
-        students.push(currentUser);
-      }
-      setStudents(students);
-
-      closeModal('modal-register-student');
       hideAuthScreen();
-      showToast(`Account registered in SQLite! Welcome, ${name}.`, 'success');
+      showToast('Account registered in SQLite! Welcome, ' + name + '.', 'success');
       await syncAllFromBackend();
       refreshAllViews();
       return;
@@ -1583,6 +1739,7 @@ async function submitNewStudentRegistration(event) {
     console.warn('Registration network fallback to local cache:', err);
   }
 
+  // 2. Offline fallback if backend server is unreachable
   const students = getStudents();
   if (students.some(s => s.roll.toUpperCase() === roll)) {
     showToast('A student with this Roll Number is already registered!', 'error');
@@ -1601,12 +1758,38 @@ async function submitNewStudentRegistration(event) {
     email: email,
     batch: '2024 - 2028',
     avatar: chosenAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop&crop=faces',
-    password: pass
+    password: pass,
+    created_at: new Date().toISOString()
   };
+
+  try {
+    let removedList = JSON.parse(localStorage.getItem('iiitnr_removed_students') || '[]');
+    removedList = removedList.filter(r => r !== roll);
+    localStorage.setItem('iiitnr_removed_students', JSON.stringify(removedList));
+  } catch (e) {}
 
   students.push(newStudent);
   setStudents(students);
   closeModal('modal-register-student');
+
+  const regNameEl = document.getElementById('reg-name');
+  const regRollEl = document.getElementById('reg-roll');
+  const regEmailEl = document.getElementById('reg-email');
+  const regPassEl = document.getElementById('reg-pass');
+  if (regNameEl) regNameEl.value = '';
+  if (regRollEl) regRollEl.value = '';
+  if (regEmailEl) regEmailEl.value = '';
+  if (regPassEl) regPassEl.value = '';
+
+  if (isAdmin) {
+    showToast('Student ' + name + ' (' + roll + ') registered and stored locally!', 'success');
+    renderStudentsDirectoryView();
+    renderHomeView();
+    if (activeView === 'database') switchDbTable('users');
+    loadAdminModalData();
+    updateUserUIElements();
+    return;
+  }
 
   currentUser = newStudent;
   if (currentUser.branch) {
@@ -1614,7 +1797,7 @@ async function submitNewStudentRegistration(event) {
   }
   localStorage.setItem('iiitnr_active_session', JSON.stringify(currentUser));
   hideAuthScreen();
-  showToast(`Account created! Welcome to IIIT-NR Hub, ${name}.`, 'success');
+  showToast('Account created! Welcome to IIIT-NR Hub, ' + name + '.', 'success');
   refreshAllViews();
 }
 
@@ -2305,7 +2488,7 @@ function renderHomeView() {
       if (students.length === 0) {
         listEl.innerHTML = '<p class="text-xs text-slate-400 italic col-span-3">No students registered yet. New student accounts will appear here automatically.</p>';
       } else {
-        listEl.innerHTML = students.slice(0, 6).map(s => {
+        listEl.innerHTML = students.slice(0, 12).map(s => {
           const avatar = s.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&h=80&fit=crop&crop=faces';
           const name = escapeHtml(s.name || 'Student');
           const roll = escapeHtml(s.roll || 'N/A');
@@ -6153,7 +6336,7 @@ async function loadAdminModalData() {
         allUsers = res.users;
       } else {
         const stuRes = await apiCall('/auth/students');
-        const students = stuRes?.students || getStudents();
+        const students = stuRes?.students ? mergeStudentLists(getStudents(), stuRes.students) : getStudents();
         allUsers = [DEFAULT_ADMIN, ...students];
       }
     } catch (e) {
@@ -6326,6 +6509,15 @@ async function removeStudentAccount(userId, name, roll) {
   // Always update local cache & localStorage
   const students = getStudents();
   const cleanRoll = roll ? String(roll).trim().toUpperCase() : null;
+  if (cleanRoll) {
+    try {
+      let removedList = JSON.parse(localStorage.getItem('iiitnr_removed_students') || '[]');
+      if (!removedList.includes(cleanRoll)) {
+        removedList.push(cleanRoll);
+        localStorage.setItem('iiitnr_removed_students', JSON.stringify(removedList));
+      }
+    } catch (e) {}
+  }
   const filtered = students.filter(s => {
     if (userId && (s.id === userId || String(s.id) === String(userId))) return false;
     if (cleanRoll && s.roll && String(s.roll).trim().toUpperCase() === cleanRoll) return false;
@@ -6598,7 +6790,8 @@ async function renderStudentsDirectoryView(showToastNotice = false) {
     try {
       const res = await apiCall('/auth/students');
       if (res?.success && Array.isArray(res.students)) {
-        students = res.students;
+        const local = getStudents();
+        students = mergeStudentLists(local, res.students);
         setStudents(students);
       } else {
         students = getStudents();
@@ -6837,9 +7030,11 @@ function initRealtimeSync() {
 
           case 'student_registered': {
             // Immediately sync registered students
-            const stuRes = await fetch(`${API_BASE}/auth/students`).then(r => r.json());
-            if (stuRes.success && stuRes.students) {
-              setStudents(stuRes.students);
+            const stuRes = await fetch(API_BASE + '/auth/students').then(r => r.json());
+            if (stuRes.success && Array.isArray(stuRes.students)) {
+              const localStudents = getStudents();
+              const merged = mergeStudentLists(localStudents, stuRes.students);
+              setStudents(merged);
             }
             if (currentUser?.role === 'admin') {
               showToast(`🎓 New student registered: ${payload.data?.student?.name || 'Student'} (${payload.data?.student?.roll || ''})`, 'success');
