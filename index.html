@@ -1212,6 +1212,9 @@
               <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Live SQLite 3 relational database inspector, table viewer, and query console</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
+              <button onclick="refreshLiveDatabase(true)" id="btn-refresh-live-db" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-md shadow-emerald-600/20" title="Fetch latest registrations and database changes from SQLite">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Live DB
+              </button>
               <button onclick="openMakeAdminModal()" class="px-3.5 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-md shadow-indigo-600/20">
                 <i data-lucide="users" class="w-3.5 h-3.5"></i> Manage Students & Admins
               </button>
@@ -2297,7 +2300,12 @@
           <span class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
             <i data-lucide="graduation-cap" class="w-3.5 h-3.5 text-indigo-500"></i> Enrolled Students Directory
           </span>
-          <span id="active-students-count-badge" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300">0 Students</span>
+          <div class="flex items-center gap-2">
+            <span id="active-students-count-badge" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300">0 Students</span>
+            <button type="button" onclick="loadAdminModalData()" class="p-1 rounded-lg text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition" title="Refresh enrolled students">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
         </div>
         <div class="relative">
           <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400"></i>

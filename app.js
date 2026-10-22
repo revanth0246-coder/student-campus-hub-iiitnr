@@ -862,9 +862,13 @@ async function syncAllFromBackend() {
   if (!isBackendConnected) return;
 
   try {
-    const rollQuery = currentUser?.roll ? `?roll=${encodeURIComponent(currentUser.roll)}` : '';
+    const cleanRoll = currentUser?.roll ? currentUser.roll.trim().toUpperCase() : '';
+    const rollQuery = cleanRoll ? `?roll=${encodeURIComponent(cleanRoll)}` : '';
+    const userBranch = currentUser?.branch || activeTimetableBranch || 'Data Science & AI';
+    const branchQuery = `?branch=${encodeURIComponent(userBranch)}`;
+
     const [ttRes, resRes, asgnRes, annRes, evRes, stuRes, examRes, messRes, exRes, notifRes] = await Promise.allSettled([
-      fetch(`${API_BASE}/timetable`).then(r => r.json()),
+      fetch(`${API_BASE}/timetable${branchQuery}`).then(r => r.json()),
       fetch(`${API_BASE}/resources${rollQuery}`).then(r => r.json()),
       fetch(`${API_BASE}/assignments${rollQuery}`).then(r => r.json()),
       fetch(`${API_BASE}/announcements`).then(r => r.json()),
@@ -880,7 +884,11 @@ async function syncAllFromBackend() {
       if (ttRes.value.branches) {
         localStorage.setItem('iiitnr_branch_timetables', JSON.stringify(ttRes.value.branches));
       }
-      if (ttRes.value.timetable) {
+      const targetBranch = currentUser?.branch || activeTimetableBranch;
+      if (ttRes.value.branches && ttRes.value.branches[targetBranch]) {
+        activeTimetableBranch = targetBranch;
+        setTimetable(ttRes.value.branches[targetBranch], targetBranch);
+      } else if (ttRes.value.timetable) {
         setTimetable(ttRes.value.timetable, ttRes.value.branch || activeTimetableBranch);
       }
     }
@@ -898,6 +906,15 @@ async function syncAllFromBackend() {
     }
     if (stuRes.status === 'fulfilled' && stuRes.value?.success && stuRes.value.students) {
       setStudents(stuRes.value.students);
+      // Synchronize latest student profile and branch across all devices
+      if (currentUser && currentUser.role === 'student' && cleanRoll) {
+        const freshSelf = stuRes.value.students.find(s => s.roll && s.roll.trim().toUpperCase() === cleanRoll);
+        if (freshSelf) {
+          currentUser = { ...currentUser, ...freshSelf };
+          if (freshSelf.branch) activeTimetableBranch = freshSelf.branch;
+          localStorage.setItem('iiitnr_active_session', JSON.stringify(currentUser));
+        }
+      }
     }
     if (examRes.status === 'fulfilled' && examRes.value?.success && examRes.value.exams) {
       setExams(examRes.value.exams);
@@ -914,6 +931,15 @@ async function syncAllFromBackend() {
     }
 
     refreshAllViews();
+
+    // If Admin is inspecting Database view or Directory modal is open, refresh them
+    if (currentUser?.role === 'admin' && activeView === 'database') {
+      renderDatabaseView();
+    }
+    const adminModal = document.getElementById('modal-make-admin');
+    if (adminModal && !adminModal.classList.contains('hidden')) {
+      loadAdminModalData();
+    }
   } catch (err) {
     console.warn('Backend sync notice:', err);
   }
@@ -1786,8 +1812,10 @@ function updateNotificationBadges() {
   const userRoll = currentUser && currentUser.roll ? currentUser.roll : '';
 
   let pendingCount = 0;
+  const normRoll = userRoll ? userRoll.trim().toUpperCase() : '';
   globalAsgns.forEach(a => {
-    if (!a.completedBy || !a.completedBy.includes(userRoll)) pendingCount++;
+    const isCompleted = (a.completedBy && a.completedBy.some(r => String(r).trim().toUpperCase() === normRoll)) || a.status === 'Completed';
+    if (!isCompleted) pendingCount++;
   });
 
   const badgeEl = document.getElementById('badge-pending-count');
@@ -2257,8 +2285,9 @@ function renderHomeView() {
   // 4. Academic Tasks: Pending Assignments
   const assignments = getGlobalAssignments();
   const userRoll = currentUser?.roll || '';
+  const normRoll = userRoll ? userRoll.trim().toUpperCase() : '';
   const pendingAssignments = assignments.filter(a => {
-    const isCompleted = (a.completedBy && a.completedBy.includes(userRoll)) || a.status === 'Completed';
+    const isCompleted = (a.completedBy && a.completedBy.some(r => String(r).trim().toUpperCase() === normRoll)) || a.status === 'Completed';
     return !isCompleted;
   }).slice(0, 3);
 
@@ -2478,7 +2507,8 @@ async function toggleBookmark(id) {
     res.isBookmarked = !res.isBookmarked;
     setResources(resources);
     if (isBackendConnected) {
-      await apiCall(`/resources/${id}/bookmark`, 'POST', { roll: currentUser?.roll || '24DSAI001' });
+      const roll = currentUser?.roll ? currentUser.roll.trim().toUpperCase() : '24DSAI001';
+      await apiCall(`/resources/${id}/bookmark`, 'POST', { roll });
     }
     showToast(res.isBookmarked ? 'Resource bookmarked!' : 'Bookmark removed.', 'info');
     renderResourcesView();
@@ -3157,8 +3187,9 @@ function renderPlannerView() {
 
   // --- SUBTAB 1: ASSIGNMENTS ---
   const assignments = getGlobalAssignments();
+  const normRoll = userRoll ? userRoll.trim().toUpperCase() : '';
   const list = assignments.map(a => {
-    const isCompleted = (a.completedBy && a.completedBy.includes(userRoll)) || a.status === 'Completed';
+    const isCompleted = (a.completedBy && a.completedBy.some(r => String(r).trim().toUpperCase() === normRoll)) || a.status === 'Completed';
     return {
       ...a,
       status: isCompleted ? 'Completed' : (a.status || 'Pending'),
@@ -3413,24 +3444,26 @@ function renderAssignmentsView() {
 }
 
 function toggleAssignmentStatus(id) {
-  const userRoll = currentUser?.roll || 'guest';
+  const userRoll = currentUser?.roll ? currentUser.roll.trim().toUpperCase() : 'GUEST';
   let assignments = getGlobalAssignments();
   const item = assignments.find(g => g.id === id);
 
   if (item) {
     if (!item.completedBy) item.completedBy = [];
-    if (item.completedBy.includes(userRoll) || item.status === 'Completed') {
-      item.completedBy = item.completedBy.filter(r => r !== userRoll);
+    const isAlreadyCompleted = item.completedBy.some(r => String(r).trim().toUpperCase() === userRoll) || item.status === 'Completed';
+    if (isAlreadyCompleted) {
+      item.completedBy = item.completedBy.filter(r => String(r).trim().toUpperCase() !== userRoll);
       item.status = 'Pending';
       showToast('Assignment status updated: Pending', 'info');
     } else {
-      item.completedBy.push(userRoll);
+      if (!item.completedBy.some(r => String(r).trim().toUpperCase() === userRoll)) {
+        item.completedBy.push(userRoll);
+      }
       item.status = 'Completed';
       showToast('Assignment marked as Completed!', 'success');
     }
     setGlobalAssignments(assignments);
     if (isBackendConnected) {
-      apiCall(`/assignments/${id}/status`, 'PUT', { status: item.status });
       apiCall(`/assignments/${id}/toggle-completion`, 'POST', { roll: userRoll });
     }
   }
@@ -4555,7 +4588,10 @@ function toggleEventRegistration(id) {
   if (ev) {
     ev.registered = !ev.registered;
     setEvents(events);
-    apiCall(`/events/${id}/toggle-register`, 'POST', { roll: currentUser.roll });
+    if (isBackendConnected) {
+      const roll = currentUser?.roll ? currentUser.roll.trim().toUpperCase() : '24DSAI001';
+      apiCall(`/events/${id}/toggle-register`, 'POST', { roll });
+    }
     showToast(ev.registered ? `Successfully registered for ${ev.title}!` : `Cancelled registration for ${ev.title}.`, 'info');
     renderEventsView();
   }
@@ -5478,6 +5514,29 @@ document.addEventListener('keydown', (e) => {
 
 let currentActiveDbTable = 'users';
 let currentDbRows = [];
+
+async function refreshLiveDatabase(showNotification = false) {
+  const btn = document.getElementById('btn-refresh-live-db');
+  if (btn) {
+    const icon = btn.querySelector('i');
+    if (icon) icon.classList.add('animate-spin');
+  }
+
+  try {
+    await renderDatabaseView();
+    await loadAdminModalData();
+    if (showNotification) {
+      showToast('Live SQLite database records and registrations synchronized!', 'success');
+    }
+  } catch (err) {
+    console.warn('Error refreshing live database:', err);
+  } finally {
+    if (btn) {
+      const icon = btn.querySelector('i');
+      if (icon) icon.classList.remove('animate-spin');
+    }
+  }
+}
 
 async function renderDatabaseView() {
   if (!currentUser || currentUser.role !== 'admin') {
@@ -6424,3 +6483,42 @@ window.addEventListener('DOMContentLoaded', () => {
   initStorage();
   lucide.createIcons();
 });
+
+// ==========================================
+// 15. CONTINUOUS CROSS-DEVICE SYNC & VISIBILITY CONTROLLER
+// ==========================================
+
+if (typeof window !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && isBackendConnected) {
+      if (currentUser?.role === 'admin' && activeView === 'database') {
+        renderDatabaseView();
+      } else {
+        syncAllFromBackend();
+      }
+    }
+  });
+
+  window.addEventListener('focus', () => {
+    if (isBackendConnected) {
+      if (currentUser?.role === 'admin' && activeView === 'database') {
+        renderDatabaseView();
+      } else {
+        syncAllFromBackend();
+      }
+    }
+  });
+
+  // Background heartbeat sync: auto-syncs fresh state across devices every 10 seconds
+  setInterval(() => {
+    if (!isBackendConnected) {
+      checkBackendConnection();
+      return;
+    }
+    if (currentUser?.role === 'admin' && activeView === 'database') {
+      renderDatabaseView();
+    } else {
+      syncAllFromBackend();
+    }
+  }, 10000);
+}
