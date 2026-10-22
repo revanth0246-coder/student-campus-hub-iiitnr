@@ -1258,6 +1258,15 @@ function showAuthScreen() {
     screen.classList.remove('hidden');
     screen.classList.add('flex');
   }
+  // Clear any residual credentials so no garbage student or admin info is shown
+  const studentRoll = document.getElementById('student-roll');
+  const studentPass = document.getElementById('student-pass');
+  const adminEmail = document.getElementById('admin-email');
+  const adminPass = document.getElementById('admin-pass');
+  if (studentRoll) studentRoll.value = '';
+  if (studentPass) studentPass.value = '';
+  if (adminEmail) adminEmail.value = '';
+  if (adminPass) adminPass.value = '';
 }
 
 function hideAuthScreen() {
@@ -1275,24 +1284,26 @@ function switchAuthTab(type) {
   const adminForm = document.getElementById('admin-login-form');
 
   if (type === 'student') {
-    studentTab.className = "flex-1 py-2 text-sm font-semibold rounded-lg transition-all duration-200 bg-white dark:bg-slate-700 text-blue-600 dark:text-white shadow-sm flex items-center justify-center gap-2";
-    adminTab.className = "flex-1 py-2 text-sm font-semibold rounded-lg transition-all duration-200 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-2";
+    studentTab.className = "flex-1 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 bg-white dark:bg-slate-700 text-blue-600 dark:text-white shadow-xs flex items-center justify-center gap-2";
+    adminTab.className = "flex-1 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-200 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-2";
     studentForm.classList.remove('hidden');
     adminForm.classList.add('hidden');
   } else {
-    adminTab.className = "flex-1 py-2 text-sm font-semibold rounded-lg transition-all duration-200 bg-white dark:bg-slate-700 text-blue-600 dark:text-white shadow-sm flex items-center justify-center gap-2";
-    studentTab.className = "flex-1 py-2 text-sm font-semibold rounded-lg transition-all duration-200 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-2";
+    adminTab.className = "flex-1 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 bg-white dark:bg-slate-700 text-blue-600 dark:text-white shadow-xs flex items-center justify-center gap-2";
+    studentTab.className = "flex-1 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-200 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-2";
     adminForm.classList.remove('hidden');
     studentForm.classList.add('hidden');
   }
-  lucide.createIcons();
+  if (window.lucide) lucide.createIcons();
 }
 
 function quickFill(role) {
   if (role === 'student') {
     switchAuthTab('student');
-    document.getElementById('student-roll').value = '24DSAI001';
-    document.getElementById('student-pass').value = 'student123';
+    const studentRoll = document.getElementById('student-roll');
+    const studentPass = document.getElementById('student-pass');
+    if (studentRoll) studentRoll.value = '';
+    if (studentPass) studentPass.value = '';
   } else {
     switchAuthTab('admin');
     const emailEl = document.getElementById('admin-email');
@@ -1458,8 +1469,13 @@ function handleLogout() {
     navDbItem.classList.add('hidden');
     navDbItem.classList.remove('flex');
   }
+  // Clear all credentials so login screen remains clean
+  const studentRoll = document.getElementById('student-roll');
+  const studentPass = document.getElementById('student-pass');
   const adminEmail = document.getElementById('admin-email');
   const adminPass = document.getElementById('admin-pass');
+  if (studentRoll) studentRoll.value = '';
+  if (studentPass) studentPass.value = '';
   if (adminEmail) adminEmail.value = '';
   if (adminPass) adminPass.value = '';
 
@@ -1611,15 +1627,22 @@ function navigateTo(viewId) {
     }
   });
 
-  // Update mobile bottom nav active buttons
+  // Update mobile bottom nav active buttons with pill highlight
   document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
     const btnView = btn.getAttribute('data-view');
+    const iconWrap = btn.querySelector('.mobile-nav-icon-wrap');
     if (btnView === viewId || (viewId === 'planner' && btnView === 'assignments')) {
-      btn.classList.add('active', 'text-indigo-600', 'dark:text-indigo-400', 'font-semibold');
-      btn.classList.remove('text-slate-500', 'dark:text-slate-400', 'font-medium');
+      btn.classList.add('active', 'text-indigo-600', 'dark:text-indigo-400', 'font-bold');
+      btn.classList.remove('text-slate-500', 'dark:text-slate-400', 'font-semibold');
+      if (iconWrap) {
+        iconWrap.className = 'mobile-nav-icon-wrap flex items-center justify-center w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 transition';
+      }
     } else if (btnView !== 'menu') {
-      btn.classList.remove('active', 'text-indigo-600', 'dark:text-indigo-400', 'font-semibold');
-      btn.classList.add('text-slate-500', 'dark:text-slate-400', 'font-medium');
+      btn.classList.remove('active', 'text-indigo-600', 'dark:text-indigo-400', 'font-bold');
+      btn.classList.add('text-slate-500', 'dark:text-slate-400', 'font-semibold');
+      if (iconWrap) {
+        iconWrap.className = 'mobile-nav-icon-wrap flex items-center justify-center w-8 h-8 rounded-xl transition text-slate-500 dark:text-slate-400';
+      }
     }
   });
 
@@ -3230,6 +3253,86 @@ function renderPlannerView() {
               </div>
             </td>
           </tr>
+        `;
+      }).join('');
+    }
+  }
+
+  // Populate Mobile Assignment Cards for Touch / Phones
+  const mobileCardsContainer = document.getElementById('assignments-mobile-cards');
+  if (mobileCardsContainer) {
+    if (filtered.length === 0) {
+      mobileCardsContainer.innerHTML = `
+        <div class="py-10 px-4 text-center text-slate-400 text-xs bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
+          No course assignments match the current filter criteria. Tap "+ Add Assignment" to record coursework.
+        </div>
+      `;
+    } else {
+      mobileCardsContainer.innerHTML = filtered.map(a => {
+        const isCompleted = a.status === 'Completed';
+        const isProgress = a.status === 'In Progress';
+
+        const dueObj = new Date(a.dueDate);
+        const todayObj = new Date();
+        todayObj.setHours(0,0,0,0);
+        dueObj.setHours(0,0,0,0);
+        const diffDays = Math.round((dueObj - todayObj) / (1000 * 60 * 60 * 24));
+
+        let dueBadgeClass = 'text-slate-500 dark:text-slate-400';
+        let dueNotice = '';
+        if (!isCompleted) {
+          if (diffDays < 0) {
+            dueBadgeClass = 'text-rose-600 dark:text-rose-400 font-bold';
+            dueNotice = '<span class="px-1.5 py-0.2 rounded text-[10px] bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 font-bold">Overdue</span>';
+          } else if (diffDays === 0) {
+            dueBadgeClass = 'text-rose-600 dark:text-rose-400 font-bold';
+            dueNotice = '<span class="px-1.5 py-0.2 rounded text-[10px] bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 font-bold">Due Today</span>';
+          } else if (diffDays <= 3) {
+            dueBadgeClass = 'text-amber-600 dark:text-amber-400 font-bold';
+            dueNotice = `<span class="px-1.5 py-0.2 rounded text-[10px] bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-bold">${diffDays}d left</span>`;
+          }
+        }
+
+        const priorityBadge = a.priority === 'High'
+          ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/10 text-rose-600 dark:text-rose-400">🔥 High</span>`
+          : (a.priority === 'Low'
+              ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">🌱 Low</span>`
+              : `<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400">⚡ Medium</span>`);
+
+        const statusBadge = isCompleted
+          ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">Completed</span>`
+          : (isProgress
+              ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300">In Progress</span>`
+              : `<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">Pending</span>`);
+
+        return `
+          <div class="asgn-mobile-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs relative">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex items-start gap-3 flex-1 min-w-0">
+                <input type="checkbox" ${isCompleted ? 'checked' : ''} onchange="toggleAssignmentStatus('${a.id}')" class="w-5 h-5 mt-0.5 text-indigo-600 rounded-lg cursor-pointer flex-shrink-0" />
+                <div class="min-w-0 flex-1">
+                  <h4 class="font-bold text-sm text-slate-900 dark:text-slate-100 ${isCompleted ? 'line-through text-slate-400 dark:text-slate-500' : ''}">${a.title}</h4>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${a.subject} ${a.description ? '• ' + a.description : ''}</p>
+                  <div class="flex items-center gap-1.5 mt-2 flex-wrap text-xs">
+                    <span class="inline-flex items-center gap-1 text-[11px] font-semibold ${dueBadgeClass}">
+                      <i data-lucide="clock" class="w-3.5 h-3.5"></i> ${formatDate(a.dueDate)}
+                    </span>
+                    ${dueNotice}
+                    ${priorityBadge}
+                    ${statusBadge}
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-1 flex-shrink-0">
+                <button onclick="editAssignment('${a.id}')" title="Edit" class="p-2 text-slate-500 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition">
+                  <i data-lucide="edit" class="w-4 h-4"></i>
+                </button>
+                <button onclick="deleteAssignment('${a.id}')" title="Delete" class="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </div>
         `;
       }).join('');
     }

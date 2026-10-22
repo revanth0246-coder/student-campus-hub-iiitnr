@@ -52,57 +52,44 @@
 </head>
 <body class="bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans antialiased min-h-screen transition-colors duration-200">
 
-  <!-- AUTHENTICATION OVERLAY / LOGIN MODAL -->
-  <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 overflow-y-auto">
-    <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-8 relative">
-      <div class="text-center mb-6">
-        <div class="w-20 h-20 bg-white rounded-full p-1.5 mx-auto mb-3 shadow-md border border-slate-200 dark:border-slate-700 flex items-center justify-center ring-4 ring-blue-500/20">
+  <!-- AUTHENTICATION OVERLAY / LOGIN MODAL (Optimized for Mobile & Desktop) -->
+  <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-8 relative">
+      <div class="text-center mb-5 sm:mb-6">
+        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-full p-1.5 mx-auto mb-3 shadow-md border border-slate-200 dark:border-slate-700 flex items-center justify-center ring-4 ring-blue-500/20">
           <img src="assets/iiitnr_logo.png" alt="IIIT Naya Raipur Official Logo" class="w-full h-full object-contain" />
         </div>
-        <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">IIIT-NR Campus Hub</h2>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Dr. SPM International Institute of Information Technology, Naya Raipur</p>
+        <h2 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">IIIT-NR Campus Hub</h2>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Dr. SPM International Institute of Information Technology, Naya Raipur</p>
       </div>
 
       <!-- Login Tab Selector -->
-      <div class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl mb-6">
-        <button id="tab-student" onclick="switchAuthTab('student')" class="flex-1 py-2 text-sm font-semibold rounded-lg transition-all duration-200 bg-white dark:bg-slate-700 text-blue-600 dark:text-white shadow-sm flex items-center justify-center gap-2">
+      <div class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl mb-5">
+        <button id="tab-student" onclick="switchAuthTab('student')" class="flex-1 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 bg-white dark:bg-slate-700 text-blue-600 dark:text-white shadow-xs flex items-center justify-center gap-2">
           <i data-lucide="user" class="w-4 h-4"></i> Student Login
         </button>
-        <button id="tab-admin" onclick="switchAuthTab('admin')" class="flex-1 py-2 text-sm font-semibold rounded-lg transition-all duration-200 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-2">
+        <button id="tab-admin" onclick="switchAuthTab('admin')" class="flex-1 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-200 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-2">
           <i data-lucide="shield-check" class="w-4 h-4"></i> Admin Login
         </button>
       </div>
 
-      <!-- Student Demo Quick-Access (Admin credentials are kept private) -->
-      <div class="mb-5 p-3 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60">
-        <div class="flex items-center justify-between text-xs text-blue-700 dark:text-blue-300 font-medium mb-1.5">
-          <span>⚡ Student Demo Quick-Access:</span>
-          <span class="text-[11px] opacity-75">Click to auto-fill</span>
-        </div>
+      <!-- Student Login Form (Clean, Secure - No Default Garbage Credentials) -->
+      <form id="student-login-form" onsubmit="handleAuthLogin(event, 'student')" class="space-y-4">
         <div>
-          <button type="button" onclick="quickFill('student')" class="w-full py-1.5 px-2.5 bg-white dark:bg-slate-800 border border-blue-200 dark:border-slate-700 rounded-lg hover:border-blue-500 text-slate-700 dark:text-slate-200 font-medium text-left truncate flex items-center gap-1.5 transition text-xs">
-            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Demo Student: Sahil (24DSAI001)
-          </button>
-        </div>
-      </div>
-
-      <!-- Student Login Form -->
-      <form id="student-login-form" onsubmit="handleAuthLogin(event, 'student')" class="space-x-0 space-y-4">
-        <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Roll No / Student ID</label>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Roll No / Student ID</label>
           <div class="relative">
-            <i data-lucide="hash" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
-            <input type="text" id="student-roll" required placeholder="e.g. 24DSAI001 or sahil@iiitnr.ac.in" class="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="24DSAI001" />
+            <i data-lucide="hash" class="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400"></i>
+            <input type="text" id="student-roll" required placeholder="Enter Roll No (e.g. 24DSAI001)" autocomplete="username" class="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="" />
           </div>
         </div>
         <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Password</label>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Password</label>
           <div class="relative">
-            <i data-lucide="lock" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
-            <input type="password" id="student-pass" required placeholder="••••••••" class="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="student123" />
+            <i data-lucide="lock" class="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400"></i>
+            <input type="password" id="student-pass" required placeholder="Enter Student Password" autocomplete="current-password" class="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="" />
           </div>
         </div>
-        <button type="submit" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-600/25 transition flex items-center justify-center gap-2">
+        <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 active:scale-98 text-white font-bold rounded-xl shadow-lg shadow-blue-600/25 transition flex items-center justify-center gap-2 text-sm">
           <span>Sign In as Student</span>
           <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>
@@ -295,14 +282,14 @@
             <span id="backend-status-label">Standalone Frontend Mode</span>
           </div>
 
-          <!-- Cross-Device & Network Access Quick Button -->
-          <button onclick="openNetworkModal()" title="Connect Mobile Phone or Other Devices on Any Network" class="flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 text-emerald-700 dark:text-emerald-300 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 rounded-xl transition border border-emerald-200 dark:border-emerald-800 shadow-sm">
+          <!-- Cross-Device & Network Access Quick Button (Mobile-Optimized) -->
+          <button onclick="openNetworkModal()" title="Connect Mobile Phone or Other Devices on Any Network" class="hidden sm:flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 text-emerald-700 dark:text-emerald-300 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 rounded-xl transition border border-emerald-200 dark:border-emerald-800 shadow-sm">
             <i data-lucide="smartphone" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
             <span class="text-xs font-semibold hidden md:inline">Connect Devices</span>
           </button>
 
-          <!-- Theme Palette Selector Button -->
-          <button onclick="openThemePickerModal()" title="Choose Theme (Midnight, B&W, Slate, Neon, etc.)" class="flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl transition border border-slate-200 dark:border-slate-700 shadow-sm">
+          <!-- Theme Palette Selector Button (Mobile-Optimized) -->
+          <button onclick="openThemePickerModal()" title="Choose Theme (Midnight, B&W, Slate, Neon, etc.)" class="hidden sm:flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl transition border border-slate-200 dark:border-slate-700 shadow-sm">
             <i data-lucide="palette" class="w-4 h-4 text-indigo-400"></i>
             <span class="text-xs font-semibold hidden lg:inline" id="top-theme-btn-label">Theme</span>
           </button>
@@ -832,8 +819,8 @@
               </div>
             </div>
 
-            <!-- Assignment Table -->
-            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+            <!-- Assignment Table (Desktop & Tablets) -->
+            <div id="assignments-table-container" class="hidden md:block bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
               <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse min-w-[700px]">
                   <thead>
@@ -851,6 +838,11 @@
                   </tbody>
                 </table>
               </div>
+            </div>
+
+            <!-- Mobile Assignments Cards View (Modern Responsive Touch Cards for Phones) -->
+            <div id="assignments-mobile-cards" class="md:hidden space-y-3">
+              <!-- Rendered via JS -->
             </div>
           </div>
 
@@ -2409,27 +2401,37 @@
   </div>
 
   <!-- MOBILE BOTTOM NAVIGATION DOCK (Responsive mobile controls for phones & tablets) -->
-  <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-t border-slate-200/80 dark:border-slate-800/80 px-2 py-1.5 flex items-center justify-around shadow-2xl mobile-bottom-nav">
-    <button onclick="navigateTo('home')" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-1 text-indigo-600 dark:text-indigo-400" data-view="home">
-      <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+  <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200/80 dark:border-slate-800/80 px-2 pt-1.5 pb-[max(0.6rem,env(safe-area-inset-bottom))] flex items-center justify-around shadow-2xl mobile-bottom-nav">
+    <button onclick="navigateTo('home')" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-1 text-indigo-600 dark:text-indigo-400 active:scale-95 transition-transform" data-view="home">
+      <div class="mobile-nav-icon-wrap flex items-center justify-center w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 transition">
+        <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+      </div>
       <span class="text-[10px] font-bold mt-0.5">Home</span>
     </button>
-    <button onclick="navigateTo('timetable')" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-1 text-slate-500 dark:text-slate-400" data-view="timetable">
-      <i data-lucide="calendar" class="w-5 h-5"></i>
-      <span class="text-[10px] font-bold mt-0.5">Timetable</span>
+    <button onclick="navigateTo('timetable')" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-1 text-slate-500 dark:text-slate-400 active:scale-95 transition-transform" data-view="timetable">
+      <div class="mobile-nav-icon-wrap flex items-center justify-center w-8 h-8 rounded-xl transition text-slate-500 dark:text-slate-400">
+        <i data-lucide="calendar" class="w-5 h-5"></i>
+      </div>
+      <span class="text-[10px] font-semibold mt-0.5">Timetable</span>
     </button>
-    <button onclick="navigateTo('planner')" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-1 text-slate-500 dark:text-slate-400 relative" data-view="planner">
-      <i data-lucide="clipboard-list" class="w-5 h-5"></i>
-      <span class="text-[10px] font-bold mt-0.5">Planner</span>
+    <button onclick="navigateTo('planner')" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-1 text-slate-500 dark:text-slate-400 relative active:scale-95 transition-transform" data-view="planner">
+      <div class="mobile-nav-icon-wrap flex items-center justify-center w-8 h-8 rounded-xl transition text-slate-500 dark:text-slate-400">
+        <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+      </div>
+      <span class="text-[10px] font-semibold mt-0.5">Planner</span>
       <span id="mobile-badge-pending-count" class="absolute top-1 right-1/4 w-2 h-2 rounded-full bg-amber-500 hidden"></span>
     </button>
-    <button onclick="navigateTo('resources')" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-1 text-slate-500 dark:text-slate-400" data-view="resources">
-      <i data-lucide="book-open" class="w-5 h-5"></i>
-      <span class="text-[10px] font-bold mt-0.5">Library</span>
+    <button onclick="navigateTo('resources')" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-1 text-slate-500 dark:text-slate-400 active:scale-95 transition-transform" data-view="resources">
+      <div class="mobile-nav-icon-wrap flex items-center justify-center w-8 h-8 rounded-xl transition text-slate-500 dark:text-slate-400">
+        <i data-lucide="book-open" class="w-5 h-5"></i>
+      </div>
+      <span class="text-[10px] font-semibold mt-0.5">Library</span>
     </button>
-    <button onclick="toggleMobileSidebar()" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-1 text-slate-500 dark:text-slate-400" title="All Sections & Navigation">
-      <i data-lucide="menu" class="w-5 h-5"></i>
-      <span class="text-[10px] font-bold mt-0.5">Menu</span>
+    <button onclick="toggleMobileSidebar()" class="mobile-nav-btn flex-1 flex flex-col items-center justify-center py-1 text-slate-500 dark:text-slate-400 active:scale-95 transition-transform" data-view="menu" title="All Sections & Navigation">
+      <div class="mobile-nav-icon-wrap flex items-center justify-center w-8 h-8 rounded-xl transition text-slate-500 dark:text-slate-400">
+        <i data-lucide="menu" class="w-5 h-5"></i>
+      </div>
+      <span class="text-[10px] font-semibold mt-0.5">Menu</span>
     </button>
   </nav>
 
