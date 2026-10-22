@@ -200,6 +200,12 @@
           <span>Profile</span>
         </button>
 
+        <button onclick="navigateTo('students')" class="nav-item flex items-center gap-3.5 w-full px-4 py-2.5 rounded-xl text-sm font-medium transition hidden" data-view="students" id="nav-item-students">
+          <i data-lucide="graduation-cap" class="w-4 h-4 text-emerald-400"></i>
+          <span>Students Directory</span>
+          <span id="nav-student-count-badge" class="ml-auto bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-1.5 py-0.5 rounded">0</span>
+        </button>
+
         <button onclick="navigateTo('database')" class="nav-item flex items-center gap-3.5 w-full px-4 py-2.5 rounded-xl text-sm font-medium transition hidden" data-view="database" id="nav-item-database">
           <i data-lucide="database" class="w-4 h-4 text-cyan-400"></i>
           <span>Database</span>
@@ -435,6 +441,36 @@
               </div>
               <h3 class="font-bold text-slate-900 dark:text-white text-xs">Events</h3>
               <p class="text-[10px] text-slate-500 dark:text-slate-400">Campus Activities</p>
+            </div>
+          </div>
+
+          <!-- Admin Quick Access: Registered Students Widget (Visible to Admin only) -->
+          <div id="admin-home-students-widget" class="hidden bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-emerald-600/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                  <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <span>Enrolled Students Overview</span>
+                    <span id="home-admin-student-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">0 Students</span>
+                  </h3>
+                  <p class="text-xs text-slate-400 mt-0.5">Live registered student database accounts in SQLite</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="openStudentRegistrationModal()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-sm transition">
+                  <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Register Student
+                </button>
+                <button type="button" onclick="navigateTo('students')" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition">
+                  <span>View All Directory</span>
+                  <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+            <div id="home-admin-students-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              <!-- Dynamically populated -->
             </div>
           </div>
 
@@ -1366,6 +1402,55 @@
                 </table>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 9. ENROLLED STUDENTS DIRECTORY (Strict Admin Only) -->
+        <!-- ============================================== -->
+        <div id="view-students" class="page-view space-y-6 hidden">
+          <!-- Page Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-emerald-600/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                  <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Enrolled Students Directory</h2>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Live SQLite Database • Manage enrolled student accounts, promote to administrators, or delete</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="openStudentRegistrationModal()" class="px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-md shadow-emerald-600/20">
+                <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Register New Student
+              </button>
+              <button onclick="renderStudentsDirectoryView(true)" id="btn-refresh-students-dir" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-sm">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Directory
+              </button>
+              <button onclick="openMakeAdminModal()" class="px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-900/50 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-sm">
+                <i data-lucide="shield-plus" class="w-3.5 h-3.5"></i> Admin Role Delegation
+              </button>
+            </div>
+          </div>
+
+          <!-- Branch Filter Tabs & Search Bar -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Branch:</span>
+              <button onclick="filterStudentsDirectoryByBranch('All')" class="btn-stu-branch-filter px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 text-white shadow-sm transition" data-branch="All">All (<span id="stu-count-all">0</span>)</button>
+              <button onclick="filterStudentsDirectoryByBranch('Data Science & AI')" class="btn-stu-branch-filter px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition" data-branch="Data Science & AI">DSAI (<span id="stu-count-dsai">0</span>)</button>
+              <button onclick="filterStudentsDirectoryByBranch('Computer Science & Engineering')" class="btn-stu-branch-filter px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition" data-branch="Computer Science & Engineering">CSE (<span id="stu-count-cse">0</span>)</button>
+              <button onclick="filterStudentsDirectoryByBranch('Electronics & Communication')" class="btn-stu-branch-filter px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition" data-branch="Electronics & Communication">ECE (<span id="stu-count-ece">0</span>)</button>
+            </div>
+            <div class="relative w-full sm:w-64">
+              <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
+              <input type="text" id="students-dir-search-input" oninput="filterStudentsDirectory()" placeholder="Search name, roll no, email..." class="w-full pl-9 pr-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <!-- Students Cards Grid Container -->
+          <div id="students-directory-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Dynamically populated -->
           </div>
         </div>
 

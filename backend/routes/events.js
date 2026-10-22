@@ -1,3 +1,4 @@
+const { broadcastSync } = require('../services/realtime');
 const express = require('express');
 const router = express.Router();
 const { runAsync, getAsync, allAsync } = require('../config/database');
@@ -77,6 +78,7 @@ router.post('/', authenticate, requireAdmin, async (req, res) => {
       createdAt: new Date().toISOString()
     };
 
+    try { broadcastSync('events_updated', { event: created }); } catch (e) {}
     res.status(201).json({ success: true, message: 'Campus event published to SQLite.', event: created });
   } catch (err) {
     console.error('Event publish error:', err);
@@ -91,6 +93,7 @@ router.delete('/:id', authenticate, requireAdmin, async (req, res) => {
     if (result.changes === 0) {
       return res.status(404).json({ success: false, message: 'Event not found.' });
     }
+    try { broadcastSync('events_updated', { id: req.params.id, removed: true }); } catch (e) {}
     res.json({ success: true, message: 'Event deleted successfully from SQLite.' });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Database error deleting event.' });
@@ -117,6 +120,7 @@ router.post('/:id/toggle-register', async (req, res) => {
       registered = true;
     }
 
+    try { broadcastSync('event_registration_updated', { eventId, roll, registered }); } catch (e) {}
     res.json({
       success: true,
       message: registered ? 'Successfully registered for event!' : 'Registration cancelled.',

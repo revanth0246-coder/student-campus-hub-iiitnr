@@ -39,6 +39,10 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
+// Real-Time Server-Sent Events (SSE) Engine
+const { initRealtime } = require('./services/realtime');
+initRealtime(app);
+
 // Mount Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/timetable', require('./routes/timetable'));

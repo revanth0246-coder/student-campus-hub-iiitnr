@@ -1,3 +1,4 @@
+const { broadcastSync } = require('../services/realtime');
 const express = require('express');
 const router = express.Router();
 const { runAsync, allAsync } = require('../config/database');
@@ -48,6 +49,7 @@ router.post('/', authenticate, requireAdmin, async (req, res) => {
       date: dateStr
     };
 
+    try { broadcastSync('announcements_updated', { announcement: created }); } catch (e) {}
     res.status(201).json({ success: true, message: 'Official announcement published to SQLite.', announcement: created });
   } catch (err) {
     console.error('Announcement error:', err);
@@ -62,6 +64,7 @@ router.delete('/:id', authenticate, requireAdmin, async (req, res) => {
     if (result.changes === 0) {
       return res.status(404).json({ success: false, message: 'Announcement not found.' });
     }
+    try { broadcastSync('announcements_updated', { id: req.params.id }); } catch (e) {}
     res.json({ success: true, message: 'Announcement deleted successfully.' });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Database error deleting announcement.' });

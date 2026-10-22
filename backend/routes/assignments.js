@@ -1,3 +1,4 @@
+const { broadcastSync } = require('../services/realtime');
 const express = require('express');
 const router = express.Router();
 const { runAsync, getAsync, allAsync } = require('../config/database');
@@ -121,6 +122,7 @@ router.post('/', authenticate, async (req, res) => {
       completedBy: []
     };
 
+    try { broadcastSync('assignments_updated', { assignment: created }); } catch (e) {}
     res.status(201).json({ success: true, message: 'Assignment added successfully.', assignment: created });
   } catch (err) {
     console.error('Assignment creation error:', err);
@@ -158,6 +160,7 @@ router.put('/:id', authenticate, async (req, res) => {
       assignmentId
     ]);
 
+    try { broadcastSync('assignments_updated', { id: assignmentId }); } catch (e) {}
     res.json({ success: true, message: 'Assignment updated successfully.' });
   } catch (err) {
     console.error('Assignment update error:', err);
@@ -176,6 +179,7 @@ router.put('/:id/status', async (req, res) => {
 
   try {
     await runAsync(`UPDATE assignments SET status = ? WHERE id = ?`, [status, assignmentId]);
+    try { broadcastSync('assignments_updated', { id: assignmentId, status }); } catch (e) {}
     res.json({ success: true, message: `Status updated to ${status}.` });
   } catch (err) {
     console.error('Status update error:', err);
@@ -197,6 +201,7 @@ router.delete('/:id', authenticate, async (req, res) => {
     if (existing && existing.title) {
       await runAsync(`DELETE FROM notifications WHERE message LIKE ?`, [`%"${existing.title}"%`]);
     }
+    try { broadcastSync('assignments_updated', { id: assignmentId, removed: true }); } catch (e) {}
     res.json({ success: true, message: 'Assignment removed successfully.' });
   } catch (err) {
     console.error('Delete assignment error:', err);
@@ -236,6 +241,7 @@ router.post('/:id/toggle-completion', async (req, res) => {
       isCompleted = true;
     }
 
+    try { broadcastSync('assignment_completion_updated', { assignmentId, roll: cleanRoll, isCompleted }); } catch (e) {}
     res.json({
       success: true,
       message: isCompleted ? 'Marked as completed!' : 'Marked as pending.',

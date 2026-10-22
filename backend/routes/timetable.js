@@ -1,3 +1,4 @@
+const { broadcastSync } = require('../services/realtime');
 const express = require('express');
 const router = express.Router();
 const { runAsync, allAsync } = require('../config/database');
@@ -106,6 +107,7 @@ router.post('/slot', authenticate, requireAdmin, async (req, res) => {
         updated_at = CURRENT_TIMESTAMP
     `, [targetBranch, day, time, subject.trim(), room ? room.trim() : defaultRoom, type || 'm']);
 
+    try { broadcastSync('timetable_updated', { branch: targetBranch, day, time, subject }); } catch (e) {}
     res.json({ success: true, message: `Updated ${targetBranch} [${day} ${time}] to ${subject}.` });
   } catch (err) {
     console.error('Timetable update error:', err);
@@ -124,6 +126,7 @@ router.post('/reset', authenticate, requireAdmin, async (req, res) => {
     }
     const dbModule = require('../config/database');
     await dbModule.initDatabase();
+    try { broadcastSync('timetable_updated', {}); } catch (e) {}
     res.json({ success: true, message: 'Timetable reset to official IIIT-NR default schedules in SQLite.' });
   } catch (err) {
     console.error('Timetable reset error:', err);

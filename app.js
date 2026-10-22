@@ -1054,9 +1054,10 @@ function initStorage() {
   const savedTheme = localStorage.getItem('iiitnr_theme') || 'indigo';
   applyTheme(savedTheme);
 
-  // Probe SQLite Backend connection
+  // Probe SQLite Backend connection & start Real-Time SSE Sync
   checkBackendConnection();
   fetchNotifications();
+  initRealtimeSync();
 }
 
 // Getters and Setters helper
@@ -1625,10 +1626,10 @@ function navigateTo(viewId) {
   // Alias legacy assignments to unified planner
   if (viewId === 'assignments') viewId = 'planner';
 
-  // Prevent students or unauthenticated users from accessing database / SQL console
-  if (viewId === 'database' && (!currentUser || currentUser.role !== 'admin')) {
-    showToast('Access Denied: Database & SQL Console is strictly restricted to Administration.', 'error');
-    if (activeView === 'database') activeView = 'timetable';
+  // Prevent students or unauthenticated users from accessing database / SQL console or students directory
+  if ((viewId === 'database' || viewId === 'students') && (!currentUser || currentUser.role !== 'admin')) {
+    showToast('Access Denied: Administration privilege required.', 'error');
+    if (activeView === 'database' || activeView === 'students') activeView = 'timetable';
     viewId = activeView;
   }
 
@@ -1683,6 +1684,7 @@ function navigateTo(viewId) {
     announcements: 'Latest Announcements & Circulars',
     events: 'Campus Events & Registration',
     profile: 'Student Profile',
+    students: 'Enrolled Students Directory & Account Management',
     database: 'Database Management Console'
   };
   const titleEl = document.getElementById('top-view-title');
@@ -1710,6 +1712,7 @@ function renderCurrentView(viewId) {
   else if (viewId === 'announcements') renderAnnouncementsView();
   else if (viewId === 'events') renderEventsView();
   else if (viewId === 'profile') renderProfileView();
+  else if (viewId === 'students') renderStudentsDirectoryView();
   else if (viewId === 'database') renderDatabaseView();
 }
 
@@ -1785,16 +1788,19 @@ function updateUserUIElements() {
     }
   }
 
-  // 6. Database / SQL Console tab visibility (Strict Admin Only - completely removed for students)
+  // 6. Students Directory & Database tab visibility (Strict Admin Only)
   const navDbItem = document.getElementById('nav-item-database');
-  if (navDbItem) {
-    if (!isStudent && currentUser && currentUser.role === 'admin') {
-      navDbItem.classList.remove('hidden');
-      navDbItem.classList.add('flex');
-    } else {
-      navDbItem.classList.add('hidden');
-      navDbItem.classList.remove('flex');
-    }
+  const navStuItem = document.getElementById('nav-item-students');
+  const homeStuWidget = document.getElementById('admin-home-students-widget');
+
+  if (!isStudent && currentUser && currentUser.role === 'admin') {
+    if (navDbItem) { navDbItem.classList.remove('hidden'); navDbItem.classList.add('flex'); }
+    if (navStuItem) { navStuItem.classList.remove('hidden'); navStuItem.classList.add('flex'); }
+    if (homeStuWidget) { homeStuWidget.classList.remove('hidden'); }
+  } else {
+    if (navDbItem) { navDbItem.classList.add('hidden'); navDbItem.classList.remove('flex'); }
+    if (navStuItem) { navStuItem.classList.add('hidden'); navStuItem.classList.remove('flex'); }
+    if (homeStuWidget) { homeStuWidget.classList.add('hidden'); }
   }
 
   // If a student is currently on the database view, redirect away immediately
@@ -2280,6 +2286,53 @@ function renderHomeView() {
         ` : ''}
       `;
     }
+  }
+
+  // Render Admin Enrolled Students live widget if user is administrator
+  if (currentUser && currentUser.role === 'admin') {
+    const adminWidget = document.getElementById('admin-home-students-widget');
+    const badgeEl = document.getElementById('home-admin-student-badge');
+    const listEl = document.getElementById('home-admin-students-list');
+    const students = getStudents();
+
+    if (adminWidget) adminWidget.classList.remove('hidden');
+    if (badgeEl) badgeEl.textContent = `${students.length} Student${students.length !== 1 ? 's' : ''}`;
+
+    const navBadge = document.getElementById('nav-student-count-badge');
+    if (navBadge) navBadge.textContent = students.length;
+
+    if (listEl) {
+      if (students.length === 0) {
+        listEl.innerHTML = '<p class="text-xs text-slate-400 italic col-span-3">No students registered yet. New student accounts will appear here automatically.</p>';
+      } else {
+        listEl.innerHTML = students.slice(0, 6).map(s => {
+          const avatar = s.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&h=80&fit=crop&crop=faces';
+          const name = escapeHtml(s.name || 'Student');
+          const roll = escapeHtml(s.roll || 'N/A');
+          const branch = escapeHtml(s.branch || 'Data Science & AI');
+          return `
+            <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between gap-3 hover:border-emerald-500/50 transition">
+              <div class="flex items-center gap-2.5 truncate">
+                <img src="${avatar}" alt="${name}" class="w-9 h-9 rounded-xl object-cover ring-1 ring-slate-200 dark:ring-slate-700 flex-shrink-0" onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&h=80&fit=crop&crop=faces'" />
+                <div class="truncate">
+                  <div class="font-bold text-xs text-slate-900 dark:text-slate-100 truncate flex items-center gap-1.5">
+                    <span>${name}</span>
+                    <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 font-bold">${roll}</span>
+                  </div>
+                  <p class="text-[10px] text-slate-400 truncate mt-0.5">${branch}</p>
+                </div>
+              </div>
+              <button type="button" onclick="removeStudentAccount('${s.id}', '${name}', '${roll}')" class="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition" title="Remove student">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+  } else {
+    const adminWidget = document.getElementById('admin-home-students-widget');
+    if (adminWidget) adminWidget.classList.add('hidden');
   }
 
   // 4. Academic Tasks: Pending Assignments
@@ -6521,4 +6574,323 @@ if (typeof window !== 'undefined') {
       syncAllFromBackend();
     }
   }, 10000);
+}
+
+// ==========================================
+// 16. ENROLLED STUDENTS DIRECTORY CONTROLLER
+// ==========================================
+
+let studentsDirBranchFilter = 'All';
+let cachedDirectoryStudents = [];
+
+async function renderStudentsDirectoryView(showToastNotice = false) {
+  if (!currentUser || currentUser.role !== 'admin') {
+    showToast('Access Denied: Students Directory is restricted to Administration.', 'error');
+    navigateTo('home');
+    return;
+  }
+
+  updateUserUIElements();
+  if (window.lucide) lucide.createIcons();
+
+  let students = [];
+  if (isBackendConnected) {
+    try {
+      const res = await apiCall('/auth/students');
+      if (res?.success && Array.isArray(res.students)) {
+        students = res.students;
+        setStudents(students);
+      } else {
+        students = getStudents();
+      }
+    } catch (e) {
+      students = getStudents();
+    }
+  } else {
+    students = getStudents();
+  }
+
+  cachedDirectoryStudents = students;
+
+  // Update counts
+  const allEl = document.getElementById('stu-count-all');
+  const dsaiEl = document.getElementById('stu-count-dsai');
+  const cseEl = document.getElementById('stu-count-cse');
+  const eceEl = document.getElementById('stu-count-ece');
+  const navBadge = document.getElementById('nav-student-count-badge');
+
+  if (allEl) allEl.textContent = students.length;
+  if (dsaiEl) dsaiEl.textContent = students.filter(s => (s.branch || '').includes('Data')).length;
+  if (cseEl) cseEl.textContent = students.filter(s => (s.branch || '').includes('Computer')).length;
+  if (eceEl) eceEl.textContent = students.filter(s => (s.branch || '').includes('Electronics')).length;
+  if (navBadge) navBadge.textContent = students.length;
+
+  filterStudentsDirectory();
+
+  if (showToastNotice) {
+    showToast('Enrolled students directory refreshed from SQLite database.', 'success');
+  }
+}
+
+function filterStudentsDirectoryByBranch(branch) {
+  studentsDirBranchFilter = branch;
+  document.querySelectorAll('.btn-stu-branch-filter').forEach(btn => {
+    if (btn.getAttribute('data-branch') === branch) {
+      btn.className = "btn-stu-branch-filter px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 text-white shadow-sm transition";
+    } else {
+      btn.className = "btn-stu-branch-filter px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition";
+    }
+  });
+  filterStudentsDirectory();
+}
+
+function filterStudentsDirectory() {
+  const q = (document.getElementById('students-dir-search-input')?.value || '').toLowerCase().trim();
+  const container = document.getElementById('students-directory-grid');
+  if (!container) return;
+
+  let list = cachedDirectoryStudents;
+  if (studentsDirBranchFilter !== 'All') {
+    list = list.filter(s => (s.branch || '') === studentsDirBranchFilter);
+  }
+  if (q) {
+    list = list.filter(s => {
+      return (s.name && s.name.toLowerCase().includes(q)) ||
+             (s.roll && s.roll.toLowerCase().includes(q)) ||
+             (s.email && s.email.toLowerCase().includes(q)) ||
+             (s.branch && s.branch.toLowerCase().includes(q));
+    });
+  }
+
+  if (list.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-full py-16 text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8">
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 mb-3">
+          <i data-lucide="users-2" class="w-8 h-8"></i>
+        </div>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-100">No Enrolled Students Found</h3>
+        <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">No student records match the search filter. Newly registered students will automatically appear here in real-time.</p>
+      </div>
+    `;
+    if (window.lucide) lucide.createIcons();
+    return;
+  }
+
+  container.innerHTML = list.map(s => {
+    const avatar = s.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&h=120&fit=crop&crop=faces';
+    const name = escapeHtml(s.name || 'Student');
+    const roll = escapeHtml(s.roll || 'N/A');
+    const branch = escapeHtml(s.branch || 'Data Science & AI');
+    const year = escapeHtml(s.year || '1st Year');
+    const sem = escapeHtml(s.semester || 'Semester 2');
+    const cgpa = escapeHtml(s.cgpa || '8.0');
+    const email = escapeHtml(s.email || '');
+    const id = s.id;
+
+    return `
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4">
+        <div class="flex items-start gap-3">
+          <img src="${avatar}" alt="${name}" class="w-12 h-12 rounded-xl object-cover ring-2 ring-emerald-500/20 flex-shrink-0" onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&h=120&fit=crop&crop=faces'" />
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-1">
+              <h4 class="font-bold text-sm text-slate-900 dark:text-white truncate">${name}</h4>
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">${roll}</span>
+            </div>
+            <p class="text-xs font-medium text-slate-500 dark:text-slate-400 truncate mt-0.5">${branch}</p>
+            <p class="text-[11px] text-slate-400 truncate">${email}</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl text-center">
+          <div>
+            <div class="text-[10px] uppercase font-bold text-slate-400">Year</div>
+            <div class="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-0.5">${year}</div>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase font-bold text-slate-400">Sem</div>
+            <div class="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-0.5">${sem}</div>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase font-bold text-slate-400">CGPA</div>
+            <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">${cgpa}</div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+          <button type="button" onclick="promoteUserToAdmin('${id}', '${name}', '${email}')" class="px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/70 dark:hover:bg-indigo-900 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 rounded-xl text-xs font-semibold inline-flex items-center gap-1.5 transition" title="Promote to Administrator">
+            <i data-lucide="shield-plus" class="w-3.5 h-3.5"></i> Make Admin
+          </button>
+          <button type="button" onclick="removeStudentAccount('${id}', '${name}', '${roll}')" class="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/70 dark:hover:bg-rose-900 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-800 rounded-xl text-xs font-semibold inline-flex items-center gap-1.5 transition shadow-sm" title="Remove student account permanently">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Remove
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  if (window.lucide) lucide.createIcons();
+}
+
+// ==========================================
+// 17. REAL-TIME SUB-SECOND SSE SYNCHRONIZATION ENGINE
+// ==========================================
+
+let realTimeEventSource = null;
+
+function initRealtimeSync() {
+  if (typeof window === 'undefined' || typeof EventSource === 'undefined') return;
+  if (realTimeEventSource) {
+    try { realTimeEventSource.close(); } catch (e) {}
+  }
+
+  try {
+    const sseUrl = `${API_BASE}/realtime/stream`;
+    realTimeEventSource = new EventSource(sseUrl);
+
+    realTimeEventSource.onopen = () => {
+      console.log('⚡ Real-time SSE Sync stream connected to SQLite backend');
+    };
+
+    realTimeEventSource.onmessage = async (event) => {
+      try {
+        const payload = JSON.parse(event.data);
+        if (payload.type === 'connected') return;
+
+        console.log(`⚡ Real-time sync update received in next second: ${payload.type}`, payload);
+
+        // Immediate sub-second UI synchronization based on update event
+        switch (payload.type) {
+          case 'timetable_updated': {
+            const userBranch = currentUser?.branch || activeTimetableBranch;
+            const branchQuery = userBranch ? `?branch=${encodeURIComponent(userBranch)}` : '';
+            const res = await fetch(`${API_BASE}/timetable${branchQuery}`).then(r => r.json());
+            if (res.success) {
+              if (res.branches) localStorage.setItem('iiitnr_branch_timetables', JSON.stringify(res.branches));
+              setTimetable(res.timetable, res.branch || activeTimetableBranch);
+              if (activeView === 'timetable' || activeView === 'home') refreshAllViews();
+              showToast('Class Timetable updated by Administration in real-time!', 'info');
+            }
+            break;
+          }
+
+          case 'announcements_updated': {
+            const res = await fetch(`${API_BASE}/announcements`).then(r => r.json());
+            if (res.success && res.announcements) {
+              setAnnouncements(res.announcements);
+              refreshAllViews();
+              showToast('New campus announcement broadcasted by Administration!', 'info');
+            }
+            break;
+          }
+
+          case 'assignments_updated': {
+            const rollQuery = currentUser?.roll ? `?roll=${encodeURIComponent(currentUser.roll.trim().toUpperCase())}` : '';
+            const res = await fetch(`${API_BASE}/assignments${rollQuery}`).then(r => r.json());
+            if (res.success && res.assignments) {
+              setGlobalAssignments(res.assignments);
+              refreshAllViews();
+              showToast('Coursework assignments updated in real-time!', 'info');
+            }
+            break;
+          }
+
+          case 'assignment_completion_updated': {
+            const rollQuery = currentUser?.roll ? `?roll=${encodeURIComponent(currentUser.roll.trim().toUpperCase())}` : '';
+            const res = await fetch(`${API_BASE}/assignments${rollQuery}`).then(r => r.json());
+            if (res.success && res.assignments) {
+              setGlobalAssignments(res.assignments);
+              refreshAllViews();
+            }
+            break;
+          }
+
+          case 'events_updated': {
+            const rollQuery = currentUser?.roll ? `?roll=${encodeURIComponent(currentUser.roll.trim().toUpperCase())}` : '';
+            const res = await fetch(`${API_BASE}/events${rollQuery}`).then(r => r.json());
+            if (res.success && res.events) {
+              setEvents(res.events);
+              refreshAllViews();
+              showToast('Campus events schedule updated in real-time!', 'info');
+            }
+            break;
+          }
+
+          case 'event_registration_updated': {
+            const rollQuery = currentUser?.roll ? `?roll=${encodeURIComponent(currentUser.roll.trim().toUpperCase())}` : '';
+            const res = await fetch(`${API_BASE}/events${rollQuery}`).then(r => r.json());
+            if (res.success && res.events) {
+              setEvents(res.events);
+              refreshAllViews();
+            }
+            break;
+          }
+
+          case 'resources_updated': {
+            const rollQuery = currentUser?.roll ? `?roll=${encodeURIComponent(currentUser.roll.trim().toUpperCase())}` : '';
+            const res = await fetch(`${API_BASE}/resources${rollQuery}`).then(r => r.json());
+            if (res.success && res.resources) {
+              setResources(res.resources);
+              if (activeView === 'resources') renderResourcesView();
+            }
+            break;
+          }
+
+          case 'student_registered': {
+            // Immediately sync registered students
+            const stuRes = await fetch(`${API_BASE}/auth/students`).then(r => r.json());
+            if (stuRes.success && stuRes.students) {
+              setStudents(stuRes.students);
+            }
+            if (currentUser?.role === 'admin') {
+              showToast(`🎓 New student registered: ${payload.data?.student?.name || 'Student'} (${payload.data?.student?.roll || ''})`, 'success');
+              if (activeView === 'database') renderDatabaseView();
+              if (activeView === 'students') renderStudentsDirectoryView();
+              if (activeView === 'home') renderHomeView();
+              loadAdminModalData();
+            }
+            break;
+          }
+
+          case 'student_removed': {
+            const cleanUserRoll = currentUser?.roll ? currentUser.roll.toUpperCase() : '';
+            if (currentUser?.role === 'student' && payload.data?.roll && payload.data.roll.toUpperCase() === cleanUserRoll) {
+              handleLogout();
+              showToast('Your student account was removed by the administrator.', 'error');
+              return;
+            }
+            const stuRes = await fetch(`${API_BASE}/auth/students`).then(r => r.json());
+            if (stuRes.success && stuRes.students) setStudents(stuRes.students);
+            if (currentUser?.role === 'admin') {
+              if (activeView === 'database') renderDatabaseView();
+              if (activeView === 'students') renderStudentsDirectoryView();
+              if (activeView === 'home') renderHomeView();
+              loadAdminModalData();
+            }
+            break;
+          }
+
+          case 'user_role_changed':
+          case 'database_updated': {
+            await syncAllFromBackend();
+            if (activeView === 'database') renderDatabaseView();
+            if (activeView === 'students') renderStudentsDirectoryView();
+            if (activeView === 'home') renderHomeView();
+            break;
+          }
+
+          default:
+            await syncAllFromBackend();
+            break;
+        }
+      } catch (e) {
+        console.warn('Real-time message parse error:', e);
+      }
+    };
+
+    realTimeEventSource.onerror = (err) => {
+      console.warn('Real-time SSE disconnected, native auto-reconnecting...', err);
+    };
+  } catch (err) {
+    console.warn('Could not initialize EventSource:', err);
+  }
 }

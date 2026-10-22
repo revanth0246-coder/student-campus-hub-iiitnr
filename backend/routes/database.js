@@ -1,3 +1,4 @@
+const { broadcastSync } = require('../services/realtime');
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
@@ -116,6 +117,7 @@ router.post('/query', authenticate, requireAdmin, async (req, res) => {
       res.json({ success: true, type: 'SELECT', rowCount: rows.length, rows });
     } else {
       const result = await runAsync(trimmed);
+      try { broadcastSync('database_updated', {}); } catch (e) {}
       res.json({ success: true, type: 'MUTATION', changes: result.changes, lastID: result.lastID });
     }
   } catch (err) {
@@ -155,6 +157,7 @@ router.post('/reset', authenticate, requireAdmin, async (req, res) => {
       await runAsync(`DELETE FROM ${name}`);
     }
     await seedInitialData();
+    try { broadcastSync('database_updated', {}); } catch (e) {}
     res.json({ success: true, message: 'SQLite database reset to official default state.' });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Database reset error.' });
