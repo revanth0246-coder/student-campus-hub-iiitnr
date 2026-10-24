@@ -1067,6 +1067,28 @@ function initStorage() {
 }
 
 // In-Memory Data Stores (Zero LocalStorage Data Persistence)
+// Reconciliation & Persistence Engine for Enrolled Students
+function mergeStudentLists(localList, remoteList) {
+  const map = new Map();
+  if (Array.isArray(remoteList)) {
+    for (const r of remoteList) {
+      if (!r) continue;
+      const key = (r.roll ? String(r.roll).trim().toUpperCase() : '') || String(r.id || '');
+      if (key) map.set(key, r);
+    }
+  }
+  if (Array.isArray(localList)) {
+    for (const l of localList) {
+      if (!l) continue;
+      const key = (l.roll ? String(l.roll).trim().toUpperCase() : '') || String(l.id || '');
+      if (key && !map.has(key)) {
+        map.set(key, l);
+      }
+    }
+  }
+  return Array.from(map.values());
+}
+
 function getStudents() {
   return Array.isArray(appData.students) ? appData.students : [];
 }
@@ -1173,6 +1195,66 @@ function getEvents() {
 function setEvents(data) {
   appData.events = Array.isArray(data) ? data : [];
 }
+function showAuthScreen() {
+  const screen = document.getElementById('auth-screen');
+  if (screen) {
+    screen.classList.remove('hidden');
+    screen.classList.add('flex');
+  }
+  const studentRoll = document.getElementById('student-roll');
+  const studentPass = document.getElementById('student-pass');
+  const adminEmail = document.getElementById('admin-email');
+  const adminPass = document.getElementById('admin-pass');
+  if (studentRoll) studentRoll.value = '';
+  if (studentPass) studentPass.value = '';
+  if (adminEmail) adminEmail.value = '';
+  if (adminPass) adminPass.value = '';
+}
+
+function hideAuthScreen() {
+  const screen = document.getElementById('auth-screen');
+  if (screen) {
+    screen.classList.add('hidden');
+    screen.classList.remove('flex');
+  }
+}
+
+function switchAuthTab(type) {
+  const studentTab = document.getElementById('tab-student');
+  const adminTab = document.getElementById('tab-admin');
+  const studentForm = document.getElementById('student-login-form');
+  const adminForm = document.getElementById('admin-login-form');
+
+  if (type === 'student') {
+    if (studentTab) studentTab.className = "flex-1 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 bg-white dark:bg-slate-700 text-blue-600 dark:text-white shadow-xs flex items-center justify-center gap-2";
+    if (adminTab) adminTab.className = "flex-1 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-200 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-2";
+    if (studentForm) studentForm.classList.remove('hidden');
+    if (adminForm) adminForm.classList.add('hidden');
+  } else {
+    if (adminTab) adminTab.className = "flex-1 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 bg-white dark:bg-slate-700 text-blue-600 dark:text-white shadow-xs flex items-center justify-center gap-2";
+    if (studentTab) studentTab.className = "flex-1 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-200 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-2";
+    if (adminForm) adminForm.classList.remove('hidden');
+    if (studentForm) studentForm.classList.add('hidden');
+  }
+  if (window.lucide) lucide.createIcons();
+}
+
+function quickFill(role) {
+  if (role === 'student') {
+    switchAuthTab('student');
+    const studentRoll = document.getElementById('student-roll');
+    const studentPass = document.getElementById('student-pass');
+    if (studentRoll) studentRoll.value = '';
+    if (studentPass) studentPass.value = '';
+  } else {
+    switchAuthTab('admin');
+    const emailEl = document.getElementById('admin-email');
+    const passEl = document.getElementById('admin-pass');
+    if (emailEl) emailEl.value = '';
+    if (passEl) passEl.value = '';
+  }
+}
+
 async function handleAuthLogin(event, role) {
   event.preventDefault();
 
@@ -2542,6 +2624,112 @@ function renderTimetableSlotCard(slot, dayName, time, defaultRoom, isAdmin) {
       </div>
     </td>
   `;
+}
+
+let currentMobileTimetableDay = 'all';
+let mobileTimetableMode = 'cards'; // 'cards' | 'grid'
+
+function setMobileTimetableMode(mode) {
+  mobileTimetableMode = mode;
+  updateMobileTimetableView();
+}
+
+function updateMobileTimetableView() {
+  const cardsContainer = document.getElementById('mobile-timetable-cards-container');
+  const tableContainer = document.getElementById('timetable-table-container');
+  const swipeHint = document.getElementById('mobile-timetable-swipe-hint');
+  const btnCards = document.getElementById('btn-tt-mode-cards');
+  const btnGrid = document.getElementById('btn-tt-mode-grid');
+
+  if (mobileTimetableMode === 'cards') {
+    if (cardsContainer) cardsContainer.classList.remove('hidden');
+    if (tableContainer) {
+      tableContainer.classList.add('hidden');
+      tableContainer.classList.add('md:block');
+    }
+    if (swipeHint) swipeHint.classList.add('hidden');
+    if (btnCards) {
+      btnCards.className = 'flex-1 py-2 px-3 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-xs flex items-center justify-center gap-1.5 transition';
+    }
+    if (btnGrid) {
+      btnGrid.className = 'flex-1 py-2 px-3 rounded-xl bg-white dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 font-semibold text-xs flex items-center justify-center gap-1.5 transition hover:bg-slate-200 dark:hover:bg-slate-700';
+    }
+  } else {
+    if (cardsContainer) cardsContainer.classList.add('hidden');
+    if (tableContainer) {
+      tableContainer.classList.remove('hidden');
+    }
+    if (swipeHint) swipeHint.classList.remove('hidden');
+    if (btnCards) {
+      btnCards.className = 'flex-1 py-2 px-3 rounded-xl bg-white dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 font-semibold text-xs flex items-center justify-center gap-1.5 transition hover:bg-slate-200 dark:hover:bg-slate-700';
+    }
+    if (btnGrid) {
+      btnGrid.className = 'flex-1 py-2 px-3 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-xs flex items-center justify-center gap-1.5 transition';
+    }
+  }
+}
+
+function selectMobileTimetableDay(day) {
+  currentMobileTimetableDay = day;
+  const dayIds = {
+    'all': 'mtt-day-all',
+    'Monday': 'mtt-day-mon',
+    'Tuesday': 'mtt-day-tue',
+    'Wednesday': 'mtt-day-wed',
+    'Thursday': 'mtt-day-thu',
+    'Friday': 'mtt-day-fri'
+  };
+
+  Object.entries(dayIds).forEach(([d, id]) => {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    if (d === day) {
+      btn.className = 'tt-mobile-day-pill flex-1 py-2 px-2.5 rounded-xl bg-indigo-600 text-white shadow-xs text-center transition flex-shrink-0 font-bold';
+    } else {
+      btn.className = 'tt-mobile-day-pill flex-1 py-2 px-2.5 rounded-xl text-slate-600 dark:text-slate-400 text-center transition flex-shrink-0 font-semibold hover:text-slate-900 dark:hover:text-slate-200';
+    }
+  });
+
+  const rows = document.querySelectorAll('#timetable-table-body tr[data-day]');
+  rows.forEach(r => {
+    const rowDay = r.getAttribute('data-day');
+    if (day === 'all' || rowDay === day) {
+      r.classList.remove('hidden');
+    } else {
+      r.classList.add('hidden');
+    }
+  });
+
+  renderMobileTimetableCards();
+}
+
+async function switchTimetableBranch(branchName) {
+  if (!branchName) return;
+  activeTimetableBranch = branchName;
+  renderTimetableView();
+  if (window.lucide) lucide.createIcons();
+
+  if (isBackendConnected) {
+    try {
+      const res = await apiCall(`/timetable?branch=${encodeURIComponent(branchName)}`, 'GET');
+      if (res?.success && res.timetable) {
+        setTimetable(res.timetable, branchName);
+        renderTimetableView();
+        if (window.lucide) lucide.createIcons();
+      }
+    } catch (e) {
+      console.warn('Could not refresh branch timetable:', e);
+    }
+  }
+}
+
+function handleTimetableBranchModalChange() {
+  const branch = document.getElementById('tt-branch')?.value || activeTimetableBranch;
+  const roomInput = document.getElementById('tt-room');
+  if (roomInput) {
+    const defaultRoom = branch.includes('Computer') ? '201' : (branch.includes('Electronics') ? '205' : '203');
+    roomInput.value = defaultRoom;
+  }
 }
 
 function renderTimetableView() {
@@ -5933,7 +6121,7 @@ async function removeStudentAccount(userId, name, roll) {
     }
   }
 
-  // Always update local cache & localStorage
+  // Always update in-memory state
   const students = getStudents();
   const cleanRoll = roll ? String(roll).trim().toUpperCase() : null;
   if (cleanRoll) {
