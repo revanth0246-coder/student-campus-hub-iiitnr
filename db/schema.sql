@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- 2. Auth Sessions Table (Bearer Token Authentication)
 CREATE TABLE IF NOT EXISTS sessions (
-  token VARCHAR(150) PRIMARY KEY,
+  token TEXT PRIMARY KEY,
   user_id VARCHAR(100) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   role VARCHAR(20) NOT NULL,
   expires_at TIMESTAMPTZ NOT NULL,

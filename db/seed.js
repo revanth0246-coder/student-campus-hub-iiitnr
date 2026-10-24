@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
@@ -240,22 +241,72 @@ const announcementsSeedData = [
   }
 ];
 
-// Main PostgreSQL Seed Runner
-async function runSeed() {
-  console.log('======================================================');
-  console.log('🌱 Starting PostgreSQL Database Seeding (pg client pool)');
-  console.log('📡 Target URL:', process.env.DATABASE_URL ? (process.env.DATABASE_URL.replace(/:[^:]*@/, ':****@')) : '(DATABASE_URL not set)');
-  console.log('======================================================\n');
-
-  if (!process.env.DATABASE_URL) {
-    throw new Error('DATABASE_URL is not set. Please set DATABASE_URL in your environment or .env file before running db/seed.js.');
+// Default Students Seed Data
+const studentsSeedData = [
+  {
+    id: 'student_001',
+    roll: '24DSAI001',
+    name: 'Sahil Pulipaka',
+    email: 'sahil@iiitnr.ac.in',
+    branch: 'Data Science & AI',
+    year: '1st Year',
+    semester: 'Semester 2',
+    cgpa: '7.8',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=250&h=250&fit=crop&crop=faces'
+  },
+  {
+    id: 'student_002',
+    roll: '24CSE015',
+    name: 'Aarav Sharma',
+    email: 'aarav24@iiitnr.ac.in',
+    branch: 'Computer Science & Engineering',
+    year: '1st Year',
+    semester: 'Semester 2',
+    cgpa: '8.4',
+    avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=250&h=250&fit=crop&crop=faces'
+  },
+  {
+    id: 'student_003',
+    roll: '24ECE042',
+    name: 'Priya Verma',
+    email: 'priya24@iiitnr.ac.in',
+    branch: 'Electronics & Communication',
+    year: '1st Year',
+    semester: 'Semester 2',
+    cgpa: '8.8',
+    avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=250&h=250&fit=crop&crop=faces'
   }
+];
+
+// Mess Menu Seed Data
+const messMenuSeedData = [
+  { day_of_week: 'Monday', breakfast: 'Idli Sambar, Coconut Chutney, Bread Butter, Tea/Coffee', lunch: 'Chole Bhature, Steamed Rice, Mix Veg, Curd, Green Salad', snacks: 'Samosa (2 pcs), Mint Chutney, Hot Tea', dinner: 'Paneer Butter Masala, Dal Tadka, Jeera Rice, Phulka Roti, Gulab Jamun', special_note: 'Chef Special Paneer Night' },
+  { day_of_week: 'Tuesday', breakfast: 'Poha Jalebi, Sprouts, Boiled Eggs / Banana, Tea/Coffee', lunch: 'Rajma Masala, Steamed Basmati Rice, Aloo Gobi, Boondi Raita', snacks: 'Veg Cutlet, Tomato Sauce, Tea/Coffee', dinner: 'Dal Makhani, Seasonal Veg, Steamed Rice, Tawa Roti, Fruit Custard', special_note: 'Healthy Diet Day' },
+  { day_of_week: 'Wednesday', breakfast: 'Uttapam, Tomato Onion Chutney, Toast & Jam, Milk/Tea', lunch: 'Kadhi Pakora, Jeera Rice, Bhindi Masala, Papad, Kachumber', snacks: 'Bread Pakora, Green Chutney, Tea', dinner: 'Butter Chicken / Shahi Paneer, Dal Fry, Biryani Rice, Naan, Ice Cream', special_note: 'Non-Veg & Paneer Feast' },
+  { day_of_week: 'Thursday', breakfast: 'Aloo Paratha, Curd, Pickle, Boiled Egg / Fruit, Tea', lunch: 'Dum Aloo, Poori, Chana Dal, Steamed Rice, Beetroot Salad', snacks: 'Biscuits, Rusks & Filter Coffee', dinner: 'Mix Veg Curry, Dal Tadka, Steamed Rice, Phulka, Moong Dal Halwa', special_note: 'Special Sweets Night' },
+  { day_of_week: 'Friday', breakfast: 'Upma, Sambar, Coconut Chutney, Boiled Sprouts, Tea', lunch: 'Egg Curry / Dal Tadka, Seasonal Sabzi, Steamed Rice, Roti, Curd', snacks: 'Veg Pasta / Maggi, Hot Tea', dinner: 'Hyderabadi Veg Biryani, Mirchi Ka Salan, Raita, Rasgulla', special_note: 'Biryani Special Night' },
+  { day_of_week: 'Saturday', breakfast: 'Masala Dosa, Sambhar, Red Chutney, Banana, Tea/Coffee', lunch: 'Dal Fry, Jeera Rice, Baingan Bharta, Roti, Onion Rings', snacks: 'Pav Bhaji (2 Pavs), Hot Coffee', dinner: 'Malai Kofta, Kashmiri Pulao, Dal Palak, Tandoori Roti, Kheer', special_note: 'Weekend Delicacy' },
+  { day_of_week: 'Sunday', breakfast: 'Chole Kulche, Pickle, Fresh Juice / Milk, Tea', lunch: 'Special Veg Pulao, Paneer Do Pyaza, Dal Maharani, Dahi Vada', snacks: 'Sweet Corn Chat, Lemon Tea', dinner: 'Special Sunday Feast: Paneer Tikka Masala, Veg Fried Rice, Manchurian, Ice Cream', special_note: 'Grand Sunday Gala Dinner' }
+];
+
+// Main PostgreSQL Seed Runner
+async function runSeed(customPool = null) {
+  const activePool = customPool || pool;
+  const execQuery = (text, params) => activePool.query(text, params);
+
+  console.log('======================================================');
+  console.log('🌱 Starting PostgreSQL Database Seeding');
+  console.log('======================================================\n');
 
   // 1. Ensure Schema Exists
   console.log('1. Checking and initializing PostgreSQL schema...');
-  await initSchema();
+  const schemaPath = path.join(__dirname, 'schema.sql');
+  if (fs.existsSync(schemaPath)) {
+    const schemaSql = fs.readFileSync(schemaPath, 'utf8');
+    await execQuery(schemaSql);
+  }
 
-  // 2. Seed Single Admin Account (Parameterized: $1, $2, ...)
+  // 2. Seed Single Admin Account
   console.log('2. Seeding Primary Administrator Account...');
   const adminId = 'admin_001';
   const adminRoll = 'ADMIN';
@@ -278,7 +329,7 @@ async function runSeed() {
       designation = EXCLUDED.designation,
       avatar = EXCLUDED.avatar
   `;
-  await query(adminSql, [
+  await execQuery(adminSql, [
     adminId,
     adminRoll,
     adminName,
@@ -290,7 +341,27 @@ async function runSeed() {
   ]);
   console.log(`   ✓ Admin account created/updated: ${adminName} (${adminEmail})`);
 
-  // 3. Seed Timetable Slots (Parameterized: $1, $2, ...)
+  // 2b. Seed Default Students
+  console.log('2b. Seeding Enrolled Student Accounts...');
+  const studentPassHash = await generatePasswordHash('student123');
+  const stuSql = `
+    INSERT INTO users (id, roll, name, email, password_hash, role, branch, year, semester, cgpa, avatar, batch)
+    VALUES ($1, $2, $3, $4, $5, 'student', $6, $7, $8, $9, $10, '2024 - 2028')
+    ON CONFLICT (roll) DO UPDATE SET
+      name = EXCLUDED.name,
+      email = EXCLUDED.email,
+      branch = EXCLUDED.branch,
+      year = EXCLUDED.year,
+      semester = EXCLUDED.semester,
+      cgpa = EXCLUDED.cgpa,
+      avatar = EXCLUDED.avatar
+  `;
+  for (const s of studentsSeedData) {
+    await execQuery(stuSql, [s.id, s.roll, s.name, s.email, studentPassHash, s.branch, s.year, s.semester, s.cgpa, s.avatar]);
+  }
+  console.log(`   ✓ Seeded ${studentsSeedData.length} student accounts.`);
+
+  // 3. Seed Timetable Slots
   console.log('3. Seeding Timetable Class Slots for All 3 Branches...');
   const ttSql = `
     INSERT INTO timetable (branch, day, time_slot, subject, room, slot_type)
@@ -302,11 +373,11 @@ async function runSeed() {
       updated_at = CURRENT_TIMESTAMP
   `;
   for (const slot of timetableSeedData) {
-    await query(ttSql, [slot.branch, slot.day, slot.time_slot, slot.subject, slot.room, slot.slot_type]);
+    await execQuery(ttSql, [slot.branch, slot.day, slot.time_slot, slot.subject, slot.room, slot.slot_type]);
   }
   console.log(`   ✓ Seeded ${timetableSeedData.length} weekly timetable slots.`);
 
-  // 4. Seed Study Resources (Parameterized: $1, $2, ...)
+  // 4. Seed Study Resources
   console.log('4. Seeding Curated Study Resources & Notes...');
   const resSql = `
     INSERT INTO resources (id, subject, title, type, semester, link, description, contributor)
@@ -319,11 +390,11 @@ async function runSeed() {
       description = EXCLUDED.description
   `;
   for (const r of resourcesSeedData) {
-    await query(resSql, [r.id, r.subject, r.title, r.type, r.semester, r.link, r.description, r.contributor]);
+    await execQuery(resSql, [r.id, r.subject, r.title, r.type, r.semester, r.link, r.description, r.contributor]);
   }
   console.log(`   ✓ Seeded ${resourcesSeedData.length} curated study resources.`);
 
-  // 5. Seed Campus Events (Parameterized: $1, $2, ...)
+  // 5. Seed Campus Events
   console.log('5. Seeding Campus Events & Hackathons...');
   const evSql = `
     INSERT INTO events (id, title, date_str, venue, category, description, badge_color, banner, created_by)
@@ -336,11 +407,11 @@ async function runSeed() {
       banner = EXCLUDED.banner
   `;
   for (const ev of eventsSeedData) {
-    await query(evSql, [ev.id, ev.title, ev.date_str, ev.venue, ev.category, ev.description, ev.badge_color, ev.banner, ev.created_by]);
+    await execQuery(evSql, [ev.id, ev.title, ev.date_str, ev.venue, ev.category, ev.description, ev.badge_color, ev.banner, ev.created_by]);
   }
   console.log(`   ✓ Seeded ${eventsSeedData.length} campus events.`);
 
-  // 6. Seed Announcements (Parameterized: $1, $2, ...)
+  // 6. Seed Announcements
   console.log('6. Seeding Official Campus Announcements...');
   const annSql = `
     INSERT INTO announcements (id, title, body, category, urgent, author, date_str)
@@ -352,9 +423,26 @@ async function runSeed() {
       urgent = EXCLUDED.urgent
   `;
   for (const ann of announcementsSeedData) {
-    await query(annSql, [ann.id, ann.title, ann.body, ann.category, ann.urgent, ann.author, ann.date_str]);
+    await execQuery(annSql, [ann.id, ann.title, ann.body, ann.category, ann.urgent, ann.author, ann.date_str]);
   }
   console.log(`   ✓ Seeded ${announcementsSeedData.length} campus announcements.`);
+
+  // 7. Seed Mess Menu
+  console.log('7. Seeding Weekly Hostel Mess Menu...');
+  const messSql = `
+    INSERT INTO mess_menu (day_of_week, breakfast, lunch, snacks, dinner, special_note)
+    VALUES ($1, $2, $3, $4, $5, $6)
+    ON CONFLICT (day_of_week) DO UPDATE SET
+      breakfast = EXCLUDED.breakfast,
+      lunch = EXCLUDED.lunch,
+      snacks = EXCLUDED.snacks,
+      dinner = EXCLUDED.dinner,
+      special_note = EXCLUDED.special_note
+  `;
+  for (const m of messMenuSeedData) {
+    await execQuery(messSql, [m.day_of_week, m.breakfast, m.lunch, m.snacks, m.dinner, m.special_note]);
+  }
+  console.log(`   ✓ Seeded ${messMenuSeedData.length} mess menu days.`);
 
   console.log('\n🎉 PostgreSQL database seeding completed successfully!');
 }

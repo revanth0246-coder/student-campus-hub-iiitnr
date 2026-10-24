@@ -1,11 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const fs = require('fs');
-const path = require('path');
 const { getAsync, allAsync } = require('../config/database');
 const { authenticate, requireAdmin } = require('../middleware/auth');
-
-const DB_PATH = path.join(__dirname, '..', 'database', 'campus_hub.sqlite');
 
 const TABLE_NAMES = [
   'users',
@@ -43,16 +39,9 @@ router.get('/stats', async (req, res) => {
       }
     }
 
-    let fileSizeKB = 0;
-    if (fs.existsSync(DB_PATH)) {
-      const fileStat = fs.statSync(DB_PATH);
-      fileSizeKB = (fileStat.size / 1024).toFixed(1);
-    }
-
     res.json({
       success: true,
-      engine: process.env.DATABASE_URL ? 'PostgreSQL (pg client pool)' : 'SQLite 3',
-      fileSizeKB: `${fileSizeKB} KB`,
+      engine: 'PostgreSQL (pg client pool)',
       totalTables: TABLE_NAMES.length,
       tableCounts: stats
     });

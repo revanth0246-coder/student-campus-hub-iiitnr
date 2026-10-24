@@ -36,8 +36,12 @@ async function createSession(user) {
   try {
     // Record session in database for tracking/auditing (replace if identical token already exists)
     await runAsync(`
-      INSERT OR REPLACE INTO sessions (token, user_id, role, expires_at)
-      VALUES (?, ?, ?, datetime('now', '+7 days'))
+      INSERT INTO sessions (token, user_id, role, expires_at)
+      VALUES (?, ?, ?, CURRENT_TIMESTAMP + INTERVAL '7 days')
+      ON CONFLICT (token) DO UPDATE SET
+        user_id = EXCLUDED.user_id,
+        role = EXCLUDED.role,
+        expires_at = EXCLUDED.expires_at
     `, [token, user.id, user.role || 'student']);
   } catch (err) {
     // Non-blocking in case sessions table has constraints during migration

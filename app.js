@@ -801,6 +801,7 @@ let authToken = (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(
 let currentUser = null; // Holds the logged-in student or admin
 let activeView = 'home';
 let currentAssignmentFilter = 'all';
+let activeTimetableBranch = 'Data Science & AI'; // Top-level default branch declared before use
 
 // In-Memory Application Data Store (Zero LocalStorage Data Persistence)
 const appData = {
@@ -828,47 +829,83 @@ function getAuthHeaders() {
   return headers;
 }
 
+/**
+ * Safely fetch JSON response from backend API.
+ * Ensures response content-type is application/json before parsing.
+ */
+async function fetchJsonSafely(url, options = {}) {
+  const res = await fetch(url, options);
+  const contentType = res.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) {
+    const textPreview = await res.text().catch(() => '');
+    const snippet = textPreview ? textPreview.substring(0, 100).replace(/\s+/g, ' ') : '';
+    throw new Error(`Expected JSON from ${url} but received HTTP ${res.status} (${contentType || 'non-JSON'}). ${snippet}`);
+  }
+  return res.json();
+}
+
+/**
+ * Health Check: Verifies GET /api/health returns {"status":"ok","db":"connected"}
+ * Requirement 6: Frontend shows "Backend Online" ONLY if /api/health succeeds, never hardcoded.
+ */
 async function checkBackendConnection() {
   try {
-    const res = await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(3000) });
-    if (res.ok) {
-      isBackendConnected = true;
-      updateBackendStatusBadge(true);
-      // Validate session token with SQLite backend if active
-      if (authToken) {
-        try {
-          const meRes = await fetch(`${API_BASE}/auth/me`, {
-            headers: { 'Authorization': `Bearer ${authToken}` }
-          });
-          if (meRes.ok) {
-            const meData = await meRes.json();
-            if (meData.success && meData.user) {
-              currentUser = { ...currentUser, ...meData.user };
-              if (!currentUser.loginTime && (currentUser.session_login_time || currentUser.last_login)) {
-                const t = currentUser.session_login_time || currentUser.last_login;
-                const d = new Date(t);
-                currentUser.loginTime = !isNaN(d.getTime()) 
-                  ? d.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
-                  : t;
+    const res = await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(4000) });
+    const contentType = res.headers.get('content-type') || '';
+    if (res.ok && contentType.includes('application/json')) {
+      const data = await res.json();
+      if (data.status === 'ok' && data.db === 'connected') {
+        isBackendConnected = true;
+        updateBackendStatusBadge(true);
+        // Validate session token with backend if active
+        if (authToken) {
+          try {
+            const meRes = await fetch(`${API_BASE}/auth/me`, {
+              headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+            const meContentType = meRes.headers.get('content-type') || '';
+            if (meRes.ok && meContentType.includes('application/json')) {
+              const meData = await meRes.json();
+              if (meData.success && meData.user) {
+                currentUser = { ...currentUser, ...meData.user };
+                if (!currentUser.loginTime && (currentUser.session_login_time || currentUser.last_login)) {
+                  const t = currentUser.session_login_time || currentUser.last_login;
+                  const d = new Date(t);
+                  currentUser.loginTime = !isNaN(d.getTime()) 
+                    ? d.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
+                    : t;
+                }
+                if (typeof sessionStorage !== 'undefined') sessionStorage.setItem('iiitnr_active_session', JSON.stringify(currentUser));
               }
-              if (typeof sessionStorage !== 'undefined') sessionStorage.setItem('iiitnr_active_session', JSON.stringify(currentUser));
             }
-          }
-        } catch (e) {}
+          } catch (e) {}
+        }
+        await syncAllFromBackend();
+        refreshAllViews();
+        if (currentUser?.role === 'admin') {
+          if (activeView === 'home') renderHomeView();
+          if (activeView === 'students') renderStudentsDirectoryView();
+          if (activeView === 'database') renderDatabaseView();
+          loadAdminModalData();
+        }
+        return true;
+      } else {
+        isBackendConnected = false;
+        const errMsg = data.error || (data.db !== 'connected' ? 'PostgreSQL Disconnected' : 'API Unhealthy');
+        updateBackendStatusBadge(false, errMsg);
+        return false;
       }
-      await syncAllFromBackend();
-      refreshAllViews();
-      if (currentUser?.role === 'admin') {
-        if (activeView === 'home') renderHomeView();
-        if (activeView === 'students') renderStudentsDirectoryView();
-        if (activeView === 'database') renderDatabaseView();
-        loadAdminModalData();
-      }
-      return true;
+    } else {
+      isBackendConnected = false;
+      const errMsg = !contentType.includes('application/json')
+        ? `HTTP ${res.status} (Non-JSON: Received HTML)`
+        : `HTTP ${res.status} ${res.statusText}`;
+      updateBackendStatusBadge(false, errMsg);
+      return false;
     }
   } catch (err) {
     isBackendConnected = false;
-    updateBackendStatusBadge(false);
+    updateBackendStatusBadge(false, err.name === 'TimeoutError' ? 'Connection Timeout' : 'Backend Unreachable');
     return false;
   }
 }
@@ -882,13 +919,15 @@ function updateBackendStatusBadge(connected, errorMessage = null) {
   if (connected) {
     pill.className = "hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 rounded-full text-[11px] font-semibold border border-emerald-200 dark:border-emerald-800";
     if (dot) dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
-    if (label) label.textContent = "Backend API Online";
+    if (label) label.textContent = "Backend Online";
     pill.onclick = null;
+    pill.title = "Backend API & PostgreSQL Connected";
   } else {
     pill.className = "hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 rounded-full text-[11px] font-semibold border border-rose-200 dark:border-rose-800 cursor-pointer";
     if (dot) dot.className = "w-2 h-2 rounded-full bg-rose-500";
-    if (label) label.textContent = errorMessage ? `API Disconnected: ${errorMessage}` : "API Disconnected (Click to Retry)";
-    pill.onclick = () => syncAllFromBackend();
+    if (label) label.textContent = errorMessage ? `API Error: ${errorMessage}` : "Backend Offline (Click to Retry)";
+    pill.onclick = () => checkBackendConnection();
+    pill.title = "Click to retry backend connection";
   }
 }
 
@@ -906,16 +945,16 @@ async function syncAllFromBackend() {
     const branchQuery = `?branch=${encodeURIComponent(userBranch)}`;
 
     const [ttRes, resRes, asgnRes, annRes, evRes, stuRes, examRes, messRes, exRes, notifRes] = await Promise.allSettled([
-      fetch(`${API_BASE_URL}/timetable${branchQuery}`, { headers: getAuthHeaders() }).then(r => r.json()),
-      fetch(`${API_BASE_URL}/resources${rollQuery}`, { headers: getAuthHeaders() }).then(r => r.json()),
-      fetch(`${API_BASE_URL}/assignments${rollQuery}`, { headers: getAuthHeaders() }).then(r => r.json()),
-      fetch(`${API_BASE_URL}/announcements`, { headers: getAuthHeaders() }).then(r => r.json()),
-      fetch(`${API_BASE_URL}/events${rollQuery}`, { headers: getAuthHeaders() }).then(r => r.json()),
-      fetch(`${API_BASE_URL}/auth/students`, { headers: getAuthHeaders() }).then(r => r.json()),
-      fetch(`${API_BASE_URL}/exams`, { headers: getAuthHeaders() }).then(r => r.json()),
-      fetch(`${API_BASE_URL}/mess`, { headers: getAuthHeaders() }).then(r => r.json()),
-      fetch(`${API_BASE_URL}/exchange`, { headers: getAuthHeaders() }).then(r => r.json()),
-      fetch(`${API_BASE_URL}/notifications${rollQuery}`, { headers: getAuthHeaders() }).then(r => r.json())
+      fetchJsonSafely(`${API_BASE_URL}/timetable${branchQuery}`, { headers: getAuthHeaders() }),
+      fetchJsonSafely(`${API_BASE_URL}/resources${rollQuery}`, { headers: getAuthHeaders() }),
+      fetchJsonSafely(`${API_BASE_URL}/assignments${rollQuery}`, { headers: getAuthHeaders() }),
+      fetchJsonSafely(`${API_BASE_URL}/announcements`, { headers: getAuthHeaders() }),
+      fetchJsonSafely(`${API_BASE_URL}/events${rollQuery}`, { headers: getAuthHeaders() }),
+      fetchJsonSafely(`${API_BASE_URL}/auth/students`, { headers: getAuthHeaders() }),
+      fetchJsonSafely(`${API_BASE_URL}/exams`, { headers: getAuthHeaders() }),
+      fetchJsonSafely(`${API_BASE_URL}/mess`, { headers: getAuthHeaders() }),
+      fetchJsonSafely(`${API_BASE_URL}/exchange`, { headers: getAuthHeaders() }),
+      fetchJsonSafely(`${API_BASE_URL}/notifications${rollQuery}`, { headers: getAuthHeaders() })
     ]);
 
     if (ttRes.status === 'fulfilled' && ttRes.value?.success) {
@@ -1000,10 +1039,15 @@ async function apiCall(endpoint, method = 'GET', data = null) {
     }
 
     const res = await fetch(`${API_BASE_URL}${endpoint}`, opts);
-    let json = null;
-    try {
-      json = await res.json();
-    } catch (e) {}
+    const contentType = res.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      const errorMsg = `Server error (${res.status} ${res.statusText}): Received non-JSON response from ${endpoint}.`;
+      console.warn(`API call error [${method} ${endpoint}]:`, errorMsg);
+      showToast(errorMsg, 'error');
+      return { success: false, status: res.status, message: errorMsg };
+    }
+
+    const json = await res.json();
 
     if (!res.ok) {
       const errorMsg = json?.message || `Request failed (${res.status}: ${res.statusText})`;
@@ -1280,6 +1324,11 @@ async function handleAuthLogin(event, role) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ emailOrRoll: roll, password: pass })
       });
+      const contentType = res.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        showToast(`Authentication error (${res.status} ${res.statusText}): Backend returned non-JSON response. Ensure backend is deployed at ${API_BASE_URL}`, 'error');
+        return;
+      }
       const data = await res.json();
 
       if (data.success && data.user) {
@@ -1343,6 +1392,11 @@ async function handleAuthLogin(event, role) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password: pass })
       });
+      const contentType = res.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        showToast(`Authentication error (${res.status} ${res.statusText}): Backend returned non-JSON response. Ensure backend is deployed at ${API_BASE_URL}`, 'error');
+        return;
+      }
       const data = await res.json();
 
       if (data.success && data.user) {
@@ -1453,6 +1507,11 @@ async function submitNewStudentRegistration(event) {
         name, roll, branch, year, semester: sem, cgpa, email, password: pass, avatar: chosenAvatar
       })
     });
+    const contentType = res.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      showToast(`Registration error (${res.status} ${res.statusText}): Backend returned non-JSON response. Ensure backend is deployed at ${API_BASE_URL}`, 'error');
+      return;
+    }
     const data = await res.json();
 
     if (data.success && data.user) {
@@ -3696,8 +3755,7 @@ async function renderExchangeView() {
       if (activeExchangeTab) q.append('type', activeExchangeTab);
       if (cat !== 'all') q.append('category', cat);
       if (search) q.append('search', search);
-      const res = await fetch(`${API_BASE}/exchange?${q.toString()}`, { headers: getAuthHeaders() });
-      const data = await res.json();
+      const data = await fetchJsonSafely(`${API_BASE}/exchange?${q.toString()}`, { headers: getAuthHeaders() });
       if (data?.success && Array.isArray(data.listings)) {
         listings = data.listings;
         if (data.counts) {
@@ -4004,8 +4062,7 @@ async function renderMessView() {
   let menu = getMessMenu();
   if (isBackendConnected) {
     try {
-      const res = await fetch(`${API_BASE}/mess`, { headers: getAuthHeaders() });
-      const data = await res.json();
+      const data = await fetchJsonSafely(`${API_BASE}/mess`, { headers: getAuthHeaders() });
       if (data?.success && Array.isArray(data.menu)) {
         menu = data.menu;
         setMessMenu(menu);
@@ -4112,8 +4169,7 @@ async function renderMessView() {
   let feedbackList = DEFAULT_MESS_FEEDBACK;
   if (isBackendConnected) {
     try {
-      const fbRes = await fetch(`${API_BASE}/mess/feedback`, { headers: getAuthHeaders() });
-      const fbData = await fbRes.json();
+      const fbData = await fetchJsonSafely(`${API_BASE}/mess/feedback`, { headers: getAuthHeaders() });
       if (fbData?.success && Array.isArray(fbData.reviews)) {
         feedbackList = fbData.reviews;
         const avgEl = document.getElementById('mess-avg-rating-badge');
@@ -5093,7 +5149,7 @@ function handleGlobalSearch(query) {
   searchDebounceTimer = setTimeout(async () => {
     try {
       if (isBackendConnected) {
-        const res = await fetch(`${API_BASE}/search?q=${encodeURIComponent(q)}`, { headers: getAuthHeaders() }).then(r => r.json());
+        const res = await fetchJsonSafely(`${API_BASE}/search?q=${encodeURIComponent(q)}`, { headers: getAuthHeaders() });
         if (res && res.success) {
           renderGlobalSearchResults(res.results, res.total, q);
           return;
@@ -5372,7 +5428,7 @@ async function fetchNotifications() {
   if (isBackendConnected) {
     try {
       const roll = currentUser?.roll || '24DSAI001';
-      const res = await fetch(`${API_BASE}/notifications?roll=${encodeURIComponent(roll)}`, { headers: getAuthHeaders() }).then(r => r.json());
+      const res = await fetchJsonSafely(`${API_BASE}/notifications?roll=${encodeURIComponent(roll)}`, { headers: getAuthHeaders() });
       if (res && res.success && Array.isArray(res.notifications)) {
         setNotifications(res.notifications);
         updateNotificationBadgeUI(res.unreadCount ?? res.notifications.filter(n => !n.isRead).length);
@@ -5633,12 +5689,16 @@ async function renderDatabaseView() {
 
   // 1. Fetch DB Stats
   if (isBackendConnected) {
+    const statusTextEl = document.getElementById('db-connection-status-text');
+    if (statusTextEl) {
+      statusTextEl.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> Backend Online`;
+    }
+    const statusSubEl = document.getElementById('db-connection-status-sub');
+    if (statusSubEl) statusSubEl.textContent = 'PostgreSQL Connected';
+
     try {
       const statsRes = await apiCall('/database/stats');
       if (statsRes?.success) {
-        const sizeEl = document.getElementById('db-file-size-label');
-        if (sizeEl) sizeEl.textContent = `File Size: ~${statsRes.fileSizeKB || '96 KB'}`;
-
         const counts = statsRes.tableCounts || {};
         for (const [tName, count] of Object.entries(counts)) {
           const badge = document.getElementById(`pill-count-${tName}`);
@@ -5649,20 +5709,10 @@ async function renderDatabaseView() {
       console.warn('DB stats fetch error:', e);
     }
   } else {
-    const engineLabel = document.getElementById('db-engine-label');
-    if (engineLabel) engineLabel.textContent = 'Shared Relational Backend';
-
-    const pathLabel = document.getElementById('db-storage-path-label');
-    if (pathLabel) pathLabel.textContent = 'PostgreSQL / SQLite';
-
-    const descLabel = document.getElementById('db-storage-desc-label');
-    if (descLabel) descLabel.textContent = 'Backend Relational Engine';
-
     const statusTextEl = document.getElementById('db-connection-status-text');
     if (statusTextEl) {
-      statusTextEl.innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-amber-500"></i> Offline Cache`;
+      statusTextEl.innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-rose-500"></i> Backend Offline`;
     }
-
     const statusSubEl = document.getElementById('db-connection-status-sub');
     if (statusSubEl) statusSubEl.textContent = 'API Connection Offline';
 
@@ -6572,7 +6622,7 @@ function initRealtimeSync() {
           case 'timetable_updated': {
             const userBranch = currentUser?.branch || activeTimetableBranch;
             const branchQuery = userBranch ? `?branch=${encodeURIComponent(userBranch)}` : '';
-            const res = await fetch(`${API_BASE}/timetable${branchQuery}`, { headers: getAuthHeaders() }).then(r => r.json());
+            const res = await fetchJsonSafely(`${API_BASE}/timetable${branchQuery}`, { headers: getAuthHeaders() });
             if (res.success) {
               if (res.branches) appData.branchTimetables = res.branches;
               setTimetable(res.timetable, res.branch || activeTimetableBranch);
@@ -6583,7 +6633,7 @@ function initRealtimeSync() {
           }
 
           case 'announcements_updated': {
-            const res = await fetch(`${API_BASE}/announcements`, { headers: getAuthHeaders() }).then(r => r.json());
+            const res = await fetchJsonSafely(`${API_BASE}/announcements`, { headers: getAuthHeaders() });
             if (res.success && res.announcements) {
               setAnnouncements(res.announcements);
               refreshAllViews();
@@ -6594,7 +6644,7 @@ function initRealtimeSync() {
 
           case 'assignments_updated': {
             const rollQuery = currentUser?.roll ? `?roll=${encodeURIComponent(currentUser.roll.trim().toUpperCase())}` : '';
-            const res = await fetch(`${API_BASE}/assignments${rollQuery}`, { headers: getAuthHeaders() }).then(r => r.json());
+            const res = await fetchJsonSafely(`${API_BASE}/assignments${rollQuery}`, { headers: getAuthHeaders() });
             if (res.success && res.assignments) {
               setGlobalAssignments(res.assignments);
               refreshAllViews();
@@ -6605,7 +6655,7 @@ function initRealtimeSync() {
 
           case 'assignment_completion_updated': {
             const rollQuery = currentUser?.roll ? `?roll=${encodeURIComponent(currentUser.roll.trim().toUpperCase())}` : '';
-            const res = await fetch(`${API_BASE}/assignments${rollQuery}`).then(r => r.json());
+            const res = await fetchJsonSafely(`${API_BASE}/assignments${rollQuery}`);
             if (res.success && res.assignments) {
               setGlobalAssignments(res.assignments);
               refreshAllViews();
@@ -6615,7 +6665,7 @@ function initRealtimeSync() {
 
           case 'events_updated': {
             const rollQuery = currentUser?.roll ? `?roll=${encodeURIComponent(currentUser.roll.trim().toUpperCase())}` : '';
-            const res = await fetch(`${API_BASE}/events${rollQuery}`, { headers: getAuthHeaders() }).then(r => r.json());
+            const res = await fetchJsonSafely(`${API_BASE}/events${rollQuery}`, { headers: getAuthHeaders() });
             if (res.success && res.events) {
               setEvents(res.events);
               refreshAllViews();
@@ -6626,7 +6676,7 @@ function initRealtimeSync() {
 
           case 'event_registration_updated': {
             const rollQuery = currentUser?.roll ? `?roll=${encodeURIComponent(currentUser.roll.trim().toUpperCase())}` : '';
-            const res = await fetch(`${API_BASE}/events${rollQuery}`).then(r => r.json());
+            const res = await fetchJsonSafely(`${API_BASE}/events${rollQuery}`);
             if (res.success && res.events) {
               setEvents(res.events);
               refreshAllViews();
@@ -6636,7 +6686,7 @@ function initRealtimeSync() {
 
           case 'resources_updated': {
             const rollQuery = currentUser?.roll ? `?roll=${encodeURIComponent(currentUser.roll.trim().toUpperCase())}` : '';
-            const res = await fetch(`${API_BASE}/resources${rollQuery}`, { headers: getAuthHeaders() }).then(r => r.json());
+            const res = await fetchJsonSafely(`${API_BASE}/resources${rollQuery}`, { headers: getAuthHeaders() });
             if (res.success && res.resources) {
               setResources(res.resources);
               if (activeView === 'resources') renderResourcesView();
@@ -6646,7 +6696,7 @@ function initRealtimeSync() {
 
           case 'student_registered': {
             // Immediately sync registered students
-            const stuRes = await fetch(`${API_BASE}/auth/students`, { headers: getAuthHeaders() }).then(r => r.json());
+            const stuRes = await fetchJsonSafely(`${API_BASE}/auth/students`, { headers: getAuthHeaders() });
             if (stuRes.success && Array.isArray(stuRes.students)) {
               const localStudents = getStudents();
               const merged = mergeStudentLists(localStudents, stuRes.students);
@@ -6669,7 +6719,7 @@ function initRealtimeSync() {
               showToast('Your student account was removed by the administrator.', 'error');
               return;
             }
-            const stuRes = await fetch(`${API_BASE}/auth/students`, { headers: getAuthHeaders() }).then(r => r.json());
+            const stuRes = await fetchJsonSafely(`${API_BASE}/auth/students`, { headers: getAuthHeaders() });
             if (stuRes.success && stuRes.students) setStudents(stuRes.students);
             if (currentUser?.role === 'admin') {
               if (activeView === 'database') renderDatabaseView();
