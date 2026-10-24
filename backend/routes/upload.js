@@ -1,46 +1,100 @@
 const express = require('express');
 const router = express.Router();
-const fs = require('fs');
-const path = require('path');
-const crypto = require('crypto');
+const { uploadImage, isCloudinaryConfigured } = require('../config/cloudinary');
 
-const UPLOADS_DIR = path.join(__dirname, '..', 'uploads');
-if (!fs.existsSync(UPLOADS_DIR)) {
-  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-}
+// POST /api/upload (General Image Upload to Cloudinary)
+router.post('/', async (req, res) => {
+  const fileSource = req.body.dataUrl || req.body.image || req.body.photo;
+  const folder = req.body.folder || 'iiitnr-campus-hub/general';
 
-// POST /api/upload/avatar (Saves gallery photo to disk)
-router.post('/avatar', (req, res) => {
-  const { dataUrl, filename } = req.body;
-
-  if (!dataUrl || !dataUrl.includes(',')) {
-    return res.status(400).json({ success: false, message: 'Invalid image Data URL.' });
+  if (!fileSource) {
+    return res.status(400).json({ success: false, message: 'Missing image data (dataUrl or image parameter required).' });
   }
 
   try {
-    const matches = dataUrl.match(/^data:image\/([a-zA-Z0-9]+);base64,(.+)$/);
-    if (!matches) {
-      return res.status(400).json({ success: false, message: 'Unsupported image format.' });
+    const result = await uploadImage(fileSource, { folder });
+    if (!result.success && !result.url) {
+      return res.status(500).json({ success: false, message: result.error || 'Failed to upload image.' });
     }
 
-    const extension = matches[1] === 'jpeg' ? 'jpg' : matches[1];
-    const base64Data = matches[2];
-    const buffer = Buffer.from(base64Data, 'base64');
-
-    const randomName = 'avatar_' + Date.now() + '_' + crypto.randomBytes(4).toString('hex') + '.' + extension;
-    const filePath = path.join(UPLOADS_DIR, randomName);
-
-    fs.writeFileSync(filePath, buffer);
-
-    const relativeUrl = `/uploads/${randomName}`;
     res.json({
       success: true,
-      message: 'Photo uploaded and saved to server storage.',
-      url: relativeUrl
+      message: result.provider === 'cloudinary' 
+        ? 'Image successfully stored in Cloudinary cloud storage.' 
+        : 'Image saved successfully.',
+      url: result.url,
+      provider: result.provider,
+      cloudinary: isCloudinaryConfigured()
     });
   } catch (err) {
-    console.error('File upload error:', err);
-    res.status(500).json({ success: false, message: 'Server error saving image file.' });
+    console.error('API image upload error:', err);
+    res.status(500).json({ success: false, message: 'Server error processing image upload: ' + err.message });
+  }
+});
+
+// POST /api/upload/avatar (Profile Picture Upload)
+router.post('/avatar', async (req, res) => {
+  const fileSource = req.body.dataUrl || req.body.avatar || req.body.image;
+
+  if (!fileSource) {
+    return res.status(400).json({ success: false, message: 'Missing avatar image data.' });
+  }
+
+  try {
+    const result = await uploadImage(fileSource, { folder: 'iiitnr-campus-hub/avatars' });
+    res.json({
+      success: true,
+      message: 'Avatar uploaded successfully.',
+      url: result.url,
+      provider: result.provider
+    });
+  } catch (err) {
+    console.error('Avatar upload error:', err);
+    res.status(500).json({ success: false, message: 'Server error uploading avatar: ' + err.message });
+  }
+});
+
+// POST /api/upload/banner (Campus Event Banner Upload)
+router.post('/banner', async (req, res) => {
+  const fileSource = req.body.dataUrl || req.body.banner || req.body.image;
+
+  if (!fileSource) {
+    return res.status(400).json({ success: false, message: 'Missing event banner image data.' });
+  }
+
+  try {
+    const result = await uploadImage(fileSource, { folder: 'iiitnr-campus-hub/events' });
+    res.json({
+      success: true,
+      message: 'Event banner uploaded successfully.',
+      url: result.url,
+      provider: result.provider
+    });
+  } catch (err) {
+    console.error('Banner upload error:', err);
+    res.status(500).json({ success: false, message: 'Server error uploading banner: ' + err.message });
+  }
+});
+
+// POST /api/upload/exchange (Marketplace Item Photo Upload)
+router.post('/exchange', async (req, res) => {
+  const fileSource = req.body.dataUrl || req.body.image || req.body.photo;
+
+  if (!fileSource) {
+    return res.status(400).json({ success: false, message: 'Missing item photo data.' });
+  }
+
+  try {
+    const result = await uploadImage(fileSource, { folder: 'iiitnr-campus-hub/exchange' });
+    res.json({
+      success: true,
+      message: 'Item photo uploaded successfully.',
+      url: result.url,
+      provider: result.provider
+    });
+  } catch (err) {
+    console.error('Exchange photo upload error:', err);
+    res.status(500).json({ success: false, message: 'Server error uploading exchange photo: ' + err.message });
   }
 });
 

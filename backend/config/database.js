@@ -2,6 +2,19 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
+require('dotenv').config({ path: path.join(__dirname, '..', '..', '.env') });
+const { Pool } = require('pg');
+
+let pgPool = null;
+if (process.env.DATABASE_URL) {
+  const isLocalhost = process.env.DATABASE_URL.includes('localhost') || process.env.DATABASE_URL.includes('127.0.0.1');
+  pgPool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: (!isLocalhost && process.env.DATABASE_URL) ? { rejectUnauthorized: false } : false
+  });
+  console.log('🐘 PostgreSQL pool active from DATABASE_URL');
+}
 
 const DB_DIR = path.join(__dirname, '..', 'database');
 if (!fs.existsSync(DB_DIR)) {
@@ -11,8 +24,23 @@ if (!fs.existsSync(DB_DIR)) {
 const DB_PATH = path.join(DB_DIR, 'campus_hub.sqlite');
 const db = new sqlite3.Database(DB_PATH);
 
-// Promise helpers for clean async/await SQL operations
+function convertSqliteToPg(sql) {
+  let index = 1;
+  let converted = sql.replace(/\?/g, () => `$${index++}`);
+  converted = converted.replace(/datetime\('now'\)/gi, 'CURRENT_TIMESTAMP');
+  converted = converted.replace(/datetime\('now',\s*'\+30 days'\)/gi, "CURRENT_TIMESTAMP + INTERVAL '30 days'");
+  return converted;
+}
+
+// Promise helpers for clean async/await SQL operations (PostgreSQL + SQLite Dual-Driver)
 function runAsync(sql, params = []) {
+  if (pgPool) {
+    const pgSql = convertSqliteToPg(sql);
+    return pgPool.query(pgSql, params).then(res => ({
+      lastID: res.rows[0]?.id || null,
+      changes: res.rowCount
+    }));
+  }
   return new Promise((resolve, reject) => {
     db.run(sql, params, function (err) {
       if (err) reject(err);
@@ -22,6 +50,10 @@ function runAsync(sql, params = []) {
 }
 
 function getAsync(sql, params = []) {
+  if (pgPool) {
+    const pgSql = convertSqliteToPg(sql);
+    return pgPool.query(pgSql, params).then(res => res.rows[0] || null);
+  }
   return new Promise((resolve, reject) => {
     db.get(sql, params, (err, row) => {
       if (err) reject(err);
@@ -31,6 +63,10 @@ function getAsync(sql, params = []) {
 }
 
 function allAsync(sql, params = []) {
+  if (pgPool) {
+    const pgSql = convertSqliteToPg(sql);
+    return pgPool.query(pgSql, params).then(res => res.rows);
+  }
   return new Promise((resolve, reject) => {
     db.all(sql, params, (err, rows) => {
       if (err) reject(err);
@@ -45,6 +81,14 @@ function hashPassword(password) {
 }
 
 function verifyPassword(password, hash) {
+  if (!password || !hash) return false;
+  if (hash.startsWith('$2a$') || hash.startsWith('$2b$')) {
+    try {
+      return bcrypt.compareSync(password, hash);
+    } catch (e) {
+      return false;
+    }
+  }
   return hashPassword(password) === hash;
 }
 
@@ -312,6 +356,21 @@ async function seedBranchTimetables() {
 
 // Initialize tables and seed default data
 async function initDatabase() {
+  if (pgPool) {
+    console.log('🐘 Initializing PostgreSQL database via db/schema.sql...');
+    const schemaPath = path.join(__dirname, '..', '..', 'db', 'schema.sql');
+    if (fs.existsSync(schemaPath)) {
+      const schemaSql = fs.readFileSync(schemaPath, 'utf8');
+      await pgPool.query(schemaSql);
+    }
+    const adminCheck = await pgPool.query("SELECT id FROM users WHERE role = 'admin' LIMIT 1");
+    if (adminCheck.rowCount === 0) {
+      console.log('🌱 No admin account detected in PostgreSQL, running db/seed.js...');
+      const { runSeed } = require('../../db/seed');
+      await runSeed();
+    }
+    return;
+  }
   await runAsync(`PRAGMA foreign_keys = ON;`);
 
   // 1. Users Table

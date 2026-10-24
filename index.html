@@ -224,15 +224,6 @@
           <span class="text-[10px] text-slate-400 bg-slate-700/60 group-hover:bg-slate-700 px-1.5 py-0.5 rounded transition">Themes</span>
         </button>
 
-        <!-- Multi-Device / Network Access Button -->
-        <button onclick="openNetworkModal()" class="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/50 hover:bg-slate-800 rounded-xl transition group">
-          <div class="flex items-center gap-2">
-            <i data-lucide="smartphone" class="w-4 h-4 text-emerald-400"></i>
-            <span>Connect Devices</span>
-          </div>
-          <span class="text-[10px] text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-1.5 py-0.5 rounded group-hover:bg-emerald-900/60 transition">Wi-Fi/Web</span>
-        </button>
-
         <!-- Current User Card -->
         <div class="flex items-center justify-between bg-slate-800/50 p-2.5 rounded-xl">
           <div class="flex items-center gap-2.5 truncate">
@@ -283,16 +274,10 @@
         <!-- Right: Actions & User Avatar -->
         <div class="flex items-center gap-1 sm:gap-2 flex-shrink-0">
           <!-- Backend Connection Indicator -->
-          <div id="backend-status-pill" class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 rounded-full text-[11px] font-semibold border border-indigo-200 dark:border-indigo-800" title="Standalone Client-Side Mode">
+          <div id="backend-status-pill" class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 rounded-full text-[11px] font-semibold border border-indigo-200 dark:border-indigo-800" title="Backend API Mode">
             <span id="backend-status-dot" class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
-            <span id="backend-status-label">Standalone Frontend Mode</span>
+            <span id="backend-status-label">Backend Online</span>
           </div>
-
-          <!-- Cross-Device & Network Access Quick Button (Mobile-Optimized) -->
-          <button onclick="openNetworkModal()" title="Connect Mobile Phone or Other Devices on Any Network" class="hidden sm:flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 text-emerald-700 dark:text-emerald-300 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 rounded-xl transition border border-emerald-200 dark:border-emerald-800 shadow-sm">
-            <i data-lucide="smartphone" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
-            <span class="text-xs font-semibold hidden md:inline">Connect Devices</span>
-          </button>
 
           <!-- Theme Palette Selector Button (Mobile-Optimized) -->
           <button onclick="openThemePickerModal()" title="Choose Theme (Midnight, B&W, Slate, Neon, etc.)" class="hidden sm:flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl transition border border-slate-200 dark:border-slate-700 shadow-sm">
@@ -1245,7 +1230,7 @@
                 </div>
                 <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Database Management Console</h2>
               </div>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Live SQLite 3 relational database inspector, table viewer, and query console</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Live relational database inspector and table viewer</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
               <button onclick="refreshLiveDatabase(true)" id="btn-refresh-live-db" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-md shadow-emerald-600/20" title="Fetch latest registrations and database changes from SQLite">
@@ -1253,12 +1238,6 @@
               </button>
               <button onclick="openMakeAdminModal()" class="px-3.5 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-md shadow-indigo-600/20">
                 <i data-lucide="users" class="w-3.5 h-3.5"></i> Manage Students & Admins
-              </button>
-              <button onclick="exportDatabaseDump()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-sm">
-                <i data-lucide="download" class="w-3.5 h-3.5"></i> Export Database
-              </button>
-              <button onclick="resetDatabaseFromUI()" class="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-sm">
-                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Re-Seed SQLite
               </button>
               <a href="/api" target="_blank" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow">
                 <i data-lucide="external-link" class="w-3.5 h-3.5"></i> REST API Explorer
@@ -1278,10 +1257,10 @@
             </div>
             <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
               <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Storage Path</div>
-              <div class="text-xs font-mono font-bold text-cyan-600 dark:text-cyan-400 mt-1 truncate" id="db-storage-path-label" title="Browser LocalStorage & In-Memory">
-                localStorage (Client)
+              <div class="text-xs font-mono font-bold text-cyan-600 dark:text-cyan-400 mt-1 truncate" id="db-storage-path-label" title="Shared Relational Database">
+                PostgreSQL / SQLite
               </div>
-              <p class="text-[10px] text-slate-400 mt-0.5" id="db-storage-desc-label">Persistent browser storage</p>
+              <p class="text-[10px] text-slate-400 mt-0.5" id="db-storage-desc-label">Shared relational database</p>
             </div>
             <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
               <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Database Tables</div>
@@ -1291,9 +1270,9 @@
             <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
               <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">System State</div>
               <div class="text-base font-bold text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1.5" id="db-connection-status-text">
-                <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> Standalone Active
+                <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> Backend API Online
               </div>
-              <p class="text-[10px] text-slate-400 mt-0.5" id="db-connection-status-sub">100% Client-Side Engine</p>
+              <p class="text-[10px] text-slate-400 mt-0.5" id="db-connection-status-sub">Shared Relational Engine</p>
             </div>
           </div>
 
@@ -1357,53 +1336,6 @@
               </table>
             </div>
           </div>
-
-          <!-- Interactive SQL Query Console -->
-          <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 space-y-4">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <i data-lucide="terminal" class="w-4 h-4 text-amber-500"></i>
-                <h3 class="font-bold text-sm text-slate-900 dark:text-white">Interactive SQL Query Terminal (Admin)</h3>
-              </div>
-              <span class="text-[11px] font-mono text-slate-400">SQLite Query Executor</span>
-            </div>
-
-            <div class="space-y-2">
-              <div class="flex flex-wrap gap-1.5 text-[11px]">
-                <span class="text-slate-400 font-medium">Quick Queries:</span>
-                <button type="button" onclick="setSqlQuery('SELECT * FROM users;')" class="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded text-blue-600 dark:text-blue-400 font-mono">SELECT * FROM users;</button>
-                <button type="button" onclick="setSqlQuery('SELECT * FROM timetable WHERE day = \'Monday\';')" class="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded text-blue-600 dark:text-blue-400 font-mono">Monday Schedule</button>
-                <button type="button" onclick="setSqlQuery('SELECT * FROM resources WHERE type = \'Notes\';')" class="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded text-blue-600 dark:text-blue-400 font-mono">Notes Resources</button>
-                <button type="button" onclick="setSqlQuery('SELECT * FROM announcements ORDER BY urgent DESC;')" class="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded text-blue-600 dark:text-blue-400 font-mono">Urgent Notices</button>
-              </div>
-
-              <div class="relative">
-                <textarea id="db-sql-query-input" rows="3" class="w-full p-3 font-mono text-xs bg-slate-950 text-cyan-300 rounded-xl border border-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500" placeholder="Type SQL query here (e.g. SELECT * FROM users;)"></textarea>
-              </div>
-
-              <div class="flex items-center justify-between">
-                <p class="text-[11px] text-slate-500 dark:text-slate-400">Safe execution mode: SELECT queries available to all, mutations restricted to Admin.</p>
-                <button type="button" onclick="runCustomSqlQuery()" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-xl text-xs transition shadow flex items-center gap-1.5">
-                  <i data-lucide="play" class="w-3.5 h-3.5"></i> Execute SQL
-                </button>
-              </div>
-            </div>
-
-            <!-- Query Output Container -->
-            <div id="db-query-output-box" class="hidden space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-              <div class="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center justify-between">
-                <span>Query Result</span>
-                <span id="db-query-status-badge" class="text-[11px] font-mono text-emerald-500">0 rows</span>
-              </div>
-              <div class="overflow-x-auto max-h-[300px] rounded-xl border border-slate-200 dark:border-slate-800">
-                <table class="w-full text-left text-xs text-slate-700 dark:text-slate-300">
-                  <thead class="bg-slate-100 dark:bg-slate-800/80 uppercase text-[10px]" id="db-query-headers"></thead>
-                  <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="db-query-rows"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <!-- ============================================== -->
         <!-- 9. ENROLLED STUDENTS DIRECTORY (Strict Admin Only) -->
@@ -2245,60 +2177,6 @@
     </div>
   </div>
 
-  <!-- 8. MULTI-DEVICE & NETWORK ACCESS MODAL -->
-  <div id="modal-network-devices" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-900 w-full max-w-xl rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-7 space-y-5 max-h-[90vh] overflow-y-auto">
-      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-            <i data-lucide="smartphone" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <h3 class="font-bold text-lg text-slate-900 dark:text-white leading-snug">Access on Any Device & Network</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Open IIIT-NR Campus Hub on your phone, tablet, or another computer.</p>
-          </div>
-        </div>
-        <button onclick="closeModal('modal-network-devices')" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-
-      <!-- Section 1: Same Wi-Fi / Hotspot Access -->
-      <div class="p-4 sm:p-5 rounded-2xl bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200/80 dark:border-emerald-800/60 space-y-3">
-        <div class="flex items-center justify-between">
-          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">
-            <i data-lucide="wifi" class="w-3.5 h-3.5"></i> Method 1: Same Wi-Fi / Hotspot
-          </span>
-          <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300">Fast & Direct</span>
-        </div>
-        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-          Connect your phone or other laptop to the same Wi-Fi or mobile hotspot as this host, then open this link:
-        </p>
-
-        <!-- LAN URL Box with Copy Button -->
-        <div class="flex items-center gap-2">
-          <div class="flex-1 px-3.5 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl font-mono text-xs font-bold text-slate-800 dark:text-slate-100 select-all truncate" id="lan-url-display">
-            http://192.168.137.167:5000
-          </div>
-          <button type="button" onclick="copyLanUrl()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-xs flex items-center gap-1.5 transition flex-shrink-0 shadow-sm">
-            <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy Link
-          </button>
-        </div>
-
-        <!-- Phone Scan QR Code Box -->
-        <div class="flex items-center gap-4 pt-2 bg-white/70 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-          <img id="network-qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=http://192.168.137.167:5000" alt="Scan QR Code" class="w-20 h-20 rounded-lg bg-white p-1 border border-slate-200 dark:border-slate-700 shadow-sm flex-shrink-0" />
-          <div class="text-xs space-y-1">
-            <p class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
-              <i data-lucide="scan" class="w-3.5 h-3.5 text-blue-500"></i> Scan with Phone Camera
-            </p>
-            <p class="text-slate-500 dark:text-slate-400 text-[11px] leading-snug">
-              Point your phone's camera at this QR code while connected to your Wi-Fi/hotspot to instantly open the portal on your phone!
-            </p>
-          </div>
-        </div>
-      </div>
-
       <!-- Section 2: Different Networks (Mobile Data / Over the Internet) -->
       <div class="p-4 sm:p-5 rounded-2xl bg-blue-50/60 dark:bg-blue-950/20 border border-blue-200/80 dark:border-blue-800/60 space-y-3">
         <div class="flex items-center justify-between">
@@ -2532,6 +2410,7 @@
   <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
   <!-- Core Application Scripts -->
+  <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

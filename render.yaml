@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: iiitnr-campus-hub-backend
+    runtime: node
+    plan: free
+    rootDir: .
+    buildCommand: npm install
+    startCommand: node backend/server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        sync: false
+      - key: ADMIN_NAME
+        value: Chief Administrator
+      - key: ADMIN_EMAIL
+        value: admin@iiitnr.ac.in
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ADMIN_DEPARTMENT
+        value: Office of Academic Affairs
+      - key: ADMIN_DESIGNATION
+        value: Chief Administrator
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false

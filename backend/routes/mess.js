@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { runAsync, getAsync, allAsync } = require('../config/database');
-const { authenticate, requireAdmin } = require('../middleware/auth');
+const { authenticate, requireAdmin, requireAuth } = require('../middleware/auth');
+const { validate, messFeedbackSchema, messMenuSchema } = require('../middleware/validation');
+const { broadcastSync } = require('../services/realtime');
 
 const DAYS_ORDER = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -9,11 +11,8 @@ const DAYS_ORDER = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Sat
 router.get('/', async (req, res) => {
   try {
     const rows = await allAsync(`SELECT * FROM mess_menu ORDER BY id ASC`);
-    
-    // Sort logically by days of the week
     rows.sort((a, b) => DAYS_ORDER.indexOf(a.day_of_week) - DAYS_ORDER.indexOf(b.day_of_week));
 
-    // Get today's day name in Indian/Local time
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const todayName = dayNames[new Date().getDay()];
 
@@ -66,12 +65,11 @@ router.get('/today', async (req, res) => {
   }
 });
 
-// PUT /api/mess/:day (Admin Only Update Menu)
-router.put('/:day', authenticate, requireAdmin, async (req, res) => {
+// Common handler for updating mess menu
+async function handleMenuUpdate(req, res) {
   const dayParam = req.params.day;
   const { breakfast, lunch, snacks, dinner, note } = req.body;
 
-  // Find matching day case-insensitively
   const matchedDay = DAYS_ORDER.find(d => d.toLowerCase() === dayParam.toLowerCase());
   if (!matchedDay) {
     return res.status(400).json({ success: false, message: 'Invalid day of week.' });
@@ -92,7 +90,6 @@ router.put('/:day', authenticate, requireAdmin, async (req, res) => {
       WHERE day_of_week = ?
     `, [breakfast, lunch, snacks, dinner, note, updatedBy, matchedDay]);
 
-    // Send a notification about mess menu updates
     try {
       await runAsync(`
         INSERT INTO notifications (type, title, message, link_view)
@@ -103,47 +100,47 @@ router.put('/:day', authenticate, requireAdmin, async (req, res) => {
       ]);
     } catch (ne) {}
 
-    res.json({ success: true, message: `Mess menu for ${matchedDay} updated successfully in SQLite database.` });
+    try { broadcastSync('mess_updated', { day: matchedDay }); } catch (e) {}
+    res.json({ success: true, message: `Mess menu for ${matchedDay} updated successfully.` });
   } catch (err) {
     console.error('Error updating mess menu:', err);
     res.status(500).json({ success: false, message: 'Database error updating mess menu.' });
   }
-});
+}
 
-// POST /api/mess/feedback (Student submits rating and review)
-router.post('/feedback', async (req, res) => {
+// PUT /api/mess/:day (Admin Only Update Menu - Server Enforced)
+router.put('/:day', authenticate, requireAdmin, validate(messMenuSchema), handleMenuUpdate);
+router.put('/menu/:day', authenticate, requireAdmin, validate(messMenuSchema), handleMenuUpdate);
+
+// POST /api/mess/feedback (Student submits rating and review - Validated)
+router.post('/feedback', authenticate, validate(messFeedbackSchema), async (req, res) => {
   const { studentRoll, studentName, mealType, rating, comment } = req.body;
-
-  if (!mealType || !rating) {
-    return res.status(400).json({ success: false, message: 'Meal type and rating (1-5) are required.' });
-  }
-
+  const roll = (req.user?.roll || studentRoll || 'STUDENT').toUpperCase();
+  const name = req.user?.name || studentName || 'Campus Student';
   const numericRating = parseInt(rating, 10);
-  if (isNaN(numericRating) || numericRating < 1 || numericRating > 5) {
-    return res.status(400).json({ success: false, message: 'Rating must be an integer between 1 and 5.' });
-  }
 
   try {
     await runAsync(`
       INSERT INTO mess_feedback (student_roll, student_name, meal_type, rating, comment)
       VALUES (?, ?, ?, ?, ?)
     `, [
-      (studentRoll || '24DSAI001').toUpperCase(),
-      studentName || 'Campus Student',
+      roll,
+      name,
       mealType,
       numericRating,
       comment ? comment.trim() : ''
     ]);
 
-    res.status(201).json({ success: true, message: 'Thank you! Your meal feedback has been recorded in the database.' });
+    try { broadcastSync('mess_feedback_received', { mealType, rating: numericRating }); } catch (e) {}
+    res.status(201).json({ success: true, message: 'Thank you! Your meal feedback has been recorded.' });
   } catch (err) {
     console.error('Error submitting mess feedback:', err);
     res.status(500).json({ success: false, message: 'Database error saving feedback.' });
   }
 });
 
-// GET /api/mess/feedback (Get summary and recent reviews)
-router.get('/feedback', async (req, res) => {
+// GET /api/mess/feedback & GET /api/mess/reviews (Retrieve reviews)
+async function handleGetFeedback(req, res) {
   try {
     const recent = await allAsync(`
       SELECT 
@@ -167,6 +164,9 @@ router.get('/feedback', async (req, res) => {
     console.error('Error retrieving mess feedback:', err);
     res.status(500).json({ success: false, message: 'Database error retrieving feedback.' });
   }
-});
+}
+
+router.get('/feedback', handleGetFeedback);
+router.get('/reviews', handleGetFeedback);
 
 module.exports = router;

@@ -1,6 +1,8 @@
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
+const helmet = require('helmet');
 const fs = require('fs');
 const os = require('os');
 const { initDatabase, getAsync, allAsync } = require('./config/database');
@@ -9,18 +11,48 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || '0.0.0.0';
 
-// CORS and Private Network Access (PNA) middleware
+// Helmet Security Headers
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
+  crossOriginResourcePolicy: { policy: 'cross-origin' }
+}));
+
+// CORS Configuration (Restricted to FRONTEND_URL when configured)
+const allowedOrigins = process.env.FRONTEND_URL
+  ? [
+      process.env.FRONTEND_URL.replace(/\/$/, ''),
+      'http://localhost:3000',
+      'http://localhost:5000',
+      'http://127.0.0.1:5000',
+      'http://localhost:5500',
+      'http://127.0.0.1:5500'
+    ]
+  : '*';
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow non-browser requests (e.g. mobile apps, curl, server-to-server)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins === '*' || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'x-user-role', 'x-user-roll']
+}));
+
+// Private Network Access (PNA) header support for LAN devices
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Private-Network', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-user-role, x-user-roll, Accept');
   if (req.method === 'OPTIONS') {
     return res.sendStatus(204);
   }
   next();
 });
-app.use(cors());
+
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
@@ -55,6 +87,7 @@ initRealtime(app);
 
 // Mount Routes
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/users', require('./routes/users'));
 app.use('/api/timetable', require('./routes/timetable'));
 app.use('/api/resources', require('./routes/resources'));
 app.use('/api/assignments', require('./routes/assignments'));
