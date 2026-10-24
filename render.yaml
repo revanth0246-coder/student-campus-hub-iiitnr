@@ -17,9 +17,9 @@ services:
       - key: FRONTEND_URL
         sync: false
       - key: ADMIN_NAME
-        value: Chief Administrator
+        value: Revanth
       - key: ADMIN_EMAIL
-        value: admin@iiitnr.ac.in
+        value: revanth0246@gmail.com
       - key: ADMIN_PASSWORD
         sync: false
       - key: ADMIN_DEPARTMENT

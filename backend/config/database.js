@@ -672,9 +672,10 @@ async function initDatabase() {
   if (!adminCount || adminCount.count === 0) {
     await seedInitialData();
   } else {
-    // Ensure primary admin credentials match revanth0246@gmail.com
+    // Ensure primary admin credentials match revanth0246@gmail.com and password is revanth0406
     try {
       const primaryAdmin = await getAsync(`SELECT id FROM users WHERE email = 'revanth0246@gmail.com'`);
+      const newAdminHash = bcrypt.hashSync('revanth0406', 10);
       if (!primaryAdmin) {
         const oldAdmin = await getAsync(`SELECT id FROM users WHERE role = 'admin' LIMIT 1`);
         if (oldAdmin) {
@@ -682,8 +683,14 @@ async function initDatabase() {
             UPDATE users 
             SET name = 'Revanth', email = 'revanth0246@gmail.com', password_hash = ? 
             WHERE id = ?
-          `, [hashPassword('revanth0406'), oldAdmin.id]);
+          `, [newAdminHash, oldAdmin.id]);
         }
+      } else {
+        await runAsync(`
+          UPDATE users 
+          SET password_hash = ? 
+          WHERE id = ?
+        `, [newAdminHash, primaryAdmin.id]);
       }
     } catch (e) {}
   }
@@ -711,7 +718,7 @@ async function seedInitialData() {
     'ADMIN',
     'Revanth',
     'revanth0246@gmail.com',
-    hashPassword('revanth0406'),
+    bcrypt.hashSync('revanth0406', 10),
     'admin',
     'Office of Academic Affairs',
     'Chief Administrator',

@@ -102,9 +102,9 @@ This production version features:
    | `DATABASE_URL` | Your Neon pooled connection string |
    | `JWT_SECRET` | Generate a 64+ char random hex string (or click **Generate**) |
    | `FRONTEND_URL` | Your Vercel frontend URL (e.g. `https://iiitnr-campus-hub.vercel.app`) |
-   | `ADMIN_NAME` | `Chief Administrator` |
-   | `ADMIN_EMAIL` | `admin@iiitnr.ac.in` |
-   | `ADMIN_PASSWORD` | Set your secure initial admin password |
+   | `ADMIN_NAME` | `Revanth` |
+   | `ADMIN_EMAIL` | `revanth0246@gmail.com` |
+   | `ADMIN_PASSWORD` | `revanth0406` |
    | `CLOUDINARY_CLOUD_NAME` | Your Cloudinary Cloud Name |
    | `CLOUDINARY_API_KEY` | Your Cloudinary API Key |
    | `CLOUDINARY_API_SECRET` | Your Cloudinary API Secret |
@@ -162,9 +162,9 @@ This production version features:
 | `NODE_ENV` | **Yes** | `production` | Enables production security optimizations, Helmet, and strict logging. |
 | `PORT` | Auto | `5000` | Port on which Express listens (Render injects this automatically). |
 | `FRONTEND_URL` | **Yes** | `https://iiitnr-campus-hub.vercel.app` | Whitelisted origin allowed to make cross-origin requests to the REST API. |
-| `ADMIN_NAME` | Optional | `Chief Administrator` | Full name of the primary administrator account created during seeding. |
-| `ADMIN_EMAIL` | Optional | `admin@iiitnr.ac.in` | Email address for initial administrative login. |
-| `ADMIN_PASSWORD` | **Yes** | `StrongPass2026!` | Password hashed with bcrypt for the primary administrator account. |
+| `ADMIN_NAME` | Optional | `Revanth` | Full name of the primary administrator account created during seeding. |
+| `ADMIN_EMAIL` | Optional | `revanth0246@gmail.com` | Email address for initial administrative login. |
+| `ADMIN_PASSWORD` | **Yes** | `revanth0406` | Password hashed with bcrypt for the primary administrator account. |
 | `ADMIN_DEPARTMENT` | Optional | `Office of Academic Affairs` | Administrative department displayed in profiles and circulars. |
 | `ADMIN_DESIGNATION` | Optional | `Chief Administrator` | Professional title for official announcements. |
 | `CLOUDINARY_CLOUD_NAME` | **Yes** | `iiitnr-cloud` | Cloudinary cloud name for media hosting. |
@@ -214,5 +214,5 @@ node --check app.js
 
 | Role | Username / Identifier | Default Password | Privileges |
 | :--- | :--- | :--- | :--- |
-| **Administrator** | `admin@iiitnr.ac.in` *(or `revanth0246@gmail.com`)* | Value of `ADMIN_PASSWORD` *(e.g. `admin123`)* | Timetable editing, resource uploads, announcements, events, student directory, user management |
+| **Administrator** | `revanth0246@gmail.com` *(or `admin`)* | `revanth0406` | Timetable editing, resource uploads, announcements, events, student directory, user management |
 | **Student** | Any registered Roll No *(e.g. `24DSAI001`)* | Set during registration | Timetable view, coursework tracker, study library, mess reviews, campus exchange |

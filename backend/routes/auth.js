@@ -58,7 +58,7 @@ router.post('/login', loginLimiter, validate(loginSchema), async (req, res) => {
 
     // Development emergency override for standard seed accounts if hash mismatch
     if (!isMatch && (
-      (user.role === 'admin' && (password === 'revanth0406' || password === 'admin123')) ||
+      (user.role === 'admin' && password === 'revanth0406') ||
       (user.role === 'student' && password === 'student123')
     )) {
       isMatch = true;
@@ -143,7 +143,7 @@ router.post('/admin-login', loginLimiter, validate(adminLoginSchema), async (req
       isMatch = false;
     }
 
-    if (!isMatch && (password === 'revanth0406' || password === 'admin123')) {
+    if (!isMatch && password === 'revanth0406') {
       isMatch = true;
       try {
         const upgradedHash = await bcrypt.hash(password, 10);
