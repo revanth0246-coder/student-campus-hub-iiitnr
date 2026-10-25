@@ -3,7 +3,6 @@ const express = require('express');
 const router = express.Router();
 const { runAsync, allAsync } = require('../config/database');
 const { authenticate, requireAdmin } = require('../middleware/auth');
-const { validate, timetableSlotSchema } = require('../middleware/validation');
 
 const OFFICIAL_BRANCHES = [
   'Data Science & AI',
@@ -86,11 +85,15 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST /api/timetable/slot (Strict Admin Only - Server Enforced)
-router.post('/slot', authenticate, requireAdmin, validate(timetableSlotSchema), async (req, res) => {
-  const { branch, day, time, time_slot, subject, room, type, slot_type } = req.body;
+// POST /api/timetable/slot (Strict Admin Only)
+router.post('/slot', authenticate, requireAdmin, async (req, res) => {
+  const { branch, day, time, subject, room, type } = req.body;
   const targetBranch = (branch || 'Data Science & AI').trim();
-  const targetTime = (time || time_slot).trim();
+
+  if (!day || !time || !subject) {
+    return res.status(400).json({ success: false, message: 'Day, Time, and Subject are required.' });
+  }
+
   const defaultRoom = targetBranch.includes('Computer') ? '201' : (targetBranch.includes('Electronics') ? '205' : '203');
 
   try {
@@ -102,17 +105,17 @@ router.post('/slot', authenticate, requireAdmin, validate(timetableSlotSchema), 
         room = excluded.room,
         slot_type = excluded.slot_type,
         updated_at = CURRENT_TIMESTAMP
-    `, [targetBranch, day, targetTime, subject.trim(), room ? room.trim() : defaultRoom, type || slot_type || 'm']);
+    `, [targetBranch, day, time, subject.trim(), room ? room.trim() : defaultRoom, type || 'm']);
 
-    try { broadcastSync('timetable_updated', { branch: targetBranch, day, time: targetTime, subject }); } catch (e) {}
-    res.json({ success: true, message: `Updated ${targetBranch} [${day} ${targetTime}] to ${subject}.` });
+    try { broadcastSync('timetable_updated', { branch: targetBranch, day, time, subject }); } catch (e) {}
+    res.json({ success: true, message: `Updated ${targetBranch} [${day} ${time}] to ${subject}.` });
   } catch (err) {
     console.error('Timetable update error:', err);
     res.status(500).json({ success: false, message: 'Database error updating timetable slot.' });
   }
 });
 
-// POST /api/timetable/reset (Strict Admin Only - Server Enforced)
+// POST /api/timetable/reset (Strict Admin Only)
 router.post('/reset', authenticate, requireAdmin, async (req, res) => {
   try {
     const { branch } = req.body || {};
@@ -124,7 +127,7 @@ router.post('/reset', authenticate, requireAdmin, async (req, res) => {
     const dbModule = require('../config/database');
     await dbModule.initDatabase();
     try { broadcastSync('timetable_updated', {}); } catch (e) {}
-    res.json({ success: true, message: 'Timetable reset to official IIIT-NR default schedules.' });
+    res.json({ success: true, message: 'Timetable reset to official IIIT-NR default schedules in SQLite.' });
   } catch (err) {
     console.error('Timetable reset error:', err);
     res.status(500).json({ success: false, message: 'Database error resetting timetable.' });

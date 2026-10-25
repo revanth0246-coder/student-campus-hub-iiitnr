@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { runAsync, getAsync } = require('../config/database');
-const { uploadImage } = require('../config/cloudinary');
 
 // PUT /api/profile/:id
 router.put('/:id', async (req, res) => {
@@ -21,14 +20,7 @@ router.put('/:id', async (req, res) => {
     const updatedYear = year || user.year;
     const updatedSemester = semester ? semester.trim() : user.semester;
     const updatedCgpa = cgpa ? cgpa.trim() : user.cgpa;
-    
-    let updatedAvatar = avatar || user.avatar;
-    if (updatedAvatar && updatedAvatar.startsWith('data:image')) {
-      const uploadRes = await uploadImage(updatedAvatar, { folder: 'iiitnr-campus-hub/avatars' });
-      if (uploadRes?.url) {
-        updatedAvatar = uploadRes.url;
-      }
-    }
+    const updatedAvatar = avatar || user.avatar;
 
     await runAsync(`
       UPDATE users SET
@@ -58,7 +50,7 @@ router.put('/:id', async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Profile and gallery avatar updated successfully in database.',
+      message: 'Profile and gallery avatar updated successfully in SQLite.',
       user: safeUser
     });
   } catch (err) {

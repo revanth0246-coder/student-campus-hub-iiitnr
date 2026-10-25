@@ -1,45 +1,25 @@
 {
   "name": "iiitnr-student-campus-hub",
   "version": "2.0.0",
-  "description": "Enterprise Full-Stack Student Campus Hub with PostgreSQL and Express backend",
+  "description": "Full-Stack Student Campus Hub with SQLite backend and modern client UI",
   "main": "backend/server.js",
-  "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
-  },
   "scripts": {
     "start": "node backend/server.js",
     "dev": "node backend/server.js",
-    "build": "echo 'Build complete'",
-    "db:init": "node db/index.js",
-    "db:seed": "node db/seed.js",
     "seed": "node backend/scripts/seed.js",
-    "seed:pg": "node db/seed.js",
-    "test": "node backend/scripts/test-api-security.js",
-    "test:api": "node backend/scripts/test-api-security.js",
-    "test:pg": "node scripts/test-pg-pool.js"
+    "test": "node backend/scripts/test-e2e.js",
+    "tunnel": "node backend/scripts/tunnel.js",
+    "cross-network": "node backend/scripts/tunnel.js"
   },
   "keywords": [
     "iiitnr",
     "campus-hub",
-    "postgresql",
-    "express",
-    "render",
-    "vercel"
+    "sqlite",
+    "express"
   ],
   "author": "IIIT-NR Academic Cell",
   "license": "ISC",
-  "dependencies": {
-    "bcryptjs": "^3.0.3",
-    "cloudinary": "^2.9.0",
-    "cors": "^2.8.6",
-    "dotenv": "^18.0.9",
-    "express": "^5.2.1",
-    "express-rate-limit": "^8.7.1",
-    "helmet": "^8.3.0",
-    "jsonwebtoken": "^9.0.3",
-    "pg": "^8.23.1",
-    "pg-mem": "^3.0.14",
-    "zod": "^4.6.7"
+  "devDependencies": {
+    "localtunnel": "^2.0.2"
   }
 }

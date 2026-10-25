@@ -2,8 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { runAsync, getAsync, allAsync } = require('../config/database');
 const { authenticate, requireAdmin } = require('../middleware/auth');
-const { validate, examSchema } = require('../middleware/validation');
-const { broadcastSync } = require('../services/realtime');
 
 // GET /api/exams
 router.get('/', async (req, res) => {
@@ -22,11 +20,14 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST /api/exams (Admin Only - Server Enforced)
-router.post('/', authenticate, requireAdmin, validate(examSchema), async (req, res) => {
-  const { subject, title, examDate, exam_date, examTime, exam_time, room, syllabus } = req.body;
-  const targetDate = (examDate || exam_date).trim();
-  const targetTime = (examTime || exam_time || '10:00 AM - 01:00 PM').trim();
+// POST /api/exams (Admin Only)
+router.post('/', authenticate, requireAdmin, async (req, res) => {
+  const { subject, title, examDate, examTime, room, syllabus } = req.body;
+
+  if (!subject || !title || !examDate) {
+    return res.status(400).json({ success: false, message: 'Subject, Title, and Exam Date are required.' });
+  }
+
   const id = 'exam_' + Date.now();
   const createdBy = req.user?.name ? `Admin (${req.user.name})` : 'Academic Affairs';
 
@@ -38,21 +39,21 @@ router.post('/', authenticate, requireAdmin, validate(examSchema), async (req, r
       id,
       subject.trim(),
       title.trim(),
-      targetDate,
-      targetTime,
+      examDate.trim(),
+      examTime ? examTime.trim() : '10:00 AM - 01:00 PM',
       room ? room.trim() : 'Room 203',
       syllabus ? syllabus.trim() : 'Detailed syllabus on academic portal.',
       createdBy
     ]);
 
-    // Trigger notification
+    // Also trigger a notification for all students about new exam schedule
     try {
       await runAsync(`
         INSERT INTO notifications (type, title, message, link_view)
         VALUES ('exam', ?, ?, 'planner')
       `, [
         `Upcoming Exam: ${subject.trim()}`,
-        `Exam scheduled on ${targetDate} (${targetTime}) in ${room || 'Room 203'}.`
+        `Exam scheduled on ${examDate.trim()} (${examTime || '10:00 AM - 01:00 PM'}) in ${room || 'Room 203'}.`
       ]);
     } catch (ne) {}
 
@@ -60,14 +61,13 @@ router.post('/', authenticate, requireAdmin, validate(examSchema), async (req, r
       id,
       subject: subject.trim(),
       title: title.trim(),
-      examDate: targetDate,
-      examTime: targetTime,
+      examDate: examDate.trim(),
+      examTime: examTime || '10:00 AM - 01:00 PM',
       room: room || 'Room 203',
       syllabus: syllabus || 'Detailed syllabus on academic portal.',
       createdBy
     };
 
-    try { broadcastSync('exams_updated', { exam: created }); } catch (e) {}
     res.status(201).json({ success: true, message: 'Exam added successfully.', exam: created });
   } catch (err) {
     console.error('Error creating exam:', err);
@@ -75,12 +75,10 @@ router.post('/', authenticate, requireAdmin, validate(examSchema), async (req, r
   }
 });
 
-// PUT /api/exams/:id (Admin Only - Server Enforced)
+// PUT /api/exams/:id (Admin Only)
 router.put('/:id', authenticate, requireAdmin, async (req, res) => {
-  const { subject, title, examDate, exam_date, examTime, exam_time, room, syllabus } = req.body;
+  const { subject, title, examDate, examTime, room, syllabus } = req.body;
   const examId = req.params.id;
-  const targetDate = examDate || exam_date;
-  const targetTime = examTime || exam_time;
 
   try {
     const existing = await getAsync(`SELECT * FROM exams WHERE id = ?`, [examId]);
@@ -90,40 +88,33 @@ router.put('/:id', authenticate, requireAdmin, async (req, res) => {
 
     await runAsync(`
       UPDATE exams 
-      SET subject = COALESCE(?, subject),
-          title = COALESCE(?, title),
-          exam_date = COALESCE(?, exam_date),
-          exam_time = COALESCE(?, exam_time),
-          room = COALESCE(?, room),
-          syllabus = COALESCE(?, syllabus)
+      SET subject = ?, title = ?, exam_date = ?, exam_time = ?, room = ?, syllabus = ?
       WHERE id = ?
     `, [
-      subject ? subject.trim() : null,
-      title ? title.trim() : null,
-      targetDate ? targetDate.trim() : null,
-      targetTime ? targetTime.trim() : null,
-      room ? room.trim() : null,
-      syllabus ? syllabus.trim() : null,
+      subject ? subject.trim() : existing.subject,
+      title ? title.trim() : existing.title,
+      examDate ? examDate.trim() : existing.exam_date,
+      examTime ? examTime.trim() : existing.exam_time,
+      room ? room.trim() : existing.room,
+      syllabus ? syllabus.trim() : existing.syllabus,
       examId
     ]);
 
-    try { broadcastSync('exams_updated', { id: examId }); } catch (e) {}
-    res.json({ success: true, message: 'Exam updated successfully.' });
+    res.json({ success: true, message: 'Exam details updated successfully.' });
   } catch (err) {
     console.error('Error updating exam:', err);
     res.status(500).json({ success: false, message: 'Database error updating exam.' });
   }
 });
 
-// DELETE /api/exams/:id (Admin Only - Server Enforced)
+// DELETE /api/exams/:id (Admin Only)
 router.delete('/:id', authenticate, requireAdmin, async (req, res) => {
   try {
     const result = await runAsync(`DELETE FROM exams WHERE id = ?`, [req.params.id]);
     if (result.changes === 0) {
       return res.status(404).json({ success: false, message: 'Exam not found.' });
     }
-    try { broadcastSync('exams_updated', { id: req.params.id, removed: true }); } catch (e) {}
-    res.json({ success: true, message: 'Exam removed successfully.' });
+    res.json({ success: true, message: 'Exam deleted successfully.' });
   } catch (err) {
     console.error('Error deleting exam:', err);
     res.status(500).json({ success: false, message: 'Database error deleting exam.' });

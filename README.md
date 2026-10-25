@@ -1,218 +1,139 @@
-# IIIT-NR Student Campus Hub - Enterprise Production Guide
+# Student Campus Hub (IIIT Naya Raipur) - Full-Stack Application
 
-A full-stack, enterprise-grade web application built for the students and administration of **IIIT-NR (International Institute of Information Technology, Naya Raipur)**.
-
-This production version features:
-- **Frontend**: Single-Page Application deployed on **Vercel** with real-time SSE updates and Lucide iconography.
-- **Backend**: Express REST API deployed on **Render** with Helmet security headers, rate limiting, and Zod schema validation.
-- **Database**: Cloud PostgreSQL deployed on **Neon** with connection pooling (`pg`), parameterized queries, and relational integrity.
-- **Authentication**: JWT (JSON Web Tokens) with bcrypt password hashing and server-enforced role authorizations (`student` vs `admin`).
-- **Media Storage**: **Cloudinary** cloud integration for permanent CDN hosting of student avatars, event banners, and marketplace photos (storing only HTTPS URLs in the database).
+A comprehensive, production-ready web portal tailored for **IIIT-NR (International Institute of Information Technology, Naya Raipur)** students and administration. Built with an **Express & SQLite Relational Backend** and a modern, responsive frontend with offline resilience.
 
 ---
 
 ## 🏛️ System Architecture
 
 ```
-                               ┌──────────────────────────────────────────────┐
-                               │               User Browser                   │
-                               │   (Desktop, Tablet, or Mobile Phone)        │
-                               └──────────────┬───────────────────────────────┘
-                                              │
-                         HTTPS Requests / SSE │ Static HTML/JS/CSS Assets
-                                              │
-                      ┌───────────────────────┴───────────────────────┐
-                      ▼                                               ▼
-       ┌─────────────────────────────┐                 ┌─────────────────────────────┐
-       │     Render Web Service      │                 │       Vercel Hosting        │
-       │  (Node.js / Express API)    │                 │     (Frontend SPA App)      │
-       │   - Helmet Security         │◄─── CORS ───────┤   - index.html, app.js      │
-       │   - JWT Auth & Roles        │     Whitelist   │   - config.js               │
-       │   - Rate Limiters & Zod     │                 │   - Tailwind UI Themes      │
-       └──────────────┬──────────────┘                 └─────────────────────────────┘
-                      │
-         ┌────────────┴────────────┐
-         ▼                         ▼
-┌──────────────────┐      ┌─────────────────────────────┐
-│  Neon Serverless │      │       Cloudinary CDN        │
-│    PostgreSQL    │      │  (Global Media Cloud CDN)   │
-│  - 9 Mapped Rel. │      │  - Student Profile Photos   │
-│    Tables & Keys │      │  - Campus Event Banners     │
-│  - SSL Pooling   │      │  - Marketplace Listing Pics │
-└──────────────────┘      └─────────────────────────────┘
+c:\Users\Raju\OneDrive\Desktop\it\
+├── backend/
+│   ├── config/
+│   │   └── database.js        # SQLite3 connection, schemas & automated seed
+│   ├── database/
+│   │   └── campus_hub.sqlite  # Physical binary SQLite database on disk
+│   ├── middleware/
+│   │   └── auth.js            # Bearer token verification & requireAdmin guards
+│   ├── routes/
+│   │   ├── auth.js            # Login, registration & student directory
+│   │   ├── timetable.js       # B.Tech Section-1 schedule (Admin-only editing)
+│   │   ├── resources.js       # Verified study packages (Admin-only CRUD)
+│   │   ├── assignments.js     # Assignments & relational student checklists
+│   │   ├── announcements.js   # Official circulars (Admin-only publishing)
+│   │   ├── events.js          # Campus events & student registrations
+│   │   ├── profile.js         # Student/Admin profile management
+│   │   └── upload.js          # Physical disk uploads for gallery photos
+│   ├── uploads/               # Disk storage for uploaded student avatars
+│   ├── scripts/
+│   │   └── test-e2e.js        # Automated 12-suite API test runner
+│   ├── server.js              # Express 5 server & Interactive API Explorer
+│   └── package.json           # Backend dependencies (express, sqlite3, cors)
+├── run.bat                    # One-click Windows launcher (starts server & opens browser)
+├── run-backend.bat            # Launcher alias
+├── package.json               # Root npm scripts (npm start, npm test)
+├── index.html                 # UI markup + live "SQLite Backend Connected" pill
+├── app.js                     # Full-stack API client (REST API + offline fallback)
+├── style.css                  # Custom styling & slot badge palettes
+└── assets/                    # Illustrations & vector media
 ```
 
 ---
 
-## 🚀 Step-by-Step Deployment Guide
+## 💾 Relational Database Tables (`campus_hub.sqlite`)
 
-### Step 1: Provision the PostgreSQL Database on Neon
+The SQLite database enforces relational integrity and constraints across **9 tables**:
 
-1. Sign up or log in to **[Neon Console](https://console.neon.tech/)**.
-2. Click **Create Project**, name it `iiitnr-campus-hub`, and select your nearest cloud region (e.g. `AWS us-east-2`).
-3. Under your project dashboard, copy the **Connection string** (make sure **Pooled connection** and `sslmode=require` are enabled).
-   - Format: `postgresql://[user]:[password]@[neon-hostname]/campus_hub?sslmode=require`
-4. Initialize the PostgreSQL schema and seed the initial academic data and admin account:
-   ```bash
-   # Set the DATABASE_URL environment variable locally
-   set DATABASE_URL="postgresql://[user]:[password]@[neon-hostname]/campus_hub?sslmode=require"
-
-   # Initialize all 9 PostgreSQL tables
-   npm run db:init
-
-   # Seed official timetable, library resources, notices, events, and chief admin
-   npm run db:seed
-   ```
-   *(Alternatively, copy and run the raw SQL from [`db/schema.sql`](file:///c:/Users/Raju/OneDrive/Desktop/it/db/schema.sql) in the Neon SQL Editor).*
+1. **`users`**: Enrolled students & administrators (`id`, `roll`, `name`, `email`, `password_hash`, `role`, `branch`, `year`, `semester`, `cgpa`, `avatar`, `batch`).
+2. **`sessions`**: Cryptographic session tokens (`token`, `user_id`, `role`, `expires_at`).
+3. **`timetable`**: Section-1 9-slot schedule (`day`, `time_slot`, `subject`, `room`, `slot_type`, `updated_at`).
+4. **`resources`**: Study materials & drives (`id`, `subject`, `title`, `type`, `semester`, `link`, `description`, `contributor`).
+5. **`assignments`**: Academic assignments (`id`, `subject`, `title`, `due_date`, `faculty`, `is_broadcast`).
+6. **`assignment_completions`**: Student personal completion tracking (`assignment_id`, `student_roll`, `completed_at`).
+7. **`announcements`**: Official notices (`id`, `title`, `body`, `category`, `urgent`, `author`, `date_str`).
+8. **`events`**: Campus events (`id`, `title`, `date_str`, `venue`, `category`, `description`, `badge_color`, `banner`, `created_by`).
+9. **`event_registrations`**: Student event registrations (`event_id`, `student_roll`, `registered_at`).
 
 ---
 
-### Step 2: Configure Cloudinary Media Storage
+## 📸 Role-Based Permissions
 
-1. Create a free account at **[Cloudinary](https://cloudinary.com/)**.
-2. Navigate to your **Cloudinary Dashboard**.
-3. Copy the following three credentials:
-   - **Cloud Name** (`CLOUDINARY_CLOUD_NAME`)
-   - **API Key** (`CLOUDINARY_API_KEY`)
-   - **API Secret** (`CLOUDINARY_API_SECRET`)
-4. *(Optional)* Alternatively, copy the single `CLOUDINARY_URL` string under Account Details.
+All core operations are guarded by strict role-based checks on both the backend API and frontend UI:
 
----
-
-### Step 3: Deploy Backend on Render
-
-1. Log in to **[Render Dashboard](https://dashboard.render.com/)**.
-2. Click **New +** > **Web Service**.
-3. Connect your GitHub repository containing the project.
-4. Configure the Web Service settings:
-   - **Name**: `iiitnr-campus-hub-backend`
-   - **Region**: Nearest to your Neon database region (e.g. `Oregon (US West)` or `Frankfurt`)
-   - **Branch**: `main`
-   - **Root Directory**: Leave blank (root `.`)
-   - **Runtime**: `Node`
-   - **Build Command**: `npm install`
-   - **Start Command**: `node backend/server.js`
-   - **Plan**: `Free`
-5. Expand **Advanced** and set:
-   - **Health Check Path**: `/api/health`
-6. Add the following **Environment Variables** in Render:
-   | Key | Value / Source |
-   | :--- | :--- |
-   | `NODE_ENV` | `production` |
-   | `DATABASE_URL` | Your Neon pooled connection string |
-   | `JWT_SECRET` | Generate a 64+ char random hex string (or click **Generate**) |
-   | `FRONTEND_URL` | Your Vercel frontend URL (e.g. `https://iiitnr-campus-hub.vercel.app`) |
-   | `ADMIN_NAME` | `Revanth` |
-   | `ADMIN_EMAIL` | `revanth0246@gmail.com` |
-   | `ADMIN_PASSWORD` | `revanth0406` |
-   | `CLOUDINARY_CLOUD_NAME` | Your Cloudinary Cloud Name |
-   | `CLOUDINARY_API_KEY` | Your Cloudinary API Key |
-   | `CLOUDINARY_API_SECRET` | Your Cloudinary API Secret |
-7. Click **Create Web Service**. Wait for the build to finish until Render reports **Live**.
-8. Copy your public Render URL: `https://iiitnr-campus-hub-backend.onrender.com`.
+1. **Study Resources (Admin Only)**:
+   - Only administrators can upload or delete course materials. Students have access to search, filter, and open drive links.
+2. **Weekly Timetable (Admin Only - Room 203 Section-1)**:
+   - Official schedule matching Room 203 w.e.f. 24/08/2026. Only Admin can edit slots or reset to defaults.
+3. **Assignments (Admin Only Creation)**:
+   - Instructors/Admin broadcast assignments to all students. Students toggle their personal completion checkbox.
+4. **Announcements & Campus Events (Admin Only)**:
+   - Official circulars and campus events are published by administrators. Students register for events.
+5. **Gallery Photo Uploads**:
+   - Photos are selected directly from the device/phone gallery and saved as physical image files in `/uploads` on the server.
 
 ---
 
-### Step 4: Deploy Frontend on Vercel
+## 🔑 Default Credentials
 
-1. Open [`config.js`](file:///c:/Users/Raju/OneDrive/Desktop/it/config.js) and set your live Render backend URL:
-   ```javascript
-   window.__API_BASE_URL__ = 'https://iiitnr-campus-hub-backend.onrender.com/api';
-   ```
-2. Commit and push your changes to your Git repository:
-   ```bash
-   git add config.js
-   git commit -m "Configure production backend URL for Vercel"
-   git push origin main
-   ```
-3. Log in to **[Vercel Dashboard](https://vercel.com/)**.
-4. Click **Add New...** > **Project** and import your Git repository.
-5. In the project configuration:
-   - **Framework Preset**: `Other`
-   - **Root Directory**: `./`
-   - **Build Command**: Leave default or `echo 'Build complete'`
-   - **Output Directory**: Leave blank or `./`
-6. Click **Deploy**. Vercel will deploy the site in under 30 seconds.
-7. Copy your public Vercel URL (e.g. `https://iiitnr-campus-hub.vercel.app`).
-
----
-
-### Step 5: Connect CORS & Verify Real-Time Sync
-
-1. Return to the **Render Dashboard** for your backend service.
-2. Under **Environment**, update `FRONTEND_URL` to match your exact Vercel production URL:
-   ```
-   FRONTEND_URL = https://iiitnr-campus-hub.vercel.app
-   ```
-3. Render will automatically redeploy with the updated CORS whitelist.
-4. Open your Vercel URL in your browser:
-   - Check the top navbar badge: it should display **"Backend API Online"** with a green pulsing dot.
-   - Click **Sign In** and authenticate with the Admin credentials or register a new student account.
-
----
-
-## 🔐 Complete Environment Variables Reference
-
-### Backend (Render / Production)
-
-| Variable | Required? | Example Value | Description |
-| :--- | :---: | :--- | :--- |
-| `DATABASE_URL` | **Yes** | `postgresql://user:pass@ep-xyz.us-east-2.aws.neon.tech/campus_hub?sslmode=require` | Connection pool URL for Neon / PostgreSQL. |
-| `JWT_SECRET` | **Yes** | `d4e5f6...` *(64 hex characters)* | Secret used to sign and verify JWT authentication tokens. |
-| `NODE_ENV` | **Yes** | `production` | Enables production security optimizations, Helmet, and strict logging. |
-| `PORT` | Auto | `5000` | Port on which Express listens (Render injects this automatically). |
-| `FRONTEND_URL` | **Yes** | `https://iiitnr-campus-hub.vercel.app` | Whitelisted origin allowed to make cross-origin requests to the REST API. |
-| `ADMIN_NAME` | Optional | `Revanth` | Full name of the primary administrator account created during seeding. |
-| `ADMIN_EMAIL` | Optional | `revanth0246@gmail.com` | Email address for initial administrative login. |
-| `ADMIN_PASSWORD` | **Yes** | `revanth0406` | Password hashed with bcrypt for the primary administrator account. |
-| `ADMIN_DEPARTMENT` | Optional | `Office of Academic Affairs` | Administrative department displayed in profiles and circulars. |
-| `ADMIN_DESIGNATION` | Optional | `Chief Administrator` | Professional title for official announcements. |
-| `CLOUDINARY_CLOUD_NAME` | **Yes** | `iiitnr-cloud` | Cloudinary cloud name for media hosting. |
-| `CLOUDINARY_API_KEY` | **Yes** | `123456789012345` | Cloudinary API Key. |
-| `CLOUDINARY_API_SECRET` | **Yes** | `abcde_FGHIJKLMNOPQRSTUV123` | Cloudinary API Secret. |
-
-### Frontend (Vercel / Production)
-
-| Configuration Item | Location | Example | Description |
+| Role | Identifier / Roll No | Password | Access Level |
 | :--- | :--- | :--- | :--- |
-| `window.__API_BASE_URL__` | [`config.js`](file:///c:/Users/Raju/OneDrive/Desktop/it/config.js) | `https://iiitnr-campus-hub-backend.onrender.com/api` | Direct backend API base URL sent by all frontend `fetch()` requests. |
+| **Admin** | `admin@iiitnr.ac.in` *(or `admin`)* | `admin123` | **Full Administrative Control** (Timetable, Resources, Assignments, Announcements, Events) |
+| **Student** | `24DSAI001` *(or `sahil@iiitnr.ac.in`)* | `student123` | **Student Portal** (View timetable, resources, track assignments, register for events, update profile) |
+
+*New students can also register accounts directly via the **"+ Register Here"** modal.*
 
 ---
 
-## 🖼️ Cloudinary Image Handling
+## 🚀 How to Run the Application
 
-All image uploads (avatars, event banners, marketplace photos) are decoupled from the database:
-1. **Selection & Compression**: The client selects an image from their gallery; the browser center-crops and compresses the image to a temporary data URL.
-2. **Cloudinary Upload**: The client dispatches the image to `POST /api/upload/avatar`, `POST /api/upload/banner`, or `POST /api/upload/exchange`.
-3. **CDN URL Return**: Cloudinary decodes the image, stores it on their CDN, and returns an HTTPS URL (`https://res.cloudinary.com/...`).
-4. **Clean Relational Storage**: The database stores **only the HTTPS URL** string in `users.avatar`, `events.banner`, or `marketplace_listings.image_url`. Raw base64 data is **never** persisted in the database.
-5. **Local Fallback**: If Cloudinary credentials are not configured during local development, the backend saves the image to `backend/uploads/` and serves it locally.
+### Option 1: One-Click Launcher (Recommended)
+Double-click [run.bat](file:///c:/Users/Raju/OneDrive/Desktop/it/run.bat) (or [run-backend.bat](file:///c:/Users/Raju/OneDrive/Desktop/it/run-backend.bat)).  
+*This starts the SQLite backend server and automatically opens **http://localhost:5000** in your default browser!*
 
----
+### Option 2: Terminal / PowerShell
+```powershell
+# From project root:
+npm start
 
-## 🧪 Testing & Verification Suites
-
-Run the automated test suites to ensure full system compliance:
-
-```bash
-# 1. Verify 52 REST API security tests (JWT, roles, bcrypt, Zod, Helmet, rate limiting)
-node backend/scripts/test-api-security.js
-
-# 2. Verify PostgreSQL migration artifacts (schema, connection pool, seed scripts)
-node scripts/test-pg-pool.js
-
-# 3. Verify zero localStorage data leakage in frontend
-node scripts/audit-localstorage.js
-
-# 4. Check frontend syntax
-node --check app.js
+# Or run the automated 12-suite test verification:
+npm test
 ```
 
+### Option 3: Browser Endpoints
+* **Web Application:** [http://localhost:5000](http://localhost:5000) *(Top bar will show `🟢 SQLite Backend Connected`)*
+* **Interactive API Explorer & Live Docs:** [http://localhost:5000/api](http://localhost:5000/api) *(Interactive buttons with live SQLite responses)*
+
+### Option 4: Standalone Offline Mode
+* Double-click [index.html](file:///c:/Users/Raju/OneDrive/Desktop/it/index.html). The app seamlessly falls back to `localStorage` when the backend server is not running (`🟠 Local Mode (Offline)`).
+
 ---
 
-## 🛡️ Default Administrative Login
+## 📡 REST API Reference
 
-| Role | Username / Identifier | Default Password | Privileges |
+All endpoints are hosted at `http://localhost:5000/api`:
+
+| Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
-| **Administrator** | `revanth0246@gmail.com` *(or `admin`)* | `revanth0406` | Timetable editing, resource uploads, announcements, events, student directory, user management |
-| **Student** | Any registered Roll No *(e.g. `24DSAI001`)* | Set during registration | Timetable view, coursework tracker, study library, mess reviews, campus exchange |
+| `GET` | `/api/health` | Public | Returns server uptime & SQLite stats |
+| `POST` | `/api/auth/login` | Public | Authenticates credentials, returns Bearer token |
+| `POST` | `/api/auth/register` | Public | Creates student in SQLite `users` table |
+| `GET` | `/api/auth/students` | Public | Returns enrolled student directory |
+| `GET` | `/api/timetable` | Public | Gets 5-day Section-1 schedule (Room 203) |
+| `POST` | `/api/timetable/slot` | **Admin Only** | Modifies specific timetable slot |
+| `POST` | `/api/timetable/reset`| **Admin Only** | Resets timetable to official schedule |
+| `GET` | `/api/resources` | Public | Retrieves all study resources |
+| `POST` | `/api/resources` | **Admin Only** | Adds course notes/PYQs |
+| `DELETE`| `/api/resources/:id` | **Admin Only** | Deletes study resource |
+| `GET` | `/api/assignments` | Public | Retrieves assignments with completion lists |
+| `POST` | `/api/assignments` | **Admin Only** | Broadcasts assignment to students |
+| `DELETE`| `/api/assignments/:id`| **Admin Only** | Deletes assignment |
+| `POST` | `/api/assignments/:id/toggle-completion` | Student | Toggles personal completion in `assignment_completions` |
+| `GET` | `/api/announcements` | Public | Returns official campus circulars |
+| `POST` | `/api/announcements` | **Admin Only** | Publishes announcement |
+| `DELETE`| `/api/announcements/:id`| **Admin Only** | Removes announcement |
+| `GET` | `/api/events` | Public | Returns events and student registration status |
+| `POST` | `/api/events` | **Admin Only** | Publishes campus event |
+| `DELETE`| `/api/events/:id` | **Admin Only** | Removes campus event |
+| `POST` | `/api/events/:id/toggle-register` | Student | Toggles event registration in `event_registrations` |
+| `PUT` | `/api/profile/:id` | Student/Admin | Updates student profile & avatar |
+| `POST` | `/api/upload/avatar` | Public | Saves gallery image physically to `/uploads` disk storage |

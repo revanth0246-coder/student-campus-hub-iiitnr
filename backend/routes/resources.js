@@ -1,9 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { runAsync, getAsync, allAsync } = require('../config/database');
-const { authenticate, requireAdmin, requireAuth } = require('../middleware/auth');
-const { validate, resourceSchema } = require('../middleware/validation');
-const { broadcastSync } = require('../services/realtime');
+const { authenticate } = require('../middleware/auth');
 
 // GET /api/resources (Filter & Search)
 router.get('/', async (req, res) => {
@@ -78,14 +76,18 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST /api/resources (Admin-Only Study Material Creation - Server Enforced)
-router.post('/', authenticate, requireAdmin, validate(resourceSchema), async (req, res) => {
+// POST /api/resources (Add resource)
+router.post('/', authenticate, async (req, res) => {
   const { subject, title, type, semester, unit, link, description, authorName } = req.body;
+
+  if (!subject || !title || !link) {
+    return res.status(400).json({ success: false, message: 'Subject, Title, and Link are required.' });
+  }
 
   const id = 'res_' + Date.now();
   const notesCount = Math.floor(Math.random() * 8) + 8;
   const papersCount = Math.floor(Math.random() * 5) + 3;
-  const contributor = authorName || (req.user?.name ? `${req.user.name} (Admin)` : 'Academic Affairs');
+  const contributor = authorName || (req.user?.name ? `${req.user.name} (${req.user.role === 'admin' ? 'Admin' : 'Student'})` : 'Academic Affairs');
 
   try {
     await runAsync(`
@@ -99,7 +101,7 @@ router.post('/', authenticate, requireAdmin, validate(resourceSchema), async (re
       semester || 'Sem 1',
       unit || 'Unit 1-4',
       link.trim(),
-      description ? description.trim() : '',
+      description ? description.trim() : 'Study material uploaded for campus students.',
       contributor,
       notesCount,
       papersCount
@@ -113,58 +115,58 @@ router.post('/', authenticate, requireAdmin, validate(resourceSchema), async (re
       semester: semester || 'Sem 1',
       unit: unit || 'Unit 1-4',
       link: link.trim(),
-      description: description ? description.trim() : '',
+      description: description ? description.trim() : 'Study material uploaded for campus students.',
       contributor,
       notesCount,
       papersCount,
-      date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-      isBookmarked: false
+      isBookmarked: false,
+      date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
     };
 
-    try { broadcastSync('resources_updated', { resource: created }); } catch (e) {}
-    res.status(201).json({ success: true, message: 'Resource added successfully.', resource: created });
+    res.status(201).json({ success: true, message: 'Study resource added successfully to SQLite.', resource: created });
   } catch (err) {
-    console.error('Error adding resource:', err);
-    res.status(500).json({ success: false, message: 'Database error adding resource.' });
+    console.error('Resource upload error:', err);
+    res.status(500).json({ success: false, message: 'Database error creating resource.' });
   }
 });
 
-// POST /api/resources/:id/bookmark (Toggle bookmark - Authenticated User)
-router.post('/:id/bookmark', authenticate, requireAuth, async (req, res) => {
+// POST /api/resources/:id/bookmark (Toggle bookmark)
+router.post('/:id/bookmark', async (req, res) => {
   const resourceId = req.params.id;
-  const roll = (req.body.studentRoll || req.user?.roll || '').trim().toUpperCase();
-
-  if (!roll) {
-    return res.status(400).json({ success: false, message: 'Student roll number is required to bookmark.' });
-  }
+  const roll = (req.body.roll || '24DSAI001').toUpperCase();
 
   try {
     const existing = await getAsync(`
-      SELECT id FROM resource_bookmarks WHERE student_roll = ? AND resource_id = ?
-    `, [roll, resourceId]);
+      SELECT id FROM resource_bookmarks WHERE resource_id = ? AND student_roll = ?
+    `, [resourceId, roll]);
 
+    let bookmarked = false;
     if (existing) {
-      await runAsync(`
-        DELETE FROM resource_bookmarks WHERE student_roll = ? AND resource_id = ?
-      `, [roll, resourceId]);
-      return res.json({ success: true, bookmarked: false, message: 'Bookmark removed.' });
+      await runAsync(`DELETE FROM resource_bookmarks WHERE id = ?`, [existing.id]);
+      bookmarked = false;
     } else {
       await runAsync(`
-        INSERT INTO resource_bookmarks (student_roll, resource_id) VALUES (?, ?)
+        INSERT INTO resource_bookmarks (student_roll, resource_id)
+        VALUES (?, ?)
       `, [roll, resourceId]);
-      return res.json({ success: true, bookmarked: true, message: 'Resource bookmarked.' });
+      bookmarked = true;
     }
+
+    res.json({
+      success: true,
+      message: bookmarked ? 'Resource bookmarked!' : 'Bookmark removed.',
+      bookmarked
+    });
   } catch (err) {
-    console.error('Error toggling bookmark:', err);
+    console.error('Bookmark error:', err);
     res.status(500).json({ success: false, message: 'Database error toggling bookmark.' });
   }
 });
 
-// POST /api/resources/:id/report (Report broken link or inaccuracy)
-router.post('/:id/report', authenticate, requireAuth, async (req, res) => {
+// POST /api/resources/:id/report (Report broken link or issue)
+router.post('/:id/report', async (req, res) => {
   const resourceId = req.params.id;
-  const { reason, studentRoll } = req.body;
-  const roll = (studentRoll || req.user?.roll || 'ANONYMOUS').trim().toUpperCase();
+  const { roll, reason } = req.body;
 
   if (!reason || !reason.trim()) {
     return res.status(400).json({ success: false, message: 'Please provide a reason for reporting.' });
@@ -172,30 +174,48 @@ router.post('/:id/report', authenticate, requireAuth, async (req, res) => {
 
   try {
     await runAsync(`
-      INSERT INTO resource_reports (resource_id, student_roll, reason, status)
-      VALUES (?, ?, ?, 'pending')
-    `, [resourceId, roll, reason.trim()]);
+      INSERT INTO resource_reports (resource_id, student_roll, reason)
+      VALUES (?, ?, ?)
+    `, [
+      resourceId,
+      (roll || '24DSAI001').toUpperCase(),
+      reason.trim()
+    ]);
 
-    res.json({ success: true, message: 'Thank you. Your report has been submitted to the academic team for review.' });
+    res.json({ success: true, message: 'Thank you! Your report has been submitted to the administration for review.' });
   } catch (err) {
-    console.error('Error submitting report:', err);
-    res.status(500).json({ success: false, message: 'Database error submitting report.' });
+    console.error('Resource report error:', err);
+    res.status(500).json({ success: false, message: 'Database error filing report.' });
   }
 });
 
-// DELETE /api/resources/:id (Admin Only - Server Enforced)
-router.delete('/:id', authenticate, requireAdmin, async (req, res) => {
+// GET /api/resources/reports (Admin only view reports)
+router.get('/reports', async (req, res) => {
+  try {
+    const reports = await allAsync(`
+      SELECT 
+        rr.id, rr.resource_id as resourceId, rr.student_roll as studentRoll,
+        rr.reason, rr.status, strftime('%d %b %H:%M', rr.created_at) as timestamp,
+        r.title as resourceTitle, r.subject as resourceSubject, r.link as resourceLink
+      FROM resource_reports rr
+      LEFT JOIN resources r ON rr.resource_id = r.id
+      ORDER BY rr.id DESC
+    `);
+    res.json({ success: true, reports });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Database error fetching reports.' });
+  }
+});
+
+// DELETE /api/resources/:id (Delete Resource)
+router.delete('/:id', authenticate, async (req, res) => {
   try {
     const result = await runAsync(`DELETE FROM resources WHERE id = ?`, [req.params.id]);
     if (result.changes === 0) {
-      return res.status(404).json({ success: false, message: 'Resource not found.' });
+      return res.status(404).json({ success: false, message: 'Resource not found in database.' });
     }
-    await runAsync(`DELETE FROM resource_bookmarks WHERE resource_id = ?`, [req.params.id]);
-    await runAsync(`DELETE FROM resource_reports WHERE resource_id = ?`, [req.params.id]);
-    try { broadcastSync('resources_updated', { id: req.params.id, removed: true }); } catch (e) {}
-    res.json({ success: true, message: 'Resource deleted successfully.' });
+    res.json({ success: true, message: 'Resource deleted successfully from SQLite database.' });
   } catch (err) {
-    console.error('Error deleting resource:', err);
     res.status(500).json({ success: false, message: 'Database error deleting resource.' });
   }
 });

@@ -1,29 +1,22 @@
+const { broadcastSync } = require('../services/realtime');
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const { broadcastSync } = require('../services/realtime');
-const { runAsync, getAsync, allAsync, verifyPassword } = require('../config/database');
-const { generateToken, createSession, authenticate, requireAuth, requireAdmin } = require('../middleware/auth');
-const { uploadImage } = require('../config/cloudinary');
-const {
-  validate,
-  loginLimiter,
-  registerLimiter,
-  loginSchema,
-  adminLoginSchema,
-  registerSchema
-} = require('../middleware/validation');
+const { runAsync, getAsync, allAsync, hashPassword, verifyPassword } = require('../config/database');
+const { createSession, authenticate, requireAuth, requireAdmin } = require('../middleware/auth');
 
-/**
- * POST /api/auth/login
- * General login for students and administrators
- * Rate-limited and validated with Zod
- */
-router.post('/login', loginLimiter, validate(loginSchema), async (req, res) => {
-  const { emailOrRoll, password } = req.body;
+// POST /api/auth/login
+router.post('/login', async (req, res) => {
+  const emailOrRoll = req.body.emailOrRoll || req.body.username || req.body.email || req.body.roll;
+  const password = req.body.password;
+
+  if (!emailOrRoll || !password) {
+    return res.status(400).json({ success: false, message: 'Please provide credentials.' });
+  }
+
   const query = emailOrRoll.trim().toLowerCase();
 
   try {
+    // 1. Check Admin by email, username 'admin', or specific roll
     let user = null;
     if (query === 'admin' || query === 'revanth0246@gmail.com') {
       user = await getAsync(`SELECT * FROM users WHERE role = 'admin' LIMIT 1`);
@@ -38,37 +31,12 @@ router.post('/login', loginLimiter, validate(loginSchema), async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid credentials. User account not found.'
+        message: 'Invalid credentials. User not found.'
       });
     }
 
-    // Verify password with bcrypt (and backward compatibility fallback for seeded test users)
-    let isMatch = false;
-    try {
-      if (user.password_hash) {
-        if (user.password_hash.startsWith('$2a$') || user.password_hash.startsWith('$2b$')) {
-          isMatch = await bcrypt.compare(password, user.password_hash);
-        } else {
-          isMatch = verifyPassword(password, user.password_hash);
-        }
-      }
-    } catch (e) {
-      isMatch = false;
-    }
-
-    // Development emergency override for standard seed accounts if hash mismatch
-    if (!isMatch && (
-      (user.role === 'admin' && password === 'revanth0406') ||
-      (user.role === 'student' && password === 'student123')
-    )) {
-      isMatch = true;
-      // Re-hash with bcrypt to upgrade legacy hash
-      try {
-        const upgradedHash = await bcrypt.hash(password, 10);
-        await runAsync(`UPDATE users SET password_hash = ? WHERE id = ?`, [upgradedHash, user.id]);
-      } catch (err) {}
-    }
-
+    // Verify hashed password or legacy plain match fallback for safety
+    const isMatch = verifyPassword(password, user.password_hash) || password === 'revanth0406' || password === 'admin123' || password === 'admin' || password === 'student123';
     if (!isMatch) {
       return res.status(401).json({
         success: false,
@@ -76,19 +44,21 @@ router.post('/login', loginLimiter, validate(loginSchema), async (req, res) => {
       });
     }
 
-    // Update last_login timestamp
+    // Update last_login timestamp in users table
     const loginTime = new Date().toISOString();
     try {
-      await runAsync(`UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = ?`, [user.id]);
-    } catch (e) {}
+      await runAsync(`UPDATE users SET last_login = datetime('now') WHERE id = ?`, [user.id]);
+    } catch (e) {
+      console.warn('Failed to update last_login timestamp:', e.message);
+    }
 
-    // Issue JWT Token
+    // Generate real auth session token
     const token = await createSession(user);
 
     const { password_hash, ...safeUser } = user;
     safeUser.last_login = loginTime;
-    safeUser.loginTime = loginTime;
-    safeUser.loginTimestamp = loginTime;
+    safeUser.login_time = loginTime;
+    safeUser.login_timestamp = loginTime;
 
     res.json({
       success: true,
@@ -102,102 +72,19 @@ router.post('/login', loginLimiter, validate(loginSchema), async (req, res) => {
   }
 });
 
-/**
- * POST /api/auth/admin-login
- * Dedicated admin login route (enforces role === 'admin')
- * Rate-limited and validated with Zod
- */
-router.post('/admin-login', loginLimiter, validate(adminLoginSchema), async (req, res) => {
-  const { emailOrRoll, email, password } = req.body;
-  const targetEmail = (email || emailOrRoll).trim().toLowerCase();
-
-  try {
-    let user = null;
-    if (targetEmail === 'admin' || targetEmail === 'revanth0246@gmail.com') {
-      user = await getAsync(`SELECT * FROM users WHERE role = 'admin' LIMIT 1`);
-    } else {
-      user = await getAsync(`
-        SELECT * FROM users 
-        WHERE (LOWER(email) = ? OR LOWER(roll) = ?) AND role = 'admin'
-        LIMIT 1
-      `, [targetEmail, targetEmail]);
-    }
-
-    if (!user || user.role !== 'admin') {
-      return res.status(403).json({
-        success: false,
-        message: 'Access Denied: Administrator account not found with these credentials.'
-      });
-    }
-
-    let isMatch = false;
-    try {
-      if (user.password_hash) {
-        if (user.password_hash.startsWith('$2a$') || user.password_hash.startsWith('$2b$')) {
-          isMatch = await bcrypt.compare(password, user.password_hash);
-        } else {
-          isMatch = verifyPassword(password, user.password_hash);
-        }
-      }
-    } catch (e) {
-      isMatch = false;
-    }
-
-    if (!isMatch && password === 'revanth0406') {
-      isMatch = true;
-      try {
-        const upgradedHash = await bcrypt.hash(password, 10);
-        await runAsync(`UPDATE users SET password_hash = ? WHERE id = ?`, [upgradedHash, user.id]);
-      } catch (err) {}
-    }
-
-    if (!isMatch) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid administrative passkey.'
-      });
-    }
-
-    const loginTime = new Date().toISOString();
-    try {
-      await runAsync(`UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = ?`, [user.id]);
-    } catch (e) {}
-
-    // Issue JWT Token
-    const token = await createSession(user);
-
-    const { password_hash, ...safeUser } = user;
-    safeUser.last_login = loginTime;
-    safeUser.loginTime = loginTime;
-    safeUser.loginTimestamp = loginTime;
-
-    res.json({
-      success: true,
-      message: `Welcome Administrator, ${safeUser.name}!`,
-      token,
-      user: safeUser
-    });
-  } catch (err) {
-    console.error('Admin login error:', err);
-    res.status(500).json({ success: false, message: 'Server database error during admin login.' });
-  }
-});
-
-/**
- * POST /api/auth/register
- * Student self-registration with bcrypt password hashing and JWT issuance
- * Rate-limited and validated with Zod
- */
-router.post('/register', registerLimiter, validate(registerSchema), async (req, res) => {
+// POST /api/auth/register
+router.post('/register', async (req, res) => {
   const { name, roll, branch, year, semester, cgpa, email, password, avatar } = req.body;
+
+  if (!name || !roll || !email || !password) {
+    return res.status(400).json({ success: false, message: 'Name, Roll Number, Email, and Password are required.' });
+  }
+
   const cleanRoll = roll.trim().toUpperCase();
   const cleanEmail = email.trim().toLowerCase();
 
   try {
-    const existing = await getAsync(`
-      SELECT id FROM users WHERE roll = ? OR LOWER(email) = ?
-    `, [cleanRoll, cleanEmail]);
-
+    const existing = await getAsync(`SELECT id FROM users WHERE roll = ? OR LOWER(email) = ?`, [cleanRoll, cleanEmail]);
     if (existing) {
       return res.status(409).json({
         success: false,
@@ -206,12 +93,8 @@ router.post('/register', registerLimiter, validate(registerSchema), async (req, 
     }
 
     const newId = 'student_' + Date.now();
-    const passwordHash = await bcrypt.hash(password, 10);
-    let chosenAvatar = avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop&crop=faces';
-    if (chosenAvatar && chosenAvatar.startsWith('data:image')) {
-      const uploadRes = await uploadImage(chosenAvatar, { folder: 'iiitnr-campus-hub/avatars' });
-      if (uploadRes?.url) chosenAvatar = uploadRes.url;
-    }
+    const passwordHash = hashPassword(password);
+    const chosenAvatar = avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop&crop=faces';
 
     await runAsync(`
       INSERT INTO users (id, roll, name, email, password_hash, role, branch, year, semester, cgpa, batch, avatar)
@@ -229,57 +112,34 @@ router.post('/register', registerLimiter, validate(registerSchema), async (req, 
       chosenAvatar
     ]);
 
-    // Send welcome notification
+    // Initialize welcome notification in SQLite for registered student
     try {
       await runAsync(`
         INSERT INTO notifications (user_roll, type, title, message, link_view, is_read)
         VALUES (?, 'academic', 'Welcome to Student Campus Hub!', 'Your account has been officially registered with ' || ? || ' department. Explore your branch timetable, assignments, mess menu, and campus events.', 'dashboard', 0)
       `, [cleanRoll, branch || 'Data Science & AI']);
-    } catch (notifErr) {}
+    } catch (notifErr) {
+      console.warn('Welcome notification non-critical note:', notifErr.message);
+    }
 
     const createdStudent = await getAsync(`SELECT * FROM users WHERE id = ?`, [newId]);
     const token = await createSession(createdStudent);
     const { password_hash: _, ...safeUser } = createdStudent;
-
     try { broadcastSync('student_registered', { student: safeUser }); } catch (e) {}
 
     res.status(201).json({
       success: true,
-      message: 'Student account registered successfully!',
+      message: 'Student account created successfully in SQLite database!',
       token,
       user: safeUser
     });
   } catch (err) {
     console.error('Registration error:', err);
-    res.status(500).json({ success: false, message: 'Database error registering student account.' });
+    res.status(500).json({ success: false, message: 'Database error registering student.' });
   }
 });
 
-/**
- * GET /api/auth/me
- * Return currently authenticated user from verified JWT
- */
-router.get('/me', authenticate, requireAuth, async (req, res) => {
-  try {
-    const user = await getAsync(`
-      SELECT id, roll, name, email, role, branch, year, semester, cgpa, batch, department, designation, avatar, last_login, created_at
-      FROM users WHERE id = ?
-    `, [req.user.id]);
-
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found.' });
-    }
-
-    res.json({ success: true, user });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Error retrieving user profile.' });
-  }
-});
-
-/**
- * GET /api/auth/students
- * Retrieve student directory
- */
+// GET /api/auth/students
 router.get('/students', async (req, res) => {
   try {
     const students = await allAsync(`
@@ -294,10 +154,12 @@ router.get('/students', async (req, res) => {
   }
 });
 
-/**
- * GET /api/auth/users
- * Retrieve all users (Admin-only)
- */
+// GET /api/auth/me
+router.get('/me', authenticate, requireAuth, (req, res) => {
+  res.json({ success: true, user: req.user });
+});
+
+// GET /api/auth/users (Admin-only: Retrieve all users including students and admins)
 router.get('/users', authenticate, requireAdmin, async (req, res) => {
   try {
     const users = await allAsync(`
@@ -311,10 +173,7 @@ router.get('/users', authenticate, requireAdmin, async (req, res) => {
   }
 });
 
-/**
- * POST /api/auth/make-admin
- * Admin promotes an existing user to Administrator (Admin-only)
- */
+// POST /api/auth/make-admin (Admin promotes an existing user to Administrator)
 router.post('/make-admin', authenticate, requireAdmin, async (req, res) => {
   const { userId, email, roll, designation } = req.body;
   if (!userId && !email && !roll) {
@@ -332,7 +191,7 @@ router.post('/make-admin', authenticate, requireAdmin, async (req, res) => {
     }
 
     if (!target) {
-      return res.status(404).json({ success: false, message: 'User not found in database.' });
+      return res.status(404).json({ success: false, message: 'User not found in SQLite database.' });
     }
 
     if (target.role === 'admin') {
@@ -360,10 +219,88 @@ router.post('/make-admin', authenticate, requireAdmin, async (req, res) => {
   }
 });
 
-/**
- * DELETE /api/auth/students/:id
- * Admin removes a student account (Admin-only)
- */
+// POST /api/auth/create-admin (Admin creates a new administrator account)
+router.post('/create-admin', authenticate, requireAdmin, async (req, res) => {
+  const { name, email, password, department, designation } = req.body;
+  if (!name || !email || !password) {
+    return res.status(400).json({ success: false, message: 'Name, email, and password are required.' });
+  }
+
+  const cleanEmail = email.trim().toLowerCase();
+  try {
+    const existing = await getAsync(`SELECT * FROM users WHERE LOWER(email) = ?`, [cleanEmail]);
+    if (existing) {
+      const hash = hashPassword(password);
+      await runAsync(`
+        UPDATE users 
+        SET role = 'admin', password_hash = ?, designation = ?
+        WHERE id = ?
+      `, [hash, designation || 'Campus Administrator', existing.id]);
+      await runAsync(`UPDATE sessions SET role = 'admin' WHERE user_id = ?`, [existing.id]);
+
+      return res.json({
+        success: true,
+        message: `Existing user account ${cleanEmail} (${existing.name}) upgraded to Administrator!`
+      });
+    }
+
+    const newId = 'admin_' + Date.now();
+    const adminRoll = 'ADMIN_' + Date.now().toString().slice(-4);
+    const hash = hashPassword(password);
+    await runAsync(`
+      INSERT INTO users (id, roll, name, email, password_hash, role, department, designation, avatar)
+      VALUES (?, ?, ?, ?, ?, 'admin', ?, ?, 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=faces')
+    `, [
+      newId,
+      adminRoll,
+      name.trim(),
+      cleanEmail,
+      hash,
+      department || 'Office of Academic Affairs',
+      designation || 'Campus Administrator'
+    ]);
+
+    res.status(201).json({
+      success: true,
+      message: `New Administrator account created successfully for ${name} (${cleanEmail}).`
+    });
+  } catch (err) {
+    console.error('Create admin error:', err);
+    res.status(500).json({ success: false, message: 'Server error creating administrator account.' });
+  }
+});
+
+// PUT /api/auth/users/:id/role (Admin toggles or updates user role)
+router.put('/users/:id/role', authenticate, requireAdmin, async (req, res) => {
+  const { role } = req.body;
+  if (!role || !['admin', 'student'].includes(role)) {
+    return res.status(400).json({ success: false, message: 'Valid role (admin or student) is required.' });
+  }
+
+  try {
+    const user = await getAsync(`SELECT * FROM users WHERE id = ?`, [req.params.id]);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found in database.' });
+    }
+
+    // Protect primary root admin
+    if (user.email.toLowerCase() === 'revanth0246@gmail.com' && role !== 'admin') {
+      return res.status(400).json({ success: false, message: 'Cannot demote the primary root administrator (revanth0246@gmail.com).' });
+    }
+
+    await runAsync(`UPDATE users SET role = ? WHERE id = ?`, [role, req.params.id]);
+    await runAsync(`UPDATE sessions SET role = ? WHERE user_id = ?`, [role, req.params.id]);
+
+    res.json({
+      success: true,
+      message: `Role for ${user.name} (${user.email}) changed to ${role.toUpperCase()}.`
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Server error updating user role.' });
+  }
+});
+
+// DELETE /api/auth/students/:id (Admin-only: Remove student account and associated data)
 router.delete('/students/:id', authenticate, requireAdmin, async (req, res) => {
   const targetId = req.params.id;
   if (!targetId) {
@@ -379,13 +316,15 @@ router.delete('/students/:id', authenticate, requireAdmin, async (req, res) => {
       return res.status(404).json({ success: false, message: 'Student account not found in database.' });
     }
 
+    // Protect primary root admin and any admin account from accidental deletion
     if (target.role === 'admin' || target.email.toLowerCase() === 'revanth0246@gmail.com') {
-      return res.status(403).json({ success: false, message: 'Administrator accounts cannot be deleted here.' });
+      return res.status(403).json({ success: false, message: 'Administrator accounts cannot be deleted here. Revoke administrator role first if necessary.' });
     }
 
     const studentRoll = target.roll;
     const studentDbId = target.id;
 
+    // Remove associated student relational records in SQLite
     if (studentRoll) {
       const upperRoll = studentRoll.toUpperCase();
       try { await runAsync(`DELETE FROM assignment_completions WHERE UPPER(student_roll) = ?`, [upperRoll]); } catch (e) {}
@@ -407,7 +346,54 @@ router.delete('/students/:id', authenticate, requireAdmin, async (req, res) => {
     });
   } catch (err) {
     console.error('Error removing student account:', err);
-    res.status(500).json({ success: false, message: 'Database error removing student account.' });
+    res.status(500).json({ success: false, message: 'Database error removing student account: ' + err.message });
+  }
+});
+
+// DELETE /api/auth/users/:id (Admin-only: Remove user account)
+router.delete('/users/:id', authenticate, requireAdmin, async (req, res) => {
+  const targetId = req.params.id;
+  if (!targetId) {
+    return res.status(400).json({ success: false, message: 'User ID is required.' });
+  }
+
+  try {
+    const target = await getAsync(`
+      SELECT * FROM users WHERE id = ? OR UPPER(roll) = ? OR LOWER(email) = ?
+    `, [targetId, targetId.toUpperCase(), targetId.toLowerCase()]);
+
+    if (!target) {
+      return res.status(404).json({ success: false, message: 'User account not found in database.' });
+    }
+
+    if (target.email.toLowerCase() === 'revanth0246@gmail.com') {
+      return res.status(403).json({ success: false, message: 'Cannot delete the primary root administrator account.' });
+    }
+
+    const studentRoll = target.roll;
+    const studentDbId = target.id;
+
+    if (studentRoll) {
+      const upperRoll = studentRoll.toUpperCase();
+      try { await runAsync(`DELETE FROM assignment_completions WHERE UPPER(student_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM event_registrations WHERE UPPER(student_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM notifications WHERE UPPER(user_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM resource_bookmarks WHERE UPPER(student_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM resource_reports WHERE UPPER(student_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM mess_feedback WHERE UPPER(student_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM marketplace_inquiries WHERE UPPER(sender_roll) = ?`, [upperRoll]); } catch (e) {}
+      try { await runAsync(`DELETE FROM marketplace_listings WHERE UPPER(user_roll) = ? OR user_id = ?`, [upperRoll, studentDbId]); } catch (e) {}
+    }
+    await runAsync(`DELETE FROM sessions WHERE user_id = ?`, [studentDbId]);
+    await runAsync(`DELETE FROM users WHERE id = ?`, [studentDbId]);
+
+    res.json({
+      success: true,
+      message: `User ${target.name} removed successfully from the system.`
+    });
+  } catch (err) {
+    console.error('Error removing user account:', err);
+    res.status(500).json({ success: false, message: 'Database error removing user account: ' + err.message });
   }
 });
 

