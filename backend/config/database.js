@@ -310,6 +310,38 @@ async function seedBranchTimetables() {
   }
 }
 
+// Seed the 100 official DSAI 2026-2030 students from the official registry
+async function seedDSAIStudents() {
+  try {
+    const dsaiStudents = require('../data/dsai_students');
+    const defaultPasswordHash = hashPassword('Test@1234');
+    for (const s of dsaiStudents) {
+      const existing = await getAsync(`SELECT id FROM users WHERE roll = ? OR LOWER(email) = ?`, [s.roll, s.email.toLowerCase()]);
+      if (!existing) {
+        await runAsync(`
+          INSERT INTO users (id, roll, name, email, password_hash, role, branch, year, semester, cgpa, batch, avatar)
+          VALUES (?, ?, ?, ?, ?, 'student', ?, ?, ?, ?, ?, ?)
+        `, [
+          s.id,
+          s.roll,
+          s.name,
+          s.email.toLowerCase(),
+          defaultPasswordHash,
+          s.branch,
+          s.year,
+          s.semester,
+          s.cgpa,
+          s.batch,
+          s.avatar
+        ]);
+      }
+    }
+    console.log('✅ 100 DSAI Students verified/seeded in SQLite.');
+  } catch (err) {
+    console.error('seedDSAIStudents error:', err.message);
+  }
+}
+
 // Initialize tables and seed default data
 async function initDatabase() {
   await runAsync(`PRAGMA foreign_keys = ON;`);
@@ -637,6 +669,7 @@ async function initDatabase() {
 
   // Ensure all 3 branch timetables are seeded in SQLite
   await seedBranchTimetables();
+  await seedDSAIStudents();
 }
 
 // Seed the official database
@@ -1200,5 +1233,6 @@ module.exports = {
   verifyPassword,
   initDatabase,
   seedInitialData,
-  seedAdditionalModules
+  seedAdditionalModules,
+  seedDSAIStudents
 };
