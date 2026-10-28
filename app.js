@@ -8243,8 +8243,80 @@ async function demoteUserToStudent(userId, name) {
   }
 }
 
+
+// ==========================================
+// PRE-LOGIN SPLASH & LOADING SCREEN CONTROLLER
+// ==========================================
+let splashDismissed = false;
+let splashInterval = null;
+
+function dismissSplashScreen() {
+  if (splashDismissed) return;
+  splashDismissed = true;
+  if (splashInterval) {
+    clearInterval(splashInterval);
+    splashInterval = null;
+  }
+
+  const splash = document.getElementById('splash-loading-screen');
+  if (splash) {
+    splash.classList.add('dismissed');
+    setTimeout(() => {
+      splash.style.display = 'none';
+      if (window.lucide) lucide.createIcons();
+    }, 700);
+  }
+}
+window.dismissSplashScreen = dismissSplashScreen;
+
+function startSplashLoader() {
+  const bar = document.getElementById('splash-progress-bar');
+  const percentText = document.getElementById('splash-percent-text');
+  const statusText = document.getElementById('splash-status-text');
+
+  if (!bar && !percentText && !statusText) return;
+
+  let progress = 0;
+  const messages = [
+    { at: 0, text: 'Initializing Student Campus Hub...' },
+    { at: 20, text: 'Loading official branch timetables & modules...' },
+    { at: 45, text: 'Syncing campus resources, notices & mess menu...' },
+    { at: 75, text: 'Connecting to IIIT-NR database...' },
+    { at: 95, text: 'Welcome to IIIT-NR Student Campus Hub!' }
+  ];
+
+  splashInterval = setInterval(() => {
+    if (splashDismissed) {
+      clearInterval(splashInterval);
+      splashInterval = null;
+      return;
+    }
+
+    const increment = Math.floor(Math.random() * 6) + 4;
+    progress = Math.min(progress + increment, 100);
+
+    if (bar) bar.style.width = progress + '%';
+    if (percentText) percentText.textContent = progress + '%';
+
+    const currentMsg = messages.slice().reverse().find(m => progress >= m.at);
+    if (currentMsg && statusText && statusText.textContent !== currentMsg.text) {
+      statusText.textContent = currentMsg.text;
+    }
+
+    if (progress >= 100) {
+      clearInterval(splashInterval);
+      splashInterval = null;
+      setTimeout(() => {
+        dismissSplashScreen();
+      }, 350);
+    }
+  }, 45);
+}
+window.startSplashLoader = startSplashLoader;
+
 // Initial Boot
 window.addEventListener('DOMContentLoaded', () => {
+  startSplashLoader();
   initStorage();
   lucide.createIcons();
 });

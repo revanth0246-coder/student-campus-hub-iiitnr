@@ -52,6 +52,84 @@
 </head>
 <body class="bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans antialiased min-h-screen transition-colors duration-200">
 
+    <!-- ============================================== -->
+  <!-- PRE-LOGIN SPLASH & LOADING SCREEN (SCREENSHOT ARTWORK) -->
+  <!-- ============================================== -->
+  <div id="splash-loading-screen" class="fixed inset-0 z-[100] flex flex-col justify-between bg-[#060919] text-white overflow-hidden select-none">
+    
+    <!-- Ultra-HD Visual Artwork Background -->
+    <div class="absolute inset-0 z-0 overflow-hidden">
+      <img src="assets/splash_banner.jpg" alt="Student Campus Hub" class="w-full h-full object-cover object-center animate-cosmic-float" id="splash-hero-img" />
+      <!-- Subtle top and bottom dark gradients for high contrast controls -->
+      <div class="absolute inset-0 bg-gradient-to-t from-[#060919] via-transparent to-[#060919]/60 pointer-events-none"></div>
+    </div>
+
+    <!-- Top Bar: Official Badge + Skip Button -->
+    <div class="relative z-10 w-full p-4 sm:p-6 flex items-center justify-between">
+      <div class="flex items-center gap-2 sm:gap-2.5 bg-slate-950/70 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-blue-500/30 shadow-lg">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+        <span class="text-xs font-semibold text-cyan-300 tracking-wide">✦ IIIT-NR Student Portal 2026</span>
+      </div>
+      <button type="button" onclick="dismissSplashScreen()" class="group flex items-center gap-1.5 text-xs font-semibold bg-slate-950/80 hover:bg-blue-600/90 backdrop-blur-md px-4 py-2 rounded-full border border-slate-700/60 hover:border-blue-400 transition-all shadow-xl active:scale-95 text-slate-200 hover:text-white cursor-pointer" title="Skip to login">
+        <span>Skip to Login</span>
+        <i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform"></i>
+      </button>
+    </div>
+
+    <!-- Center / Lower Loading Card Deck -->
+    <div class="relative z-10 w-full max-w-lg mx-auto px-4 pb-6 sm:pb-10 flex flex-col items-center text-center">
+      <div class="w-full bg-slate-950/85 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-4 sm:p-5 shadow-2xl shadow-blue-950/60 space-y-3">
+        <!-- Status & Percent -->
+        <div class="flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2 font-medium text-slate-300 text-left truncate mr-2">
+            <i data-lucide="loader" class="w-4 h-4 text-cyan-400 animate-spin flex-shrink-0"></i>
+            <span id="splash-status-text" class="truncate">Initializing Student Campus Hub...</span>
+          </div>
+          <span id="splash-percent-text" class="font-bold text-cyan-400 font-mono flex-shrink-0">0%</span>
+        </div>
+
+        <!-- Glowing Progress Bar Track -->
+        <div class="w-full h-2.5 bg-slate-900/90 rounded-full overflow-hidden p-0.5 border border-slate-800">
+          <div id="splash-progress-bar" class="h-full bg-gradient-to-r from-blue-600 via-cyan-400 to-indigo-500 rounded-full transition-all duration-200 ease-out shadow-[0_0_12px_rgba(6,182,212,0.8)]" style="width: 0%;"></div>
+        </div>
+
+        <!-- Badges & Action -->
+        <div class="flex items-center justify-between text-[11px] text-slate-400 pt-1 flex-wrap gap-2">
+          <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3 text-rose-400"></i> Atal Nagar, Raipur</span>
+          <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Active Term</span>
+          <button type="button" onclick="dismissSplashScreen()" class="text-cyan-400 hover:text-white font-semibold underline underline-offset-2 ml-auto cursor-pointer">Continue to Login →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Continuous Marquee / Ticker -->
+    <div class="relative z-10 w-full bg-[#050816]/95 border-t border-blue-900/40 py-2.5 overflow-hidden backdrop-blur-md">
+      <div class="splash-ticker-track flex items-center whitespace-nowrap text-[11px] sm:text-xs font-bold tracking-widest text-slate-400 select-none">
+        <div class="splash-ticker-content flex items-center gap-6">
+          <span>PLANNER</span> <span class="text-blue-500">•</span>
+          <span>TIMETABLE</span> <span class="text-blue-500">•</span>
+          <span>RESOURCES</span> <span class="text-blue-500">•</span>
+          <span>EXCHANGE</span> <span class="text-blue-500">•</span>
+          <span>MESS MENU</span> <span class="text-blue-500">•</span>
+          <span>EVENTS</span> <span class="text-blue-500">•</span>
+          <span>ANNOUNCEMENTS</span> <span class="text-blue-500">•</span>
+          <span>PROFILE</span> <span class="text-blue-500">•</span>
+          <span>STUDENT DIRECTORY</span> <span class="text-blue-500">•</span>
+          <!-- Duplicate for infinite seamless scroll -->
+          <span>PLANNER</span> <span class="text-blue-500">•</span>
+          <span>TIMETABLE</span> <span class="text-blue-500">•</span>
+          <span>RESOURCES</span> <span class="text-blue-500">•</span>
+          <span>EXCHANGE</span> <span class="text-blue-500">•</span>
+          <span>MESS MENU</span> <span class="text-blue-500">•</span>
+          <span>EVENTS</span> <span class="text-blue-500">•</span>
+          <span>ANNOUNCEMENTS</span> <span class="text-blue-500">•</span>
+          <span>PROFILE</span> <span class="text-blue-500">•</span>
+          <span>STUDENT DIRECTORY</span> <span class="text-blue-500">•</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- AUTHENTICATION OVERLAY / LOGIN MODAL (Optimized for Mobile & Desktop) -->
   <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-3 sm:p-4 overflow-y-auto">
     <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-8 relative">

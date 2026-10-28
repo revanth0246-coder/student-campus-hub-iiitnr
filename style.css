@@ -761,3 +761,52 @@ html, body {
     max-height: 88vh !important;
   }
 }
+
+
+/* ==========================================================================
+   Splash / Pre-Login Loading Screen
+   ========================================================================== */
+
+#splash-loading-screen {
+  background-color: #060919;
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.7s;
+}
+
+#splash-loading-screen.dismissed {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+@keyframes marqueeScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.splash-ticker-content {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 24s linear infinite;
+  will-change: transform;
+}
+
+.splash-ticker-track:hover .splash-ticker-content {
+  animation-play-state: paused;
+}
+
+@keyframes cosmicFloat {
+  0%, 100% {
+    transform: scale(1.01) translateY(0);
+  }
+  50% {
+    transform: scale(1.03) translateY(-4px);
+  }
+}
+
+.animate-cosmic-float {
+  animation: cosmicFloat 12s ease-in-out infinite;
+}
