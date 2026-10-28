@@ -385,7 +385,7 @@
         <button onclick="navigateTo('students')" class="nav-item flex items-center gap-3.5 w-full px-4 py-2.5 rounded-xl text-sm font-medium transition hidden" data-view="students" id="nav-item-students">
           <i data-lucide="graduation-cap" class="w-4 h-4 text-emerald-400"></i>
           <span>Students Directory</span>
-          <span id="nav-student-count-badge" class="ml-auto bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-1.5 py-0.5 rounded">0</span>
+          <span id="nav-student-count-badge" class="ml-auto bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-1.5 py-0.5 rounded">3</span>
         </button>
 
         <button onclick="navigateTo('database')" class="nav-item flex items-center gap-3.5 w-full px-4 py-2.5 rounded-xl text-sm font-medium transition hidden" data-view="database" id="nav-item-database">
@@ -404,15 +404,6 @@
             <span id="theme-label">Theme: Light</span>
           </div>
           <span class="text-[10px] text-slate-400 bg-slate-700/60 group-hover:bg-slate-700 px-1.5 py-0.5 rounded transition">Themes</span>
-        </button>
-
-        <!-- Multi-Device / Network Access Button -->
-        <button onclick="openNetworkModal()" class="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/50 hover:bg-slate-800 rounded-xl transition group">
-          <div class="flex items-center gap-2">
-            <i data-lucide="smartphone" class="w-4 h-4 text-emerald-400"></i>
-            <span>Connect Devices</span>
-          </div>
-          <span class="text-[10px] text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-1.5 py-0.5 rounded group-hover:bg-emerald-900/60 transition">Wi-Fi/Web</span>
         </button>
 
         <!-- Current User Card -->
@@ -474,12 +465,6 @@
             <span id="backend-status-dot" class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
             <span id="backend-status-label">Standalone Frontend Mode</span>
           </div>
-
-          <!-- Cross-Device & Network Access Quick Button (Mobile-Optimized) -->
-          <button onclick="openNetworkModal()" title="Connect Mobile Phone or Other Devices on Any Network" class="hidden sm:flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 text-emerald-700 dark:text-emerald-300 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 rounded-xl transition border border-emerald-200 dark:border-emerald-800 shadow-sm">
-            <i data-lucide="smartphone" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
-            <span class="text-xs font-semibold hidden md:inline">Connect Devices</span>
-          </button>
 
           <!-- Theme Palette Selector Button (Mobile-Optimized) -->
           <button onclick="openThemePickerModal()" title="Choose Theme (Midnight, B&W, Slate, Neon, etc.)" class="hidden sm:flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl transition border border-slate-200 dark:border-slate-700 shadow-sm">
@@ -641,7 +626,7 @@
                 <div>
                   <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <span>Enrolled Students Overview</span>
-                    <span id="home-admin-student-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">0 Students</span>
+                    <span id="home-admin-student-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">3 Students</span>
                   </h3>
                   <p class="text-xs text-slate-400 mt-0.5">Live registered student database accounts in SQLite</p>
                 </div>
@@ -1310,7 +1295,7 @@
                 </div>
                 <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
                   <span class="text-xs text-slate-400 uppercase font-semibold block">Semester</span>
-                  <span id="profile-detail-semester" class="font-bold text-slate-800 dark:text-slate-100 text-base">Semester 2</span>
+                  <span id="profile-detail-semester" class="font-bold text-slate-800 dark:text-slate-100 text-base">Semester 1</span>
                 </div>
                 <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
                   <span class="text-xs text-slate-400 uppercase font-semibold block">CGPA</span>
@@ -1627,10 +1612,10 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
             <div class="flex items-center gap-2 flex-wrap">
               <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Branch:</span>
-              <button onclick="filterStudentsDirectoryByBranch('All')" class="btn-stu-branch-filter px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 text-white shadow-sm transition" data-branch="All">All (<span id="stu-count-all">0</span>)</button>
-              <button onclick="filterStudentsDirectoryByBranch('Data Science & AI')" class="btn-stu-branch-filter px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition" data-branch="Data Science & AI">DSAI (<span id="stu-count-dsai">0</span>)</button>
-              <button onclick="filterStudentsDirectoryByBranch('Computer Science & Engineering')" class="btn-stu-branch-filter px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition" data-branch="Computer Science & Engineering">CSE (<span id="stu-count-cse">0</span>)</button>
-              <button onclick="filterStudentsDirectoryByBranch('Electronics & Communication')" class="btn-stu-branch-filter px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition" data-branch="Electronics & Communication">ECE (<span id="stu-count-ece">0</span>)</button>
+              <button onclick="filterStudentsDirectoryByBranch('All')" class="btn-stu-branch-filter px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 text-white shadow-sm transition" data-branch="All">All (<span id="stu-count-all">3</span>)</button>
+              <button onclick="filterStudentsDirectoryByBranch('Data Science & AI')" class="btn-stu-branch-filter px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition" data-branch="Data Science & AI">DSAI (<span id="stu-count-dsai">1</span>)</button>
+              <button onclick="filterStudentsDirectoryByBranch('Computer Science & Engineering')" class="btn-stu-branch-filter px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition" data-branch="Computer Science & Engineering">CSE (<span id="stu-count-cse">1</span>)</button>
+              <button onclick="filterStudentsDirectoryByBranch('Electronics & Communication')" class="btn-stu-branch-filter px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition" data-branch="Electronics & Communication">ECE (<span id="stu-count-ece">1</span>)</button>
             </div>
             <div class="relative w-full sm:w-64">
               <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
@@ -2241,7 +2226,7 @@
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Semester</label>
-            <input type="text" id="edit-sem" value="Semester 2" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+            <input type="text" id="edit-sem" value="Semester 1" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
           </div>
         </div>
         <div>
@@ -2370,7 +2355,7 @@
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Semester</label>
-            <input type="text" id="reg-sem" value="Semester 2" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
+            <input type="text" id="reg-sem" value="Semester 1" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm" />
           </div>
         </div>
         <div>
@@ -2495,105 +2480,7 @@
     </div>
   </div>
 
-  <!-- 8. MULTI-DEVICE & NETWORK ACCESS MODAL -->
-  <div id="modal-network-devices" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-900 w-full max-w-xl rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-7 space-y-5 max-h-[90vh] overflow-y-auto">
-      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-            <i data-lucide="smartphone" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <h3 class="font-bold text-lg text-slate-900 dark:text-white leading-snug">Access on Any Device & Network</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Open IIIT-NR Campus Hub on your phone, tablet, or another computer.</p>
-          </div>
-        </div>
-        <button onclick="closeModal('modal-network-devices')" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-
-      <!-- Section 1: Same Wi-Fi / Hotspot Access -->
-      <div class="p-4 sm:p-5 rounded-2xl bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200/80 dark:border-emerald-800/60 space-y-3">
-        <div class="flex items-center justify-between">
-          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">
-            <i data-lucide="wifi" class="w-3.5 h-3.5"></i> Method 1: Same Wi-Fi / Hotspot
-          </span>
-          <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300">Fast & Direct</span>
-        </div>
-        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-          Connect your phone or other laptop to the same Wi-Fi or mobile hotspot as this host, then open this link:
-        </p>
-
-        <!-- LAN URL Box with Copy Button -->
-        <div class="flex items-center gap-2">
-          <div class="flex-1 px-3.5 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl font-mono text-xs font-bold text-slate-800 dark:text-slate-100 select-all truncate" id="lan-url-display">
-            http://192.168.137.167:5000
-          </div>
-          <button type="button" onclick="copyLanUrl()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-xs flex items-center gap-1.5 transition flex-shrink-0 shadow-sm">
-            <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy Link
-          </button>
-        </div>
-
-        <!-- Phone Scan QR Code Box -->
-        <div class="flex items-center gap-4 pt-2 bg-white/70 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-          <img id="network-qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=http://192.168.137.167:5000" alt="Scan QR Code" class="w-20 h-20 rounded-lg bg-white p-1 border border-slate-200 dark:border-slate-700 shadow-sm flex-shrink-0" />
-          <div class="text-xs space-y-1">
-            <p class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
-              <i data-lucide="scan" class="w-3.5 h-3.5 text-blue-500"></i> Scan with Phone Camera
-            </p>
-            <p class="text-slate-500 dark:text-slate-400 text-[11px] leading-snug">
-              Point your phone's camera at this QR code while connected to your Wi-Fi/hotspot to instantly open the portal on your phone!
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Section 2: Different Networks (Mobile Data / Over the Internet) -->
-      <div class="p-4 sm:p-5 rounded-2xl bg-blue-50/60 dark:bg-blue-950/20 border border-blue-200/80 dark:border-blue-800/60 space-y-3">
-        <div class="flex items-center justify-between">
-          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-blue-800 dark:text-blue-300 uppercase tracking-wider">
-            <i data-lucide="globe" class="w-3.5 h-3.5"></i> Method 2: Different Networks / Mobile 4G/5G
-          </span>
-          <span id="tunnel-status-badge" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Tunnel Available</span>
-        </div>
-        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-          Need to access from a device on <strong>cellular mobile data (Jio, Airtel 4G/5G)</strong> or from a <strong>different Wi-Fi network outside home</strong>?
-        </p>
-
-        <!-- Public Tunnel URL / Command -->
-        <div id="tunnel-active-box" class="space-y-2 hidden">
-          <div class="flex items-center gap-2">
-            <div class="flex-1 px-3.5 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl font-mono text-xs font-bold text-blue-600 dark:text-blue-400 select-all truncate" id="tunnel-url-display">
-              Loading tunnel...
-            </div>
-            <button type="button" onclick="copyTunnelUrl()" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-xs flex items-center gap-1.5 transition flex-shrink-0 shadow-sm">
-              <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy Link
-            </button>
-          </div>
-        </div>
-
-        <div id="tunnel-instruction-box" class="p-3 bg-white/70 dark:bg-slate-900/60 rounded-xl border border-slate-200/60 dark:border-slate-800/60 space-y-2 text-xs">
-          <p class="font-bold text-slate-800 dark:text-slate-100">To start public internet access:</p>
-          <ol class="list-decimal list-inside space-y-1 text-slate-600 dark:text-slate-400 text-[11px]">
-            <li>Double-click <code class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 font-mono rounded text-blue-600 dark:text-blue-400 font-bold">run-cross-network.bat</code> in the project folder</li>
-            <li>Or run <code class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 font-mono rounded text-blue-600 dark:text-blue-400 font-bold">npm run tunnel</code> in your terminal</li>
-            <li>Share the generated public HTTPS URL with anyone on any network!</li>
-          </ol>
-        </div>
-      </div>
-
-      <div class="pt-1 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 text-xs text-slate-400">
-        <button type="button" onclick="refreshNetworkInfo()" class="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline font-semibold">
-          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Network Status
-        </button>
-        <button type="button" onclick="closeModal('modal-network-devices')" class="px-5 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold rounded-xl text-xs transition">
-          Close
-        </button>
-      </div>
-    </div>
-  </div>
-
+  
   <!-- ============================================== -->
   <!-- MODAL: APPOINT / MAKE ADMINISTRATOR (Admin Privileges) -->
   <!-- ============================================== -->
@@ -2636,7 +2523,7 @@
             <i data-lucide="graduation-cap" class="w-3.5 h-3.5 text-indigo-500"></i> Enrolled Students Directory
           </span>
           <div class="flex items-center gap-2">
-            <span id="active-students-count-badge" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300">0 Students</span>
+            <span id="active-students-count-badge" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300">3 Students</span>
             <button type="button" onclick="loadAdminModalData()" class="p-1 rounded-lg text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition" title="Refresh enrolled students">
               <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
             </button>

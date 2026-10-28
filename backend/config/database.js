@@ -284,7 +284,7 @@ async function seedBranchTimetables() {
         'student',
         'Electronics & Communication',
         '1st Year',
-        'Semester 2',
+        'Semester 1',
         '8.8',
         '2024 - 2028',
         'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=faces'
@@ -705,7 +705,7 @@ async function seedInitialData() {
     'student',
     'Data Science & AI',
     '1st Year',
-    'Semester 2',
+    'Semester 1',
     '7.8',
     '2024 - 2028',
     'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=250&h=250&fit=crop&crop=faces'
@@ -743,7 +743,7 @@ async function seedInitialData() {
     'student',
     'Electronics & Communication',
     '1st Year',
-    'Semester 2',
+    'Semester 1',
     '8.8',
     '2024 - 2028',
     'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=faces'

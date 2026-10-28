@@ -25,7 +25,7 @@ const DEFAULT_STUDENTS = [
     name: 'Sahil Pulipaka',
     branch: 'Data Science & AI',
     year: '1st Year',
-    semester: 'Semester 2',
+    semester: 'Semester 1',
     cgpa: '7.8',
     email: 'sahil@iiitnr.ac.in',
     batch: '2024 - 2028',
@@ -53,13 +53,16 @@ const DEFAULT_STUDENTS = [
     name: 'Priya Verma',
     branch: 'Electronics & Communication',
     year: '1st Year',
-    semester: 'Semester 2',
+    semester: 'Semester 1',
     cgpa: '8.8',
     email: 'priya24@iiitnr.ac.in',
     batch: '2024 - 2028',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=faces',
     password: 'student123'
-  },
+  }
+];
+
+const REGISTERED_DSAI_REGISTRY = [
   {
     "id": "student_261020401",
     "role": "student",
@@ -2419,13 +2422,34 @@ async function apiCall(endpoint, method = 'GET', data = null) {
 
 // Load or Seed LocalStorage & Probe SQLite Backend
 function initStorage() {
-  try {
-    const local = JSON.parse(localStorage.getItem('iiitnr_students') || '[]');
-    const merged = mergeStudentLists(local, DEFAULT_STUDENTS);
-    localStorage.setItem('iiitnr_students', JSON.stringify(merged));
-    localStorage.setItem('iiitnr_students_backup', JSON.stringify(merged));
-  } catch (e) {
+  // Sync official Semester 1 and 3 default enrolled students
+  if (!localStorage.getItem('iiitnr_sem1_v1')) {
     localStorage.setItem('iiitnr_students', JSON.stringify(DEFAULT_STUDENTS));
+    localStorage.setItem('iiitnr_students_backup', JSON.stringify(DEFAULT_STUDENTS));
+    localStorage.setItem('iiitnr_sem1_v1', 'true');
+  }
+
+  try {
+    let local = JSON.parse(localStorage.getItem('iiitnr_students') || '[]');
+    if (Array.isArray(local) && local.length > 0) {
+      local = local.map(s => {
+        if (s && (s.year === '1st Year' || s.roll === '24DSAI001' || s.roll === '24ECE042') && s.semester === 'Semester 2') {
+          return { ...s, semester: 'Semester 1' };
+        }
+        return s;
+      });
+      const merged = mergeStudentLists(local, DEFAULT_STUDENTS).map(s => {
+        if (s && (s.year === '1st Year' || s.roll === '24DSAI001' || s.roll === '24ECE042') && s.semester === 'Semester 2') {
+          return { ...s, semester: 'Semester 1' };
+        }
+        return s;
+      });
+      setStudents(merged);
+    } else {
+      setStudents(DEFAULT_STUDENTS);
+    }
+  } catch (e) {
+    setStudents(DEFAULT_STUDENTS);
   }
   if (!localStorage.getItem('iiitnr_branch_timetables')) {
     localStorage.setItem('iiitnr_branch_timetables', JSON.stringify(DEFAULT_BRANCH_TIMETABLES));
@@ -2477,6 +2501,10 @@ function initStorage() {
   if (savedUser) {
     try {
       currentUser = JSON.parse(savedUser);
+      if (currentUser && (currentUser.year === '1st Year' || currentUser.roll === '24DSAI001' || currentUser.roll === '24ECE042') && currentUser.semester === 'Semester 2') {
+        currentUser.semester = 'Semester 1';
+        localStorage.setItem('iiitnr_active_session', JSON.stringify(currentUser));
+      }
       if (currentUser && !currentUser.loginTime) {
         currentUser.loginTime = new Date().toLocaleDateString('en-IN', {
           day: '2-digit', month: 'short', year: 'numeric'
@@ -2590,6 +2618,14 @@ function setStudents(data) {
   if (homeBadge) homeBadge.textContent = cleanList.length + ' Student' + (cleanList.length !== 1 ? 's' : '');
   const stuCountAll = document.getElementById('stu-count-all');
   if (stuCountAll) stuCountAll.textContent = cleanList.length;
+  const dsaiEl = document.getElementById('stu-count-dsai');
+  if (dsaiEl) dsaiEl.textContent = cleanList.filter(s => (s.branch || '').includes('Data')).length;
+  const cseEl = document.getElementById('stu-count-cse');
+  if (cseEl) cseEl.textContent = cleanList.filter(s => (s.branch || '').includes('Computer')).length;
+  const eceEl = document.getElementById('stu-count-ece');
+  if (eceEl) eceEl.textContent = cleanList.filter(s => (s.branch || '').includes('Electronics')).length;
+  const activeBadge = document.getElementById('active-students-count-badge');
+  if (activeBadge) activeBadge.textContent = cleanList.length + ' Students';
 }
 function getResources() {
   return JSON.parse(localStorage.getItem('iiitnr_study_resources') || '[]');
@@ -2919,10 +2955,21 @@ async function handleAuthLogin(event, role) {
 
     // 2. Offline fallback if backend server is unreachable
     const students = getStudents();
-    const matched = students.find(s => 
+    let matched = students.find(s => 
       (s.roll.toLowerCase() === roll.toLowerCase() || s.email.toLowerCase() === roll.toLowerCase()) && 
       (s.password === pass || pass === 'Test@1234' || pass === 'student123')
     );
+
+    if (!matched && typeof REGISTERED_DSAI_REGISTRY !== 'undefined') {
+      const regMatch = REGISTERED_DSAI_REGISTRY.find(s => 
+        (s.roll.toLowerCase() === roll.toLowerCase() || s.email.toLowerCase() === roll.toLowerCase()) && 
+        (s.password === pass || pass === 'Test@1234' || pass === 'student123')
+      );
+      if (regMatch) {
+        matched = { ...regMatch };
+        setStudents([...students, matched]);
+      }
+    }
 
     if (matched) {
       currentUser = matched;
@@ -3326,6 +3373,12 @@ function updateUserUIElements() {
     : "text-[10px] text-blue-400 font-semibold";
   document.getElementById('sidebar-user-avatar').src = displayAvatar;
   document.getElementById('top-user-avatar').src = displayAvatar;
+
+  const currentStudents = getStudents();
+  const navBadgeEl = document.getElementById('nav-student-count-badge');
+  if (navBadgeEl) navBadgeEl.textContent = currentStudents.length;
+  const stuCountAllEl = document.getElementById('stu-count-all');
+  if (stuCountAllEl) stuCountAllEl.textContent = currentStudents.length;
 
   // Role Pill in Header
   const pillText = document.getElementById('role-pill-text');
@@ -6508,7 +6561,7 @@ function openEditProfileModal() {
   document.getElementById('edit-roll').value = currentUser.roll || 'ADMIN';
   document.getElementById('edit-branch').value = currentUser.branch || 'Data Science & AI';
   document.getElementById('edit-year').value = currentUser.year || '1st Year';
-  document.getElementById('edit-sem').value = currentUser.semester || 'Semester 2';
+  document.getElementById('edit-sem').value = currentUser.semester || 'Semester 1';
   document.getElementById('edit-cgpa').value = currentUser.cgpa || '8.0';
   document.getElementById('edit-email').value = currentUser.email;
 
@@ -7362,7 +7415,7 @@ async function renderDatabaseView() {
     const eventRegs = JSON.parse(localStorage.getItem('iiitnr_event_registrations') || '[]');
 
     const uBadge = document.getElementById('pill-count-users');
-    if (uBadge) uBadge.textContent = `(${students.length + 1})`;
+    if (uBadge) uBadge.textContent = `(${students.length})`;
     const rBadge = document.getElementById('pill-count-resources');
     if (rBadge) rBadge.textContent = `(${resources.length})`;
     const tBadge = document.getElementById('pill-count-timetable');
@@ -7425,7 +7478,7 @@ async function switchDbTable(tableName) {
 function getLocalTableRows(tableName) {
   if (tableName === 'users') {
     const students = getStudents();
-    return [DEFAULT_ADMIN, ...students];
+    return students;
   }
   if (tableName === 'resources') return getResources();
   if (tableName === 'timetable') {
@@ -8437,7 +8490,7 @@ function filterStudentsDirectory() {
     const roll = escapeHtml(s.roll || 'N/A');
     const branch = escapeHtml(s.branch || 'Data Science & AI');
     const year = escapeHtml(s.year || '1st Year');
-    const sem = escapeHtml(s.semester || 'Semester 2');
+    const sem = escapeHtml(s.semester || 'Semester 1');
     const cgpa = escapeHtml(s.cgpa || '8.0');
     const email = escapeHtml(s.email || '');
     const id = s.id;

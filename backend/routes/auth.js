@@ -107,7 +107,7 @@ router.post('/register', async (req, res) => {
       passwordHash,
       branch || 'Data Science & AI',
       year || '1st Year',
-      semester || 'Semester 2',
+      semester || 'Semester 1',
       cgpa || '8.0',
       chosenAvatar
     ]);
