@@ -8245,17 +8245,17 @@ async function demoteUserToStudent(userId, name) {
 
 
 // ==========================================
-// PRE-LOGIN SPLASH & LOADING SCREEN CONTROLLER
+// PRE-LOGIN SPLASH & ROTATING ORBITAL HUB CONTROLLER
 // ==========================================
 let splashDismissed = false;
-let splashInterval = null;
+let splashAutoDismissTimer = null;
 
 function dismissSplashScreen() {
   if (splashDismissed) return;
   splashDismissed = true;
-  if (splashInterval) {
-    clearInterval(splashInterval);
-    splashInterval = null;
+  if (splashAutoDismissTimer) {
+    clearTimeout(splashAutoDismissTimer);
+    splashAutoDismissTimer = null;
   }
 
   const splash = document.getElementById('splash-loading-screen');
@@ -8269,54 +8269,24 @@ function dismissSplashScreen() {
 }
 window.dismissSplashScreen = dismissSplashScreen;
 
-function startSplashLoader() {
-  const bar = document.getElementById('splash-progress-bar');
-  const percentText = document.getElementById('splash-percent-text');
-  const statusText = document.getElementById('splash-status-text');
-
-  if (!bar && !percentText && !statusText) return;
-
-  let progress = 0;
-  const messages = [
-    { at: 0, text: 'Initializing Student Campus Hub...' },
-    { at: 20, text: 'Loading official branch timetables & modules...' },
-    { at: 45, text: 'Syncing campus resources, notices & mess menu...' },
-    { at: 75, text: 'Connecting to IIIT-NR database...' },
-    { at: 95, text: 'Welcome to IIIT-NR Student Campus Hub!' }
-  ];
-
-  splashInterval = setInterval(() => {
-    if (splashDismissed) {
-      clearInterval(splashInterval);
-      splashInterval = null;
-      return;
+function initSplashScreen() {
+  // Listen for keyboard escape, enter or space to skip to login immediately
+  window.addEventListener('keydown', (e) => {
+    if (!splashDismissed && (e.key === 'Enter' || e.key === 'Escape' || e.key === ' ')) {
+      dismissSplashScreen();
     }
+  });
 
-    const increment = Math.floor(Math.random() * 6) + 4;
-    progress = Math.min(progress + increment, 100);
-
-    if (bar) bar.style.width = progress + '%';
-    if (percentText) percentText.textContent = progress + '%';
-
-    const currentMsg = messages.slice().reverse().find(m => progress >= m.at);
-    if (currentMsg && statusText && statusText.textContent !== currentMsg.text) {
-      statusText.textContent = currentMsg.text;
-    }
-
-    if (progress >= 100) {
-      clearInterval(splashInterval);
-      splashInterval = null;
-      setTimeout(() => {
-        dismissSplashScreen();
-      }, 350);
-    }
-  }, 45);
+  // Smooth automatic transition to login after allowing student to view the rotating orbital constellation
+  splashAutoDismissTimer = setTimeout(() => {
+    dismissSplashScreen();
+  }, 2600);
 }
-window.startSplashLoader = startSplashLoader;
+window.initSplashScreen = initSplashScreen;
 
 // Initial Boot
 window.addEventListener('DOMContentLoaded', () => {
-  startSplashLoader();
+  initSplashScreen();
   initStorage();
   lucide.createIcons();
 });

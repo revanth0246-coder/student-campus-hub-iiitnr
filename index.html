@@ -55,55 +55,158 @@
     <!-- ============================================== -->
   <!-- PRE-LOGIN SPLASH & LOADING SCREEN (SCREENSHOT ARTWORK) -->
   <!-- ============================================== -->
-  <div id="splash-loading-screen" class="fixed inset-0 z-[100] flex flex-col justify-between bg-[#060919] text-white overflow-hidden select-none">
+  <div id="splash-loading-screen" onclick="dismissSplashScreen()" class="fixed inset-0 z-[100] flex flex-col justify-between bg-[#060919] text-white overflow-hidden select-none cursor-pointer">
     
-    <!-- Ultra-HD Visual Artwork Background -->
-    <div class="absolute inset-0 z-0 overflow-hidden">
-      <img src="assets/splash_banner.jpg" alt="Student Campus Hub" class="w-full h-full object-cover object-center animate-cosmic-float" id="splash-hero-img" />
-      <!-- Subtle top and bottom dark gradients for high contrast controls -->
-      <div class="absolute inset-0 bg-gradient-to-t from-[#060919] via-transparent to-[#060919]/60 pointer-events-none"></div>
+    <!-- Ambient Cosmic Glowing Background Layer -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+      <!-- Starry dots background -->
+      <div class="splash-stars-bg absolute inset-0 opacity-70"></div>
+      <!-- Radial Nebula Glows -->
+      <div class="absolute -top-32 -left-32 w-96 h-96 bg-blue-600/15 rounded-full blur-3xl"></div>
+      <div class="absolute top-1/2 right-10 -translate-y-1/2 w-[500px] h-[500px] bg-cyan-500/15 rounded-full blur-[120px]"></div>
+      <div class="absolute -bottom-32 left-1/3 w-96 h-96 bg-indigo-600/15 rounded-full blur-3xl"></div>
     </div>
 
-    <!-- Top Bar: Official Badge + Skip Button -->
-    <div class="relative z-10 w-full p-4 sm:p-6 flex items-center justify-between">
-      <div class="flex items-center gap-2 sm:gap-2.5 bg-slate-950/70 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-blue-500/30 shadow-lg">
+    <!-- Top Navigation Bar -->
+    <div class="relative z-10 w-full p-4 sm:p-6 lg:px-10 flex items-center justify-between pointer-events-auto">
+      <div class="flex items-center gap-2 sm:gap-2.5 bg-slate-900/70 backdrop-blur-md px-3.5 sm:px-4 py-1.5 rounded-full border border-blue-500/30 shadow-lg">
         <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-        <span class="text-xs font-semibold text-cyan-300 tracking-wide">✦ IIIT-NR Student Portal 2026</span>
+        <span class="text-xs sm:text-sm font-semibold text-cyan-300 tracking-wide flex items-center gap-1.5">
+          ✦ IIIT-NR Student Portal 2026
+        </span>
       </div>
-      <button type="button" onclick="dismissSplashScreen()" class="group flex items-center gap-1.5 text-xs font-semibold bg-slate-950/80 hover:bg-blue-600/90 backdrop-blur-md px-4 py-2 rounded-full border border-slate-700/60 hover:border-blue-400 transition-all shadow-xl active:scale-95 text-slate-200 hover:text-white cursor-pointer" title="Skip to login">
-        <span>Skip to Login</span>
+      <button type="button" onclick="event.stopPropagation(); dismissSplashScreen();" class="group flex items-center gap-1.5 text-xs sm:text-sm font-semibold bg-slate-900/80 hover:bg-blue-600/90 backdrop-blur-md px-4 py-2 rounded-full border border-slate-700/60 hover:border-blue-400 transition-all shadow-xl active:scale-95 text-slate-200 hover:text-white cursor-pointer" title="Skip to login">
+        <span>Enter Portal / Login</span>
         <i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform"></i>
       </button>
     </div>
 
-    <!-- Center / Lower Loading Card Deck -->
-    <div class="relative z-10 w-full max-w-lg mx-auto px-4 pb-6 sm:pb-10 flex flex-col items-center text-center">
-      <div class="w-full bg-slate-950/85 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-4 sm:p-5 shadow-2xl shadow-blue-950/60 space-y-3">
-        <!-- Status & Percent -->
-        <div class="flex items-center justify-between text-xs">
-          <div class="flex items-center gap-2 font-medium text-slate-300 text-left truncate mr-2">
-            <i data-lucide="loader" class="w-4 h-4 text-cyan-400 animate-spin flex-shrink-0"></i>
-            <span id="splash-status-text" class="truncate">Initializing Student Campus Hub...</span>
+    <!-- Main Hero Stage: Left (Typography & Branding) + Right (Rotating Orbital Planetary Hub) -->
+    <div class="relative z-10 flex-1 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-8 lg:gap-12 my-auto">
+      
+      <!-- Left Column: Branding and Identity -->
+      <div class="flex flex-col items-center lg:items-start text-center lg:text-left space-y-5 max-w-xl">
+        <!-- Giant Title matching screenshot -->
+        <div class="space-y-1 sm:space-y-2">
+          <h1 class="text-5xl sm:text-6xl md:text-7xl font-black tracking-tight text-white leading-none drop-shadow-md">
+            Student
+          </h1>
+          <h1 class="text-5xl sm:text-6xl md:text-7xl font-black tracking-tight text-white leading-none drop-shadow-md">
+            Campus Hub
+          </h1>
+        </div>
+
+        <!-- IIITNR Badge + College Description -->
+        <div class="flex flex-col sm:flex-row items-center gap-3.5 pt-2">
+          <div class="px-4 py-2 bg-blue-600 rounded-2xl text-white font-extrabold text-2xl tracking-wider shadow-lg shadow-blue-600/30 flex items-center justify-center flex-shrink-0">
+            IIITNR
           </div>
-          <span id="splash-percent-text" class="font-bold text-cyan-400 font-mono flex-shrink-0">0%</span>
+          <div class="text-center sm:text-left">
+            <h2 class="text-lg sm:text-xl font-extrabold text-white leading-snug">
+              IIIT Naya Raipur
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-400 font-medium">
+              Everything for college life, in one place
+            </p>
+          </div>
         </div>
 
-        <!-- Glowing Progress Bar Track -->
-        <div class="w-full h-2.5 bg-slate-900/90 rounded-full overflow-hidden p-0.5 border border-slate-800">
-          <div id="splash-progress-bar" class="h-full bg-gradient-to-r from-blue-600 via-cyan-400 to-indigo-500 rounded-full transition-all duration-200 ease-out shadow-[0_0_12px_rgba(6,182,212,0.8)]" style="width: 0%;"></div>
+        <!-- Location & Status Badges -->
+        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 pt-1">
+          <div class="px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-slate-800 text-xs text-slate-300 font-medium flex items-center gap-1.5 shadow-sm">
+            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-rose-400"></i>
+            <span>Atal Nagar, Raipur</span>
+          </div>
+          <div class="px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-slate-800 text-xs text-emerald-400 font-medium flex items-center gap-2 shadow-sm">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Active Term</span>
+          </div>
         </div>
 
-        <!-- Badges & Action -->
-        <div class="flex items-center justify-between text-[11px] text-slate-400 pt-1 flex-wrap gap-2">
-          <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3 text-rose-400"></i> Atal Nagar, Raipur</span>
-          <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Active Term</span>
-          <button type="button" onclick="dismissSplashScreen()" class="text-cyan-400 hover:text-white font-semibold underline underline-offset-2 ml-auto cursor-pointer">Continue to Login →</button>
+        <!-- Prompt to enter -->
+        <div class="pt-2">
+          <span class="text-xs text-slate-400/80 flex items-center justify-center lg:justify-start gap-1.5">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-400"></i> Click anywhere to continue to login
+          </span>
         </div>
       </div>
+
+      <!-- Right Column: Interactive Rotating Planetary Constellation -->
+      <div class="relative flex items-center justify-center flex-shrink-0">
+        <div class="orbit-system-wrapper">
+          
+          <!-- Concentric Orbital Guide Rings -->
+          <div class="absolute inset-0 m-auto w-[80%] h-[80%] rounded-full border border-dashed border-cyan-500/30 pointer-events-none"></div>
+          <div class="absolute inset-0 m-auto w-[55%] h-[55%] rounded-full border border-blue-500/20 pointer-events-none"></div>
+          <div class="absolute inset-0 m-auto w-[100%] h-[100%] rounded-full border border-slate-800/40 pointer-events-none"></div>
+
+          <!-- Central HUB IIITNR Planet -->
+          <div class="relative z-20 w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-900 border-2 border-cyan-400 shadow-[0_0_40px_rgba(6,182,212,0.65)] flex flex-col items-center justify-center text-center select-none pointer-events-auto group hover:scale-105 transition-transform">
+            <span class="text-base sm:text-2xl font-black text-white tracking-widest leading-none drop-shadow">HUB</span>
+            <span class="text-[10px] sm:text-xs font-bold text-cyan-200 tracking-wider mt-0.5">IIITNR</span>
+            <!-- Ambient ring glow -->
+            <div class="absolute -inset-2 rounded-full border border-cyan-400/30 animate-pulse pointer-events-none"></div>
+          </div>
+
+          <!-- Rotating Orbit Container with the 6 Satellite Module Boxes -->
+          <div class="orbit-rotator">
+            
+            <!-- Box 1: Resources (Top-Left, 240 deg) -->
+            <div class="orbit-item orbit-item-4">
+              <div class="bg-[#0b132b]/95 hover:bg-slate-900 border border-slate-700/80 hover:border-cyan-400 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-2xl flex flex-col items-center justify-center shadow-xl shadow-blue-950/60 backdrop-blur-md transition-all group min-w-[76px] sm:min-w-[90px]">
+                <i data-lucide="book-open" class="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 group-hover:scale-110 transition-transform"></i>
+                <span class="text-[11px] sm:text-xs font-bold text-white tracking-wide mt-1">Resources</span>
+              </div>
+            </div>
+
+            <!-- Box 2: Exchange (Top-Right, 300 deg) -->
+            <div class="orbit-item orbit-item-5">
+              <div class="bg-[#0b132b]/95 hover:bg-slate-900 border border-slate-700/80 hover:border-cyan-400 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-2xl flex flex-col items-center justify-center shadow-xl shadow-blue-950/60 backdrop-blur-md transition-all group min-w-[76px] sm:min-w-[90px]">
+                <i data-lucide="arrow-left-right" class="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 group-hover:scale-110 transition-transform"></i>
+                <span class="text-[11px] sm:text-xs font-bold text-white tracking-wide mt-1">Exchange</span>
+              </div>
+            </div>
+
+            <!-- Box 3: Mess Menu (Middle-Right, 0 deg) -->
+            <div class="orbit-item orbit-item-0">
+              <div class="bg-[#0b132b]/95 hover:bg-slate-900 border border-slate-700/80 hover:border-amber-400 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-2xl flex flex-col items-center justify-center shadow-xl shadow-blue-950/60 backdrop-blur-md transition-all group min-w-[76px] sm:min-w-[90px]">
+                <i data-lucide="utensils" class="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 group-hover:scale-110 transition-transform"></i>
+                <span class="text-[11px] sm:text-xs font-bold text-white tracking-wide mt-1">Mess Menu</span>
+              </div>
+            </div>
+
+            <!-- Box 4: Events (Bottom-Right, 60 deg) -->
+            <div class="orbit-item orbit-item-1">
+              <div class="bg-[#0b132b]/95 hover:bg-slate-900 border border-slate-700/80 hover:border-rose-400 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-2xl flex flex-col items-center justify-center shadow-xl shadow-blue-950/60 backdrop-blur-md transition-all group min-w-[76px] sm:min-w-[90px]">
+                <i data-lucide="calendar" class="w-4 h-4 sm:w-5 sm:h-5 text-rose-400 group-hover:scale-110 transition-transform"></i>
+                <span class="text-[11px] sm:text-xs font-bold text-white tracking-wide mt-1">Events</span>
+              </div>
+            </div>
+
+            <!-- Box 5: Planner (Bottom, 120 deg) -->
+            <div class="orbit-item orbit-item-2">
+              <div class="bg-[#0b132b]/95 hover:bg-slate-900 border border-slate-700/80 hover:border-indigo-400 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-2xl flex flex-col items-center justify-center shadow-xl shadow-blue-950/60 backdrop-blur-md transition-all group min-w-[76px] sm:min-w-[90px]">
+                <i data-lucide="clipboard-list" class="w-4 h-4 sm:w-5 sm:h-5 text-indigo-400 group-hover:scale-110 transition-transform"></i>
+                <span class="text-[11px] sm:text-xs font-bold text-white tracking-wide mt-1">Planner</span>
+              </div>
+            </div>
+
+            <!-- Box 6: Timetable (Middle-Left, 180 deg) -->
+            <div class="orbit-item orbit-item-3">
+              <div class="bg-[#0b132b]/95 hover:bg-slate-900 border border-slate-700/80 hover:border-emerald-400 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-2xl flex flex-col items-center justify-center shadow-xl shadow-blue-950/60 backdrop-blur-md transition-all group min-w-[76px] sm:min-w-[90px]">
+                <i data-lucide="calendar-days" class="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400 group-hover:scale-110 transition-transform"></i>
+                <span class="text-[11px] sm:text-xs font-bold text-white tracking-wide mt-1">Timetable</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <!-- Bottom Continuous Marquee / Ticker -->
-    <div class="relative z-10 w-full bg-[#050816]/95 border-t border-blue-900/40 py-2.5 overflow-hidden backdrop-blur-md">
+    <!-- Bottom Continuous Marquee / Ticker Tape -->
+    <div class="relative z-10 w-full bg-[#050816]/95 border-t border-blue-900/40 py-2.5 overflow-hidden backdrop-blur-md pointer-events-auto">
       <div class="splash-ticker-track flex items-center whitespace-nowrap text-[11px] sm:text-xs font-bold tracking-widest text-slate-400 select-none">
         <div class="splash-ticker-content flex items-center gap-6">
           <span>PLANNER</span> <span class="text-blue-500">•</span>
@@ -115,7 +218,7 @@
           <span>ANNOUNCEMENTS</span> <span class="text-blue-500">•</span>
           <span>PROFILE</span> <span class="text-blue-500">•</span>
           <span>STUDENT DIRECTORY</span> <span class="text-blue-500">•</span>
-          <!-- Duplicate for infinite seamless scroll -->
+          <!-- Seamless loop duplication -->
           <span>PLANNER</span> <span class="text-blue-500">•</span>
           <span>TIMETABLE</span> <span class="text-blue-500">•</span>
           <span>RESOURCES</span> <span class="text-blue-500">•</span>
@@ -128,6 +231,7 @@
         </div>
       </div>
     </div>
+
   </div>
 
   <!-- AUTHENTICATION OVERLAY / LOGIN MODAL (Optimized for Mobile & Desktop) -->

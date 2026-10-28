@@ -764,7 +764,7 @@ html, body {
 
 
 /* ==========================================================================
-   Splash / Pre-Login Loading Screen
+   Rotating Orbital System for Pre-Login Splash Screen
    ========================================================================== */
 
 #splash-loading-screen {
@@ -776,6 +776,116 @@ html, body {
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
+}
+
+/* Cosmic starry background pattern */
+.splash-stars-bg {
+  background-image: 
+    radial-gradient(1.5px 1.5px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 40px 70px, #38bdf8, rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 90px 40px, #818cf8, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 160px 120px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 230px 180px, #38bdf8, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 290px 240px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 350px 80px, #c084fc, rgba(0,0,0,0));
+  background-repeat: repeat;
+  background-size: 400px 400px;
+}
+
+.orbit-system-wrapper {
+  position: relative;
+  width: 440px;
+  height: 440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .orbit-system-wrapper {
+    width: 320px;
+    height: 320px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .orbit-system-wrapper {
+    width: 480px;
+    height: 480px;
+  }
+}
+
+/* Rotating container that turns smoothly around center */
+.orbit-rotator {
+  position: absolute;
+  inset: 0;
+  animation: rotateOrbit 22s linear infinite;
+  will-change: transform;
+}
+
+.orbit-rotator:hover {
+  animation-play-state: paused;
+}
+.orbit-rotator:hover .orbit-item {
+  animation-play-state: paused;
+}
+
+/* Orbit circular path rotation */
+@keyframes rotateOrbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Counter-rotation on each item so icons & text stay level */
+@keyframes keepBoxUpright {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(-360deg);
+  }
+}
+
+/* Each orbiting module card */
+.orbit-item {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+  animation: keepBoxUpright 22s linear infinite;
+  will-change: transform;
+}
+
+/* 6 Position slots distributed around orbit (R = 40% of parent width) */
+.orbit-item-0 { /* Mess Menu: 0 deg (Right) */
+  top: 50%;
+  left: 90%;
+}
+.orbit-item-1 { /* Events: 60 deg (Bottom-Right) */
+  top: 84.6%;
+  left: 70%;
+}
+.orbit-item-2 { /* Planner: 120 deg (Bottom-Left) */
+  top: 84.6%;
+  left: 30%;
+}
+.orbit-item-3 { /* Timetable: 180 deg (Left) */
+  top: 50%;
+  left: 10%;
+}
+.orbit-item-4 { /* Resources: 240 deg (Top-Left) */
+  top: 15.4%;
+  left: 30%;
+}
+.orbit-item-5 { /* Exchange: 300 deg (Top-Right) */
+  top: 15.4%;
+  left: 70%;
 }
 
 @keyframes marqueeScroll {
@@ -796,17 +906,4 @@ html, body {
 
 .splash-ticker-track:hover .splash-ticker-content {
   animation-play-state: paused;
-}
-
-@keyframes cosmicFloat {
-  0%, 100% {
-    transform: scale(1.01) translateY(0);
-  }
-  50% {
-    transform: scale(1.03) translateY(-4px);
-  }
-}
-
-.animate-cosmic-float {
-  animation: cosmicFloat 12s ease-in-out infinite;
 }
