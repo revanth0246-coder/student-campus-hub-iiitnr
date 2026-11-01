@@ -2529,9 +2529,6 @@ function initStorage() {
     showAuthScreen();
   }
 
-  // Populate Student Quick Login dropdown
-  populateStudentQuickSelect();
-
   // Dark mode init
   const savedTheme = localStorage.getItem('iiitnr_theme') || 'indigo';
   applyTheme(savedTheme);
@@ -2854,7 +2851,6 @@ function showAuthScreen() {
   if (studentPass) studentPass.value = '';
   if (adminEmail) adminEmail.value = '';
   if (adminPass) adminPass.value = '';
-  if (typeof populateStudentQuickSelect === 'function') populateStudentQuickSelect();
 }
 
 function hideAuthScreen() {
@@ -3085,7 +3081,6 @@ function handleLogout() {
   if (studentPass) studentPass.value = '';
   if (adminEmail) adminEmail.value = '';
   if (adminPass) adminPass.value = '';
-  if (typeof populateStudentQuickSelect === 'function') populateStudentQuickSelect();
 
   showAuthScreen();
   showToast('Logged out successfully.', 'info');
@@ -8709,111 +8704,4 @@ function initRealtimeSync() {
   } catch (err) {
     console.warn('Could not initialize EventSource:', err);
   }
-}
-
-
-// ==========================================
-// ALL STUDENTS LOGIN & QUICK SELECTOR ENGINE
-// ==========================================
-
-function populateStudentQuickSelect() {
-  const select = document.getElementById('student-quick-select');
-  if (!select) return;
-
-  const students = getStudents();
-  select.innerHTML = '<option value="">-- Choose Any Student to Auto-Fill & Login --</option>';
-
-  students.forEach(s => {
-    const opt = document.createElement('option');
-    opt.value = s.roll;
-    opt.textContent = `${s.name} (${s.roll}) - ${s.branch} (${s.year})`;
-    select.appendChild(opt);
-  });
-}
-
-function handleStudentQuickSelect(roll) {
-  if (!roll) return;
-  const students = getStudents();
-  const student = students.find(s => s.roll === roll);
-  if (!student) return;
-
-  const rollInput = document.getElementById('student-roll');
-  const passInput = document.getElementById('student-pass');
-  if (rollInput) rollInput.value = student.roll;
-  if (passInput) passInput.value = student.password || 'Test@1234';
-  showToast(`Selected student: ${student.name} (${student.roll})`, 'info');
-}
-
-function selectStudentLogin(roll, pass) {
-  switchAuthTab('student');
-  const rollInput = document.getElementById('student-roll');
-  const passInput = document.getElementById('student-pass');
-  if (rollInput) rollInput.value = roll;
-  if (passInput) passInput.value = pass || 'Test@1234';
-  
-  const form = document.getElementById('student-login-form');
-  if (form) {
-    handleAuthLogin(new Event('submit'), 'student');
-  }
-}
-
-function openAllStudentsLoginModal() {
-  const modal = document.getElementById('modal-all-students-login');
-  if (modal) {
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-    renderAllStudentsLoginModalList();
-    if (window.lucide) lucide.createIcons();
-  }
-}
-
-function renderAllStudentsLoginModalList(searchQuery = '') {
-  const container = document.getElementById('all-students-login-list');
-  if (!container) return;
-
-  const students = getStudents();
-  const q = searchQuery.toLowerCase().trim();
-  const filtered = q
-    ? students.filter(s => 
-        (s.name && s.name.toLowerCase().includes(q)) || 
-        (s.roll && s.roll.toLowerCase().includes(q)) ||
-        (s.email && s.email.toLowerCase().includes(q)) ||
-        (s.branch && s.branch.toLowerCase().includes(q))
-      )
-    : students;
-
-  const countBadge = document.getElementById('all-students-modal-count');
-  if (countBadge) countBadge.textContent = `${filtered.length} of ${students.length} Students`;
-
-  if (filtered.length === 0) {
-    container.innerHTML = '<div class="p-6 text-center text-xs text-slate-400">No matching students found for your search.</div>';
-    return;
-  }
-
-  container.innerHTML = filtered.map(s => {
-    const avatar = s.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=faces';
-    const pwd = s.password || 'Test@1234';
-    return `
-      <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between gap-3 hover:border-blue-500 transition">
-        <div class="flex items-center gap-2.5 truncate">
-          <img src="${avatar}" alt="${s.name}" class="w-9 h-9 rounded-xl object-cover ring-1 ring-slate-200 dark:ring-slate-700 flex-shrink-0" onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=faces'" />
-          <div class="truncate">
-            <div class="font-bold text-xs text-slate-900 dark:text-slate-100 flex items-center gap-1.5 truncate">
-              <span>${s.name}</span>
-              <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-bold">${s.roll}</span>
-            </div>
-            <p class="text-[10px] text-slate-400 truncate mt-0.5">${s.branch} • ${s.year}</p>
-          </div>
-        </div>
-        <button type="button" onclick="closeModal('modal-all-students-login'); selectStudentLogin('${s.roll}', '${pwd}')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold flex items-center gap-1 shadow-sm transition flex-shrink-0">
-          <i data-lucide="log-in" class="w-3.5 h-3.5"></i> Sign In
-        </button>
-      </div>
-    `;
-  }).join('');
-}
-
-function filterAllStudentsLoginModal(val) {
-  renderAllStudentsLoginModalList(val);
-  if (window.lucide) lucide.createIcons();
 }
